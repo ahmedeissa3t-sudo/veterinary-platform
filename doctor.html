@@ -52,6 +52,7 @@
                             <th>الخدمة</th>
                             <th>الوصف</th>
                             <th>الحالة</th>
+                            <th>تحديث</th>
                         </tr>
                     </thead>
                     <tbody id="casesTable">
@@ -92,7 +93,7 @@
 
         function login() {
             let pass = document.getElementById('passInput').value;
-            if(pass === '1234') {
+            if(pass === 'vetcare2026#') {
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 loadCases();
@@ -134,6 +135,15 @@
                             <td>${c.service_type || '-'}</td>
                             <td>${c.description || '-'}</td>
                             <td><span style="color:orange">${c.status || 'قيد الانتظار'}</span></td>
+                            <td>
+                                <select onchange="updateCaseStatus(${c.id}, this.value)" style="width:auto; padding:4px; font-size:12px;">
+                                    <option value="" disabled selected>تغيير...</option>
+                                    <option value="قيد الانتظار">قيد الانتظار</option>
+                                    <option value="جاري التواصل">جاري التواصل</option>
+                                    <option value="تم الرد">تم الرد</option>
+                                    <option value="مغلقة">مغلقة</option>
+                                </select>
+                            </td>
                         </tr>
                     `;
                 });
@@ -177,6 +187,15 @@
                 alert('❌ خطأ في التحميل: ' + err.message);
                 tbody.innerHTML = `<tr><td colspan="7" style="color:red">خطأ: ${err.message}</td></tr>`;
             }
+        }
+
+        async function updateCaseStatus(id, newStatus) {
+            const { error } = await _supabase.from('cases').update({ status: newStatus }).eq('id', id);
+            if (error) {
+                alert('❌ خطأ في التحديث: ' + error.message);
+                return;
+            }
+            loadCases();
         }
 
         async function updateClinicStatus(id, newStatus) {

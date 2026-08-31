@@ -74,12 +74,11 @@
     <div class="card">
         <h3>📋 تقديم حالة / استشارة جديدة</h3>
 
-        <label>1. اختر الطبيب المعالج:</label>
-        <div class="cards-grid">
-            <div class="item-card doc-card" onclick="selectDoctor('د. أحمد سامي', this)">👨‍⚕️ د. أحمد</div>
-            <div class="item-card doc-card" onclick="selectDoctor('د. سارة محمود', this)">👩‍⚕️ د. سارة</div>
-            <div class="item-card doc-card" onclick="selectDoctor('د. محمد علي', this)">👨‍⚕️ د. محمد</div>
+        <label>1. اختر الطبيب / العيادة المعالجة:</label>
+        <div class="cards-grid" id="doctorsGrid">
+            <div style="grid-column: 1 / -1; text-align:center; font-size:13px; color:#94a3b8; padding:10px;">⏳ جاري تحميل العيادات...</div>
         </div>
+        <div id="clinicDetails" style="display:none; background:var(--bg); border:1px dashed var(--border); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:12px;"></div>
 
         <label>2. نوع الحيوان:</label>
         <div class="cards-grid">
@@ -134,7 +133,7 @@
         <textarea id="case" rows="3" placeholder="اشرح الحالة بالتفصيل هنا..."></textarea>
 
         <button class="btn btn-main" onclick="submitCase()">إرسال الحالة للموقع 🚀</button>
-        <a href="https://wa.me/201000000000?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care" class="btn btn-emergency" target="_blank">🚨 طوارئ واتساب مباشر</a>
+        <a href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care" class="btn btn-emergency" target="_blank">🚨 طوارئ واتساب مباشر</a>
 
         <div id="status" class="status-box"></div>
     </div>
@@ -152,17 +151,79 @@
 
     let chosenDoctor = '';
     let chosenAnimal = '';
+    let approvedClinics = [];
 
-    window.onload = loadHistory;
+    window.onload = function() {
+        loadHistory();
+        loadClinicsForBooking();
+    };
 
     function toggleTheme() {
         document.body.classList.toggle('dark');
     }
 
-    function selectDoctor(docName, el) {
-        chosenDoctor = docName;
+    async function loadClinicsForBooking() {
+        const grid = document.getElementById('doctorsGrid');
+        const demoDoctors = ['د. أحمد سامي', 'د. سارة محمود', 'د. محمد علي'];
+
+        function renderDemoCards() {
+            return demoDoctors.map(name => `
+                <div class="item-card doc-card" style="opacity:0.5; cursor:not-allowed; position:relative;"
+                     onclick="alert('👋 ده اسم تجريبي بس للعرض، مش طبيب حقيقي متاح للاختيار حاليًا.')">
+                    👨‍⚕️ ${name}
+                    <div style="font-size:9px; color:#ef4444; margin-top:2px;">تجريبي</div>
+                </div>
+            `).join('');
+        }
+
+        try {
+            const { data, error } = await _supabase
+                .from('clinics')
+                .select('*')
+                .eq('status', 'مقبولة');
+
+            if (error) throw error;
+
+            grid.innerHTML = '';
+
+            if (data && data.length > 0) {
+                approvedClinics = data;
+                data.forEach((clinic) => {
+                    const div = document.createElement('div');
+                    div.className = 'item-card doc-card';
+                    div.textContent = '👨‍⚕️ ' + (clinic.doctor_name || clinic.clinic_name);
+                    div.onclick = function() { selectDoctor(clinic, div); };
+                    grid.appendChild(div);
+                });
+            }
+
+            grid.innerHTML += renderDemoCards();
+
+            if (!data || data.length === 0) {
+                grid.innerHTML += `<div style="grid-column:1/-1; text-align:center; font-size:12px; color:#94a3b8; padding:8px;">
+                    لسه مفيش عيادات حقيقية مسجلة. <a href="join-clinic.html" style="color:var(--primary);">سجّل عيادتك من هنا</a>
+                </div>`;
+            }
+        } catch (err) {
+            grid.innerHTML = renderDemoCards() +
+                `<div style="grid-column:1/-1; text-align:center; font-size:12px; color:red;">تعذر تحميل العيادات: ${err.message}</div>`;
+        }
+    }
+
+    function selectDoctor(clinic, el) {
+        chosenDoctor = clinic.doctor_name || clinic.clinic_name;
         document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
+
+        const detailsBox = document.getElementById('clinicDetails');
+        detailsBox.style.display = 'block';
+        detailsBox.innerHTML = `
+            <b>🏥 ${clinic.clinic_name}</b><br>
+            التخصص: ${clinic.specialty || 'غير محدد'}<br>
+            العنوان: ${clinic.address || 'غير محدد'}<br>
+            الهاتف: ${clinic.phone || 'غير محدد'}
+            ${clinic.notes ? '<br>ملاحظات: ' + clinic.notes : ''}
+        `;
     }
 
     function selectAnimal(type, el) {

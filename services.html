@@ -130,11 +130,9 @@
     <button class="service-btn" onclick="togglePanel('findDoctor')">ابحث عن طبيب 👨‍⚕️</button>
     <div class="panel" id="panel-findDoctor">
       <h3>الأطباء المتاحون</h3>
-      <ul class="simple-list">
-        <li>د. أحمد سامي — طب الحيوانات الأليفة</li>
-        <li>د. سارة محمود — طب الطيور والزواحف</li>
-        <li>د. محمد علي — حالات الطوارئ</li>
-      </ul>
+      <div id="doctorsList">
+        <p class="status-msg">⏳ جاري التحميل...</p>
+      </div>
       <p>اختر الطبيب من صفحة تقديم الحالة عشان تبعتله استشارتك.</p>
     </div>
 
@@ -162,7 +160,34 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function loadDoctorsList() {
+    const box = document.getElementById('doctorsList');
+    const demoItems = '<li style="opacity:0.6;">👨‍⚕️ د. أحمد سامي <span style="color:#c0392b; font-size:11px;">(تجريبي)</span></li>' +
+                       '<li style="opacity:0.6;">👩‍⚕️ د. سارة محمود <span style="color:#c0392b; font-size:11px;">(تجريبي)</span></li>' +
+                       '<li style="opacity:0.6;">👨‍⚕️ د. محمد علي <span style="color:#c0392b; font-size:11px;">(تجريبي)</span></li>';
+    try {
+      const { data, error } = await _supabase.from('clinics').select('*').eq('status', 'مقبولة');
+      if (error) throw error;
+
+      const realItems = (data && data.length > 0)
+        ? data.map(c => `<li><b>${c.doctor_name || c.clinic_name}</b> — ${c.specialty || 'عام'} (${c.clinic_name})</li>`).join('')
+        : '';
+
+      box.innerHTML = '<ul class="simple-list">' + realItems + demoItems + '</ul>';
+    } catch (err) {
+      box.innerHTML = '<ul class="simple-list">' + demoItems + '</ul>' +
+        `<p class="status-msg" style="color:#c0392b;">تعذر تحميل العيادات الحقيقية: ${err.message}</p>`;
+    }
+  }
+
+  window.addEventListener('load', loadDoctorsList);
+
   function togglePanel(name){
     document.querySelectorAll('.panel').forEach(p => {
       if(p.id === 'panel-' + name){
