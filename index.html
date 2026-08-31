@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع Vet Care البيطري 🐾</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --tag-bg: #e2e8f0;
+        }
+
+        .dark {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --border: #334155;
+            --tag-bg: #334155;
+        }
+
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: all 0.2s ease; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+
+        .container { max-width: 500px; margin: 0 auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .theme-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 20px; color: var(--text); cursor: pointer; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 15px 0; }
+        .item-card { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .item-card.active { border-color: var(--primary); background: rgba(16, 185, 129, 0.1); color: var(--primary); }
+
+        .symptoms-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 15px 0; }
+        .tag { background: var(--tag-bg); padding: 6px 10px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+        .tag:hover { background: var(--primary); color: white; }
+
+        .row { display: flex; gap: 10px; }
+        .row div { flex: 1; }
+
+        label { font-size: 13px; font-weight: bold; display: block; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); outline: none; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-main:hover { background: var(--primary-hover); }
+        .btn-emergency { background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; }
+
+        .status-box { display: none; margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(16, 185, 129, 0.15); color: var(--primary); font-weight: bold; text-align: center; }
+        .history-item { border-bottom: 1px solid var(--border); padding: 8px 0; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>🌐 منصة Vet Care</h2>
+        <div style="display:flex; gap:8px;">
+            <a href="services.html" class="theme-btn" style="text-decoration:none;">🔍 الخدمات</a>
+            <button class="theme-btn" onclick="toggleTheme()">🌙 الوضع الليلي</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📋 تقديم حالة / استشارة جديدة</h3>
+
+        <label>1. اختر الطبيب المعالج:</label>
+        <div class="cards-grid">
+            <div class="item-card doc-card" onclick="selectDoctor('د. أحمد سامي', this)">👨‍⚕️ د. أحمد</div>
+            <div class="item-card doc-card" onclick="selectDoctor('د. سارة محمود', this)">👩‍⚕️ د. سارة</div>
+            <div class="item-card doc-card" onclick="selectDoctor('د. محمد علي', this)">👨‍⚕️ د. محمد</div>
+        </div>
+
+        <label>2. نوع الحيوان:</label>
+        <div class="cards-grid">
+            <div class="item-card animal-card" onclick="selectAnimal('🐱 قطة', this)">🐱 قطة</div>
+            <div class="item-card animal-card" onclick="selectAnimal('🐶 كلب', this)">🐶 كلب</div>
+            <div class="item-card animal-card" onclick="selectAnimal('🦜 طائر', this)">🦜 طائر</div>
+            <div class="item-card animal-card" onclick="selectAnimal('🐰 أرنب', this)">🐰 أرنب</div>
+            <div class="item-card animal-card" onclick="selectAnimal('🐢 زواحف', this)">🐢 زواحف</div>
+            <div class="item-card animal-card" onclick="selectAnimal('🐾 آخر', this)">🐾 آخر</div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label>اسم صاحب الحيوان:</label>
+                <input type="text" id="owner" placeholder="مثال: أحمد">
+            </div>
+            <div>
+                <label>رقم الهاتف:</label>
+                <input type="tel" id="phone" placeholder="مثال: 21000000">
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label>اسم الحيوان:</label>
+                <input type="text" id="pet" placeholder="مثال: سيمبا">
+            </div>
+            <div>
+                <label>عمر الحيوان:</label>
+                <input type="text" id="age" placeholder="مثال: سنة وشهرين">
+            </div>
+        </div>
+
+        <label>نوع الخدمة المطلوبة:</label>
+        <select id="service">
+            <option value="استشارة أونلاين">🩺 استشارة أونلاين</option>
+            <option value="تطعيمات">💉 جدول التطعيمات</option>
+            <option value="فحص طوارئ">🚨 طوارئ عاجلة</option>
+            <option value="عناية وتنظيف">✂️ عناية وتجميل</option>
+        </select>
+
+        <label>أعراض سريعة (إضافة بنقرة):</label>
+        <div class="symptoms-tags">
+            <span class="tag" onclick="addSymptom('خمول')">➕ خمول</span>
+            <span class="tag" onclick="addSymptom('قيء')">➕ قيء</span>
+            <span class="tag" onclick="addSymptom('سخونية')">➕ سخونية</span>
+            <span class="tag" onclick="addSymptom('إسهال')">➕ إسهال</span>
+            <span class="tag" onclick="addSymptom('جرح')">➕ جرح</span>
+        </div>
+
+        <label>تفاصيل ووصف الحالة:</label>
+        <textarea id="case" rows="3" placeholder="اشرح الحالة بالتفصيل هنا..."></textarea>
+
+        <button class="btn btn-main" onclick="submitCase()">إرسال الحالة للموقع 🚀</button>
+        <a href="https://wa.me/201000000000?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care" class="btn btn-emergency" target="_blank">🚨 طوارئ واتساب مباشر</a>
+
+        <div id="status" class="status-box"></div>
+    </div>
+
+    <div class="card">
+        <h4>📋 سجل الحالات المرسلة على Vet Care:</h4>
+        <div id="historyList" style="color: grey; font-size: 13px;">لا توجد حالات مسجلة حتى الآن.</div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let chosenDoctor = '';
+    let chosenAnimal = '';
+
+    window.onload = loadHistory;
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+    }
+
+    function selectDoctor(docName, el) {
+        chosenDoctor = docName;
+        document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function selectAnimal(type, el) {
+        chosenAnimal = type;
+        document.querySelectorAll('.animal-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function addSymptom(text) {
+        const txtArea = document.getElementById('case');
+        txtArea.value += (txtArea.value ? ' - ' : '') + text;
+    }
+
+    async function submitCase() {
+        const owner = document.getElementById('owner').value;
+        const phone = document.getElementById('phone').value;
+        const pet = document.getElementById('pet').value;
+        const service = document.getElementById('service').value;
+        const caseDesc = document.getElementById('case').value;
+        const statusBox = document.getElementById('status');
+        const btn = document.querySelector('.btn-main');
+
+        if (!chosenDoctor) return alert('⚠️ اختر الطبيب المتابع أولاً!');
+        if (!chosenAnimal) return alert('⚠️ اختر نوع الحيوان!');
+        if (!owner || !caseDesc) return alert('⚠️ اكتب اسمك ووصف الحالة!');
+        if (!phone || phone.trim().length < 8) return alert('⚠️ اكتب رقم هاتف صحيح باش الطبيب يقدر يتصل بيك!');
+
+        const orderNum = 'VC-' + Math.floor(1000 + Math.random() * 9000);
+
+        btn.disabled = true;
+        btn.textContent = 'جاري الإرسال...';
+
+        const { error } = await _supabase.from('cases').insert([{
+            order_number: orderNum,
+            owner_name: owner,
+            phone: phone,
+            animal_type: chosenAnimal,
+            pet_name: pet || 'بدون اسم',
+            doctor_name: chosenDoctor,
+            service_type: service,
+            description: caseDesc,
+            status: 'قيد الانتظار'
+        }]);
+
+        btn.disabled = false;
+        btn.textContent = 'إرسال الحالة للموقع 🚀';
+
+        if (error) {
+            alert('❌ حصل خطأ في الإرسال، حاول مرة أخرى: ' + error.message);
+            return;
+        }
+
+        const newCase = {
+            id: orderNum,
+            doctor: chosenDoctor,
+            animal: chosenAnimal,
+            owner: owner,
+            phone: phone,
+            pet: pet || 'بدون اسم',
+            service: service,
+            date: new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})
+        };
+
+        saveToLocal(newCase);
+
+        statusBox.style.display = 'block';
+        statusBox.innerHTML = `✅ تم إرسال الحالة فعلاً للطبيب <b>${chosenDoctor}</b><br>رقم الطلب: <b>${orderNum}</b>`;
+
+        document.getElementById('owner').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('pet').value = '';
+        document.getElementById('case').value = '';
+    }
+
+    function saveToLocal(item) {
+        let cases = JSON.parse(localStorage.getItem('my_vet_cases') || '[]');
+        cases.unshift(item);
+        localStorage.setItem('my_vet_cases', JSON.stringify(cases));
+        loadHistory();
+    }
+
+    function loadHistory() {
+        let cases = JSON.parse(localStorage.getItem('my_vet_cases') || '[]');
+        const listDiv = document.getElementById('historyList');
+        if(cases.length === 0) return;
+
+        listDiv.innerHTML = '';
+        cases.slice(0, 4).forEach(c => {
+            listDiv.innerHTML += `
+                <div class="history-item">
+                    <b>${c.id}</b> | الطبيب: ${c.doctor} <br>
+                    ${c.animal} (${c.pet}) - <span style="color:var(--primary);">${c.service}</span> 
+                    <small style="float:left;">${c.date}</small><br>
+                    📞 ${c.owner || ''} - ${c.phone || ''}
+                </div>
+            `;
+        });
+    }
+</script>
+
+</body>
+</html>

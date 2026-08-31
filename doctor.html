@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الطبيب البيطري</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f6f8; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 10px; max-width: 800px; margin: 0 auto 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        input, button { padding: 10px; margin: 10px 0; width: 90%; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        button { background: #27ae60; color: white; border: none; font-weight: bold; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; font-size: 13px; }
+        th { background: #2c3e50; color: white; }
+        #dashboard { display: none; }
+        .tabs { display: flex; gap: 10px; max-width: 800px; margin: 0 auto 15px; }
+        .tab-btn { flex: 1; background: #dfe6e9; color: #2c3e50; width: auto; margin: 0; }
+        .tab-btn.active { background: #27ae60; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .approve-btn { background: #2980b9; width: auto; padding: 6px 10px; font-size: 12px; margin: 2px; }
+        .reject-btn { background: #c0392b; width: auto; padding: 6px 10px; font-size: 12px; margin: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="loginCard">
+        <h2>🔑 دخول الطبيب / الأدمن</h2>
+        <input type="password" id="passInput" placeholder="أدخل كلمة السر">
+        <button onclick="login()">دخول</button>
+    </div>
+
+    <div id="dashboard">
+        <div class="tabs">
+            <button class="tab-btn active" id="tabCasesBtn" onclick="switchTab('cases')">🩺 الحالات الواردة</button>
+            <button class="tab-btn" id="tabClinicsBtn" onclick="switchTab('clinics')">🏥 طلبات انضمام العيادات</button>
+        </div>
+
+        <div class="card tab-content active" id="tab-cases">
+            <h2>🩺 الحالات البيطرية الواردة</h2>
+            <button onclick="loadCases()">🔄 تحديث البيانات</button>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>الاسم</th>
+                            <th>الهاتف</th>
+                            <th>الحيوان</th>
+                            <th>الطبيب</th>
+                            <th>الخدمة</th>
+                            <th>الوصف</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="casesTable">
+                        <tr><td colspan="8">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card tab-content" id="tab-clinics">
+            <h2>🏥 طلبات انضمام العيادات</h2>
+            <button onclick="loadClinics()">🔄 تحديث البيانات</button>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم العيادة</th>
+                            <th>الطبيب المسؤول</th>
+                            <th>التخصص</th>
+                            <th>العنوان</th>
+                            <th>الهاتف</th>
+                            <th>الحالة</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clinicsTable">
+                        <tr><td colspan="7">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        function login() {
+            let pass = document.getElementById('passInput').value;
+            if(pass === '1234') {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadCases();
+                loadClinics();
+            } else {
+                alert('❌ كلمة السر غير صحيحة');
+            }
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tab-cases').classList.toggle('active', tab === 'cases');
+            document.getElementById('tab-clinics').classList.toggle('active', tab === 'clinics');
+            document.getElementById('tabCasesBtn').classList.toggle('active', tab === 'cases');
+            document.getElementById('tabClinicsBtn').classList.toggle('active', tab === 'clinics');
+        }
+
+        async function loadCases() {
+            let tbody = document.getElementById('casesTable');
+            tbody.innerHTML = '<tr><td colspan="8">⏳ جاري جلب البيانات...</td></tr>';
+
+            try {
+                const { data, error } = await _supabase.from('cases').select('*');
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8">لا توجد حالات مسجلة حتى الآن</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.reverse().forEach(c => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${c.order_number || '-'}</b></td>
+                            <td>${c.owner_name || '-'}</td>
+                            <td>${c.phone || '-'}</td>
+                            <td>${c.animal_type || '-'} ${c.pet_name ? '(' + c.pet_name + ')' : ''}</td>
+                            <td>${c.doctor_name || '-'}</td>
+                            <td>${c.service_type || '-'}</td>
+                            <td>${c.description || '-'}</td>
+                            <td><span style="color:orange">${c.status || 'قيد الانتظار'}</span></td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                alert('❌ خطأ في التحميل: ' + err.message);
+                tbody.innerHTML = `<tr><td colspan="8" style="color:red">خطأ: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function loadClinics() {
+            let tbody = document.getElementById('clinicsTable');
+            tbody.innerHTML = '<tr><td colspan="7">⏳ جاري جلب البيانات...</td></tr>';
+
+            try {
+                const { data, error } = await _supabase.from('clinics').select('*');
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7">لا توجد طلبات انضمام حتى الآن</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.reverse().forEach(c => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${c.clinic_name || '-'}</b></td>
+                            <td>${c.doctor_name || '-'}</td>
+                            <td>${c.specialty || '-'}</td>
+                            <td>${c.address || '-'}</td>
+                            <td>${c.phone || '-'}</td>
+                            <td><span style="color:orange">${c.status || 'قيد المراجعة'}</span></td>
+                            <td>
+                                <button class="approve-btn" onclick="updateClinicStatus(${c.id}, 'مقبولة')">قبول</button>
+                                <button class="reject-btn" onclick="updateClinicStatus(${c.id}, 'مرفوضة')">رفض</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                alert('❌ خطأ في التحميل: ' + err.message);
+                tbody.innerHTML = `<tr><td colspan="7" style="color:red">خطأ: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function updateClinicStatus(id, newStatus) {
+            const { error } = await _supabase.from('clinics').update({ status: newStatus }).eq('id', id);
+            if (error) {
+                alert('❌ خطأ في التحديث: ' + error.message);
+                return;
+            }
+            loadClinics();
+        }
+    </script>
+</body>
+</html>
