@@ -10,7 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 body{
     margin:0;
     font-family:Arial,sans-serif;
@@ -102,7 +101,6 @@ th,td{
     border-bottom:1px solid #eee;
     text-align:right;
 }
-
 </style>
 </head>
 
@@ -111,55 +109,35 @@ th,td{
 <div class="container">
 
 <!-- LOGIN -->
-
 <div id="loginBox" class="card">
 
 <h2>🔐 دخول الأدمن</h2>
 
-<input
-id="email"
-type="email"
-placeholder="الإيميل">
+<input id="email" type="email" placeholder="الإيميل">
 
-<input
-id="password"
-type="password"
-placeholder="الباسورد">
+<input id="password" type="password" placeholder="الباسورد">
 
-<button id="loginButton">
-دخول
-</button>
+<button id="loginButton">دخول</button>
 
-<button id="forgotButton">
-نسيت الباسورد؟
-</button>
+<button id="forgotButton">نسيت الباسورد؟</button>
 
 <div id="loginMessage"></div>
 
 </div>
 
 
-<!-- RESET PASSWORD -->
-
+<!-- RESET -->
 <div id="resetBox" class="card hidden">
 
 <h2>🔑 تغيير الباسورد</h2>
 
 <p>اكتب الباسورد الجديد.</p>
 
-<input
-id="newPassword"
-type="password"
-placeholder="الباسورد الجديد">
+<input id="newPassword" type="password" placeholder="الباسورد الجديد">
 
-<input
-id="confirmPassword"
-type="password"
-placeholder="تأكيد الباسورد">
+<input id="confirmPassword" type="password" placeholder="تأكيد الباسورد">
 
-<button id="updateButton">
-حفظ الباسورد الجديد
-</button>
+<button id="updateButton">حفظ الباسورد الجديد</button>
 
 <div id="resetMessage"></div>
 
@@ -167,7 +145,6 @@ placeholder="تأكيد الباسورد">
 
 
 <!-- DASHBOARD -->
-
 <div id="dashboard" class="hidden">
 
 <div class="card">
@@ -176,48 +153,33 @@ placeholder="تأكيد الباسورد">
 
 <p>أهلاً بيك يا Admin 👑</p>
 
-<button
-id="logoutButton"
-class="logout">
+<button id="logoutButton" class="logout">
 تسجيل خروج
 </button>
 
 </div>
 
-
 <div class="card stats">
 
 <div class="stat">
-
 <h2 id="casesCount">0</h2>
-
 <p>الحالات</p>
-
 </div>
 
-
 <div class="stat">
-
 <h2 id="clinicsCount">0</h2>
-
 <p>العيادات</p>
-
 </div>
 
-
 <div class="stat">
-
 <h2 id="doctorsCount">0</h2>
-
 <p>الدكاترة</p>
-
 </div>
 
 </div>
 
 
 <!-- CASES -->
-
 <div class="card">
 
 <h2>📋 الحالات</h2>
@@ -227,9 +189,7 @@ class="logout">
 <table>
 
 <thead>
-
 <tr>
-
 <th>رقم الطلب</th>
 <th>المالك</th>
 <th>التليفون</th>
@@ -237,9 +197,7 @@ class="logout">
 <th>الدكتور</th>
 <th>الخدمة</th>
 <th>الحالة</th>
-
 </tr>
-
 </thead>
 
 <tbody id="casesTable"></tbody>
@@ -252,7 +210,6 @@ class="logout">
 
 
 <!-- CLINICS -->
-
 <div class="card">
 
 <h2>🏥 العيادات</h2>
@@ -262,16 +219,12 @@ class="logout">
 <table>
 
 <thead>
-
 <tr>
-
 <th>اسم العيادة</th>
 <th>المدينة</th>
 <th>الدكتور</th>
 <th>الحالة</th>
-
 </tr>
-
 </thead>
 
 <tbody id="clinicsTable"></tbody>
@@ -319,42 +272,29 @@ document.getElementById("password").value;
 const message =
 document.getElementById("loginMessage");
 
-
 if(!email || !password){
 
 message.className="message error";
-
-message.innerText=
-"اكتب الإيميل والباسورد الأول.";
-
+message.innerText="اكتب الإيميل والباسورد الأول.";
 return;
 
 }
 
-
 const result =
 await supabase.auth.signInWithPassword({
-
 email:email,
-
 password:password
-
 });
-
 
 if(result.error){
 
 message.className="message error";
-
-message.innerText=
-"الإيميل أو الباسورد غلط.";
-
+message.innerText="الإيميل أو الباسورد غلط.";
 return;
 
 }
 
-
-checkAdmin();
+await checkAdmin();
 
 });
 
@@ -371,48 +311,33 @@ document.getElementById("email").value.trim();
 const message =
 document.getElementById("loginMessage");
 
-
 if(!email){
 
 message.className="message error";
-
-message.innerText=
-"اكتب الإيميل الأول.";
-
+message.innerText="اكتب الإيميل الأول.";
 return;
 
 }
 
-
 const result =
 await supabase.auth.resetPasswordForEmail(
-
 email,
-
 {
-
 redirectTo:
 "https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
-
 }
-
 );
-
 
 if(result.error){
 
 message.className="message error";
-
 message.innerText=
 "حصل خطأ: "+result.error.message;
-
 return;
 
 }
 
-
 message.className="message success";
-
 message.innerText=
 "تم إرسال رابط تغيير الباسورد على الإيميل ✅";
 
@@ -423,38 +348,52 @@ message.innerText=
 
 async function checkAdmin(){
 
-const result =
+const userResult =
 await supabase.auth.getUser();
 
 const user =
-result.data.user;
-
+userResult.data.user;
 
 if(!user){
 
 showLogin();
+return;
+
+}
+
+
+/*
+نبحث باستخدام الإيميل + role
+بدل الاعتماد على id
+*/
+
+const profileResult =
+await supabase
+.from("profiles")
+.select("email,role")
+.eq("email",user.email)
+.eq("role","admin")
+.maybeSingle();
+
+
+if(profileResult.error){
+
+console.log(profileResult.error);
+
+await supabase.auth.signOut();
+
+showLogin();
+
+alert(
+"حصل خطأ أثناء التحقق من حساب الأدمن."
+);
 
 return;
 
 }
 
 
-const profileResult =
-await supabase
-
-.from("profiles")
-
-.select("role")
-
-.eq("id",user.id)
-
-.single();
-
-
-if(
-profileResult.error ||
-!profileResult.data
-){
+if(!profileResult.data){
 
 await supabase.auth.signOut();
 
@@ -469,22 +408,7 @@ return;
 }
 
 
-if(
-profileResult.data.role !== "admin"
-){
-
-await supabase.auth.signOut();
-
-showLogin();
-
-alert(
-"هذا الحساب ليس Admin."
-);
-
-return;
-
-}
-
+/* ADMIN FOUND */
 
 document
 .getElementById("loginBox")
@@ -497,7 +421,6 @@ document
 document
 .getElementById("dashboard")
 .classList.remove("hidden");
-
 
 loadDashboard();
 
@@ -519,61 +442,43 @@ document.getElementById("confirmPassword").value;
 const message =
 document.getElementById("resetMessage");
 
-
 if(password.length < 6){
 
 message.className="message error";
-
 message.innerText=
 "الباسورد لازم يكون 6 حروف على الأقل.";
-
 return;
 
 }
-
 
 if(password !== confirm){
 
 message.className="message error";
-
 message.innerText=
 "الباسوردين مش متطابقين.";
-
 return;
 
 }
 
-
 const result =
 await supabase.auth.updateUser({
-
 password:password
-
 });
-
 
 if(result.error){
 
 message.className="message error";
-
 message.innerText=
 "حصل خطأ: "+result.error.message;
-
 return;
 
 }
 
-
 message.className="message success";
-
 message.innerText=
 "تم تغيير الباسورد بنجاح ✅";
 
-
-setTimeout(
-checkAdmin,
-1000
-);
+setTimeout(checkAdmin,1000);
 
 });
 
@@ -638,11 +543,9 @@ document
 
 async function loadDashboard(){
 
-loadCases();
-
-loadClinics();
-
-loadDoctors();
+await loadCases();
+await loadClinics();
+await loadDoctors();
 
 }
 
@@ -660,34 +563,27 @@ await supabase
 {ascending:false}
 );
 
-
 if(result.error){
 
 console.log(result.error);
-
 return;
 
 }
 
-
 const data =
 result.data || [];
-
 
 document.getElementById(
 "casesCount"
 ).innerText =
 data.length;
 
-
 const table =
 document.getElementById(
 "casesTable"
 );
 
-
 table.innerHTML="";
-
 
 data.forEach(function(c){
 
@@ -731,34 +627,27 @@ await supabase
 {ascending:false}
 );
 
-
 if(result.error){
 
 console.log(result.error);
-
 return;
 
 }
 
-
 const data =
 result.data || [];
-
 
 document.getElementById(
 "clinicsCount"
 ).innerText =
 data.length;
 
-
 const table =
 document.getElementById(
 "clinicsTable"
 );
 
-
 table.innerHTML="";
-
 
 data.forEach(function(c){
 
@@ -796,15 +685,12 @@ head:true
 })
 .eq("role","doctor");
 
-
 if(result.error){
 
 console.log(result.error);
-
 return;
 
 }
-
 
 document.getElementById(
 "doctorsCount"
@@ -818,32 +704,12 @@ result.count || 0;
 
 async function start(){
 
-const hash =
-window.location.hash;
-
-
-if(hash.includes("type=recovery")){
-
-document
-.getElementById("loginBox")
-.classList.add("hidden");
-
-document
-.getElementById("resetBox")
-.classList.remove("hidden");
-
-return;
-
-}
-
-
 const result =
 await supabase.auth.getSession();
 
-
 if(result.data.session){
 
-checkAdmin();
+await checkAdmin();
 
 }else{
 
@@ -853,7 +719,6 @@ showLogin();
 
 }
 
-
 start();
 
 });
@@ -861,5 +726,4 @@ start();
 </script>
 
 </body>
-
-    </html>
+</html>
