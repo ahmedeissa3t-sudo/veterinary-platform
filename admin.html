@@ -1,78 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>VetCare Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f7fb;
-  color:#222;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6f8;
+    color:#222;
 }
+
 .container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
 }
+
 .card{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
+
 input,button{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
-  font-size:16px;
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    border-radius:8px;
+    font-size:16px;
 }
+
+input{
+    border:1px solid #ddd;
+}
+
 button{
-  background:#1769aa;
-  color:white;
-  border:0;
-  cursor:pointer;
+    border:0;
+    background:#1769aa;
+    color:white;
 }
+
 .logout{
-  background:#d32f2f;
+    background:#d32f2f;
 }
-.stat{
-  display:inline-block;
-  width:30%;
-  margin:1%;
-  text-align:center;
+
+.hidden{
+    display:none;
 }
-.stat h2{
-  font-size:30px;
-  margin:10px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:15px;
-  overflow-x:auto;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #eee;
-  text-align:right;
-}
-.hidden{display:none}
+
 .message{
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
+    margin-top:12px;
+    padding:10px;
+    border-radius:8px;
 }
-.error{background:#ffe5e5;color:#b00000}
-.success{background:#e5ffe9;color:#08752a}
+
+.error{
+    background:#ffe5e5;
+    color:#b00000;
+}
+
+.success{
+    background:#e5ffe9;
+    color:#08752a;
+}
+
+.stats{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.stat{
+    flex:1;
+    min-width:150px;
+    text-align:center;
+    background:#f8fafc;
+    padding:15px;
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+    text-align:right;
+}
 </style>
 </head>
 
@@ -82,24 +107,630 @@ th,td{
 
 <!-- LOGIN -->
 <div id="loginBox" class="card">
-  <h2>🔐 دخول الأدمن</h2>
 
-  <input id="email" type="email" placeholder="الإيميل">
+<h2>🔐 دخول الأدمن</h2>
 
-  <input id="password" type="password" placeholder="الباسورد">
+<input
+id="email"
+type="email"
+placeholder="الإيميل">
 
-  <button onclick="login()">دخول</button>
+<input
+id="password"
+type="password"
+placeholder="الباسورد">
 
-  <button onclick="forgotPassword()">
-    نسيت الباسورد؟
-  </button>
+<button onclick="login()">
+دخول
+</button>
 
-  <div id="loginMessage"></div>
+<button onclick="forgotPassword()">
+نسيت الباسورد؟
+</button>
+
+<div id="loginMessage"></div>
+
 </div>
 
 
 <!-- RESET PASSWORD -->
 <div id="resetBox" class="card hidden">
-  <h2>🔑 تغيير الباسورد</h2>
 
- 
+<h2>🔑 تغيير الباسورد</h2>
+
+<p>
+اكتب الباسورد الجديد.
+</p>
+
+<input
+id="newPassword"
+type="password"
+placeholder="الباسورد الجديد">
+
+<input
+id="confirmPassword"
+type="password"
+placeholder="تأكيد الباسورد">
+
+<button onclick="updatePassword()">
+حفظ الباسورد الجديد
+</button>
+
+<div id="resetMessage"></div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+
+<div class="card">
+
+<h1>🐾 VetCare Admin Dashboard</h1>
+
+<p>
+أهلاً بيك يا Admin 👑
+</p>
+
+<button
+class="logout"
+onclick="logout()">
+تسجيل خروج
+</button>
+
+</div>
+
+
+<div class="card stats">
+
+<div class="stat">
+<h2 id="casesCount">0</h2>
+<p>الحالات</p>
+</div>
+
+<div class="stat">
+<h2 id="clinicsCount">0</h2>
+<p>العيادات</p>
+</div>
+
+<div class="stat">
+<h2 id="doctorsCount">0</h2>
+<p>الدكاترة</p>
+</div>
+
+</div>
+
+
+<!-- CASES -->
+
+<div class="card">
+
+<h2>📋 الحالات</h2>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+<th>رقم الطلب</th>
+<th>المالك</th>
+<th>التليفون</th>
+<th>الحيوان</th>
+<th>الدكتور</th>
+<th>الخدمة</th>
+<th>الحالة</th>
+</tr>
+
+</thead>
+
+<tbody id="casesTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- CLINICS -->
+
+<div class="card">
+
+<h2>🏥 العيادات</h2>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+<th>اسم العيادة</th>
+<th>المدينة</th>
+<th>الدكتور</th>
+<th>الحالة</th>
+</tr>
+
+</thead>
+
+<tbody id="clinicsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://tuyvjozypjcvgpgkfoby.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit";
+
+const supabase =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* LOGIN */
+
+async function login(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+const message =
+document.getElementById("loginMessage");
+
+const result =
+await supabase.auth.signInWithPassword({
+email:email,
+password:password
+});
+
+if(result.error){
+
+message.className="message error";
+
+message.innerText=
+"الإيميل أو الباسورد غلط.";
+
+return;
+}
+
+checkAdmin();
+
+}
+
+
+/* CHECK ADMIN */
+
+async function checkAdmin(){
+
+const result =
+await supabase.auth.getUser();
+
+const user=result.data.user;
+
+if(!user){
+
+showLogin();
+
+return;
+}
+
+const profileResult =
+await supabase
+.from("profiles")
+.select("role")
+.eq("id",user.id)
+.single();
+
+if(
+profileResult.error ||
+!profileResult.data
+){
+
+await supabase.auth.signOut();
+
+showLogin();
+
+alert("لم يتم العثور على حساب الأدمن.");
+
+return;
+}
+
+if(
+profileResult.data.role !== "admin"
+){
+
+await supabase.auth.signOut();
+
+showLogin();
+
+alert("هذا الحساب ليس Admin.");
+
+return;
+}
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList.add("hidden");
+
+document
+.getElementById("dashboard")
+.classList.remove("hidden");
+
+loadDashboard();
+
+}
+
+
+/* FORGOT PASSWORD */
+
+async function forgotPassword(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const message =
+document.getElementById("loginMessage");
+
+if(!email){
+
+message.className="message error";
+
+message.innerText=
+"اكتب الإيميل الأول.";
+
+return;
+}
+
+const result =
+await supabase.auth.resetPasswordForEmail(
+email,
+{
+redirectTo:
+"https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
+}
+);
+
+if(result.error){
+
+message.className="message error";
+
+message.innerText=
+"حصل خطأ: "+result.error.message;
+
+return;
+}
+
+message.className="message success";
+
+message.innerText=
+"تم إرسال رابط تغيير الباسورد على الإيميل ✅";
+
+}
+
+
+/* SHOW RESET */
+
+function showReset(){
+
+document
+.getElementById("loginBox")
+.classList.add("hidden");
+
+document
+.getElementById("dashboard")
+.classList.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList.remove("hidden");
+
+}
+
+
+/* UPDATE PASSWORD */
+
+async function updatePassword(){
+
+const password =
+document.getElementById("newPassword").value;
+
+const confirm =
+document.getElementById("confirmPassword").value;
+
+const message =
+document.getElementById("resetMessage");
+
+if(password.length < 6){
+
+message.className="message error";
+
+message.innerText=
+"الباسورد لازم يكون 6 حروف على الأقل.";
+
+return;
+}
+
+if(password !== confirm){
+
+message.className="message error";
+
+message.innerText=
+"الباسوردين مش متطابقين.";
+
+return;
+}
+
+const result =
+await supabase.auth.updateUser({
+password:password
+});
+
+if(result.error){
+
+message.className="message error";
+
+message.innerText=
+"حصل خطأ: "+result.error.message;
+
+return;
+}
+
+message.className="message success";
+
+message.innerText=
+"تم تغيير الباسورد بنجاح ✅";
+
+setTimeout(
+function(){
+checkAdmin();
+},
+1000
+);
+
+}
+
+
+/* DASHBOARD */
+
+async function loadDashboard(){
+
+loadCases();
+
+loadClinics();
+
+loadDoctors();
+
+}
+
+
+/* CASES */
+
+async function loadCases(){
+
+const result =
+await supabase
+.from("cases")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+}
+
+const data=result.data || [];
+
+document.getElementById(
+"casesCount"
+).innerText=data.length;
+
+const table =
+document.getElementById(
+"casesTable"
+);
+
+table.innerHTML="";
+
+data.forEach(function(c){
+
+table.innerHTML += `
+<tr>
+<td>${c.order_number || "-"}</td>
+<td>${c.owner_name || "-"}</td>
+<td>${c.phone || "-"}</td>
+<td>${c.animal_type || "-"}</td>
+<td>${c.doctor_name || "-"}</td>
+<td>${c.service_type || "-"}</td>
+<td>${c.status || "-"}</td>
+</tr>
+`;
+
+});
+
+}
+
+
+/* CLINICS */
+
+async function loadClinics(){
+
+const result =
+await supabase
+.from("clinics")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+}
+
+const data=result.data || [];
+
+document.getElementById(
+"clinicsCount"
+).innerText=data.length;
+
+const table =
+document.getElementById(
+"clinicsTable"
+);
+
+table.innerHTML="";
+
+data.forEach(function(c){
+
+table.innerHTML += `
+<tr>
+<td>${c.clinic_name || "-"}</td>
+<td>${c.city || "-"}</td>
+<td>${c.doctor_name || "-"}</td>
+<td>${c.status || "-"}</td>
+</tr>
+`;
+
+});
+
+}
+
+
+/* DOCTORS */
+
+async function loadDoctors(){
+
+const result =
+await supabase
+.from("profiles")
+.select("*",{count:"exact",head:true})
+.eq("role","doctor");
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+}
+
+document.getElementById(
+"doctorsCount"
+).innerText=result.count || 0;
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+await supabase.auth.signOut();
+
+showLogin();
+
+}
+
+
+/* SHOW LOGIN */
+
+function showLogin(){
+
+document
+.getElementById("dashboard")
+.classList.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList.add("hidden");
+
+document
+.getElementById("loginBox")
+.classList.remove("hidden");
+
+}
+
+
+/* PASSWORD RECOVERY */
+
+supabase.auth.onAuthStateChange(
+function(event,session){
+
+if(event==="PASSWORD_RECOVERY"){
+
+showReset();
+
+}
+
+}
+);
+
+
+/* PAGE LOAD */
+
+window.addEventListener(
+"load",
+async function(){
+
+const hash =
+window.location.hash;
+
+if(
+hash.includes("type=recovery")
+){
+
+showReset();
+
+return;
+
+}
+
+const result =
+await supabase.auth.getSession();
+
+if(result.data.session){
+
+checkAdmin();
+
+}else{
+
+showLogin();
+
+}
+
+});
+
+</script>
+
+</body>
+  </html>
