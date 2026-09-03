@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 body{
     margin:0;
     font-family:Arial,sans-serif;
@@ -100,6 +102,7 @@ th,td{
     border-bottom:1px solid #eee;
     text-align:right;
 }
+
 </style>
 </head>
 
@@ -108,17 +111,28 @@ th,td{
 <div class="container">
 
 <!-- LOGIN -->
+
 <div id="loginBox" class="card">
 
 <h2>🔐 دخول الأدمن</h2>
 
-<input id="email" type="email" placeholder="الإيميل">
+<input
+id="email"
+type="email"
+placeholder="الإيميل">
 
-<input id="password" type="password" placeholder="الباسورد">
+<input
+id="password"
+type="password"
+placeholder="الباسورد">
 
-<button id="loginButton">دخول</button>
+<button id="loginButton">
+دخول
+</button>
 
-<button id="forgotButton">نسيت الباسورد؟</button>
+<button id="forgotButton">
+نسيت الباسورد؟
+</button>
 
 <div id="loginMessage"></div>
 
@@ -126,17 +140,26 @@ th,td{
 
 
 <!-- RESET PASSWORD -->
+
 <div id="resetBox" class="card hidden">
 
 <h2>🔑 تغيير الباسورد</h2>
 
 <p>اكتب الباسورد الجديد.</p>
 
-<input id="newPassword" type="password" placeholder="الباسورد الجديد">
+<input
+id="newPassword"
+type="password"
+placeholder="الباسورد الجديد">
 
-<input id="confirmPassword" type="password" placeholder="تأكيد الباسورد">
+<input
+id="confirmPassword"
+type="password"
+placeholder="تأكيد الباسورد">
 
-<button id="updateButton">حفظ الباسورد الجديد</button>
+<button id="updateButton">
+حفظ الباسورد الجديد
+</button>
 
 <div id="resetMessage"></div>
 
@@ -144,6 +167,7 @@ th,td{
 
 
 <!-- DASHBOARD -->
+
 <div id="dashboard" class="hidden">
 
 <div class="card">
@@ -152,7 +176,11 @@ th,td{
 
 <p>أهلاً بيك يا Admin 👑</p>
 
-<button id="logoutButton" class="logout">تسجيل خروج</button>
+<button
+id="logoutButton"
+class="logout">
+تسجيل خروج
+</button>
 
 </div>
 
@@ -160,22 +188,35 @@ th,td{
 <div class="card stats">
 
 <div class="stat">
+
 <h2 id="casesCount">0</h2>
+
 <p>الحالات</p>
+
 </div>
 
+
 <div class="stat">
+
 <h2 id="clinicsCount">0</h2>
+
 <p>العيادات</p>
+
 </div>
+
 
 <div class="stat">
+
 <h2 id="doctorsCount">0</h2>
+
 <p>الدكاترة</p>
-</div>
 
 </div>
 
+</div>
+
+
+<!-- CASES -->
 
 <div class="card">
 
@@ -186,7 +227,9 @@ th,td{
 <table>
 
 <thead>
+
 <tr>
+
 <th>رقم الطلب</th>
 <th>المالك</th>
 <th>التليفون</th>
@@ -194,7 +237,9 @@ th,td{
 <th>الدكتور</th>
 <th>الخدمة</th>
 <th>الحالة</th>
+
 </tr>
+
 </thead>
 
 <tbody id="casesTable"></tbody>
@@ -206,6 +251,8 @@ th,td{
 </div>
 
 
+<!-- CLINICS -->
+
 <div class="card">
 
 <h2>🏥 العيادات</h2>
@@ -215,12 +262,16 @@ th,td{
 <table>
 
 <thead>
+
 <tr>
+
 <th>اسم العيادة</th>
 <th>المدينة</th>
 <th>الدكتور</th>
 <th>الحالة</th>
+
 </tr>
+
 </thead>
 
 <tbody id="clinicsTable"></tbody>
@@ -238,13 +289,15 @@ th,td{
 
 <script>
 
+document.addEventListener("DOMContentLoaded", function(){
+
 const SUPABASE_URL =
 "https://tuyvjozypjcvgpgkfoby.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit";
 
-const supabaseClient =
+const supabase =
 window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
@@ -253,9 +306,9 @@ SUPABASE_KEY
 
 /* LOGIN */
 
-document.getElementById("loginButton").addEventListener("click", login);
-
-async function login(){
+document
+.getElementById("loginButton")
+.addEventListener("click", async function(){
 
 const email =
 document.getElementById("email").value.trim();
@@ -266,79 +319,172 @@ document.getElementById("password").value;
 const message =
 document.getElementById("loginMessage");
 
+
 if(!email || !password){
 
 message.className="message error";
-message.innerText="اكتب الإيميل والباسورد الأول.";
+
+message.innerText=
+"اكتب الإيميل والباسورد الأول.";
+
 return;
 
 }
 
-const { data, error } =
-await supabaseClient.auth.signInWithPassword({
+
+const result =
+await supabase.auth.signInWithPassword({
+
 email:email,
+
 password:password
+
 });
 
-if(error){
+
+if(result.error){
 
 message.className="message error";
-message.innerText="الإيميل أو الباسورد غلط.";
+
+message.innerText=
+"الإيميل أو الباسورد غلط.";
+
 return;
 
 }
 
-await checkAdmin();
+
+checkAdmin();
+
+});
+
+
+/* FORGOT PASSWORD */
+
+document
+.getElementById("forgotButton")
+.addEventListener("click", async function(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const message =
+document.getElementById("loginMessage");
+
+
+if(!email){
+
+message.className="message error";
+
+message.innerText=
+"اكتب الإيميل الأول.";
+
+return;
 
 }
+
+
+const result =
+await supabase.auth.resetPasswordForEmail(
+
+email,
+
+{
+
+redirectTo:
+"https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
+
+}
+
+);
+
+
+if(result.error){
+
+message.className="message error";
+
+message.innerText=
+"حصل خطأ: "+result.error.message;
+
+return;
+
+}
+
+
+message.className="message success";
+
+message.innerText=
+"تم إرسال رابط تغيير الباسورد على الإيميل ✅";
+
+});
 
 
 /* CHECK ADMIN */
 
 async function checkAdmin(){
 
-const { data, error } =
-await supabaseClient.auth.getUser();
+const result =
+await supabase.auth.getUser();
 
-if(error || !data.user){
+const user =
+result.data.user;
+
+
+if(!user){
 
 showLogin();
+
 return;
 
 }
 
-const user = data.user;
 
-const { data: profile, error: profileError } =
-await supabaseClient
+const profileResult =
+await supabase
+
 .from("profiles")
+
 .select("role")
-.eq("id", user.id)
+
+.eq("id",user.id)
+
 .single();
 
-if(profileError || !profile){
 
-await supabaseClient.auth.signOut();
+if(
+profileResult.error ||
+!profileResult.data
+){
+
+await supabase.auth.signOut();
 
 showLogin();
 
-alert("لم يتم العثور على حساب الأدمن.");
+alert(
+"لم يتم العثور على حساب الأدمن."
+);
 
 return;
 
 }
 
-if(profile.role !== "admin"){
 
-await supabaseClient.auth.signOut();
+if(
+profileResult.data.role !== "admin"
+){
+
+await supabase.auth.signOut();
 
 showLogin();
 
-alert("هذا الحساب ليس Admin.");
+alert(
+"هذا الحساب ليس Admin."
+);
 
 return;
 
 }
+
 
 document
 .getElementById("loginBox")
@@ -352,64 +498,17 @@ document
 .getElementById("dashboard")
 .classList.remove("hidden");
 
+
 loadDashboard();
 
 }
 
 
-/* FORGOT PASSWORD */
-
-document
-.getElementById("forgotButton")
-.addEventListener("click", forgotPassword);
-
-async function forgotPassword(){
-
-const email =
-document.getElementById("email").value.trim();
-
-const message =
-document.getElementById("loginMessage");
-
-if(!email){
-
-message.className="message error";
-message.innerText="اكتب الإيميل الأول.";
-return;
-
-}
-
-const { error } =
-await supabaseClient.auth.resetPasswordForEmail(
-email,
-{
-redirectTo:
-"https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
-}
-);
-
-if(error){
-
-message.className="message error";
-message.innerText="حصل خطأ: " + error.message;
-return;
-
-}
-
-message.className="message success";
-message.innerText=
-"تم إرسال رابط تغيير الباسورد على الإيميل ✅";
-
-}
-
-
-/* RESET PASSWORD */
+/* UPDATE PASSWORD */
 
 document
 .getElementById("updateButton")
-.addEventListener("click", updatePassword);
-
-async function updatePassword(){
+.addEventListener("click", async function(){
 
 const password =
 document.getElementById("newPassword").value;
@@ -420,9 +519,11 @@ document.getElementById("confirmPassword").value;
 const message =
 document.getElementById("resetMessage");
 
+
 if(password.length < 6){
 
 message.className="message error";
+
 message.innerText=
 "الباسورد لازم يكون 6 حروف على الأقل.";
 
@@ -430,9 +531,11 @@ return;
 
 }
 
+
 if(password !== confirm){
 
 message.className="message error";
+
 message.innerText=
 "الباسوردين مش متطابقين.";
 
@@ -440,166 +543,52 @@ return;
 
 }
 
-const { error } =
-await supabaseClient.auth.updateUser({
+
+const result =
+await supabase.auth.updateUser({
+
 password:password
+
 });
 
-if(error){
+
+if(result.error){
 
 message.className="message error";
+
 message.innerText=
-"حصل خطأ: " + error.message;
+"حصل خطأ: "+result.error.message;
 
 return;
 
 }
 
+
 message.className="message success";
+
 message.innerText=
 "تم تغيير الباسورد بنجاح ✅";
 
-setTimeout(checkAdmin,1000);
 
-}
-
-
-/* DASHBOARD */
-
-async function loadDashboard(){
-
-await loadCases();
-await loadClinics();
-await loadDoctors();
-
-}
-
-
-/* CASES */
-
-async function loadCases(){
-
-const { data, error } =
-await supabaseClient
-.from("cases")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-
-console.log(error);
-return;
-
-}
-
-const cases = data || [];
-
-document.getElementById("casesCount").innerText =
-cases.length;
-
-const table =
-document.getElementById("casesTable");
-
-table.innerHTML="";
-
-cases.forEach(function(c){
-
-table.innerHTML += `
-<tr>
-<td>${c.order_number || "-"}</td>
-<td>${c.owner_name || "-"}</td>
-<td>${c.phone || "-"}</td>
-<td>${c.animal_type || "-"}</td>
-<td>${c.doctor_name || "-"}</td>
-<td>${c.service_type || "-"}</td>
-<td>${c.status || "-"}</td>
-</tr>
-`;
+setTimeout(
+checkAdmin,
+1000
+);
 
 });
-
-}
-
-
-/* CLINICS */
-
-async function loadClinics(){
-
-const { data, error } =
-await supabaseClient
-.from("clinics")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){
-
-console.log(error);
-return;
-
-}
-
-const clinics = data || [];
-
-document.getElementById("clinicsCount").innerText =
-clinics.length;
-
-const table =
-document.getElementById("clinicsTable");
-
-table.innerHTML="";
-
-clinics.forEach(function(c){
-
-table.innerHTML += `
-<tr>
-<td>${c.clinic_name || "-"}</td>
-<td>${c.city || "-"}</td>
-<td>${c.doctor_name || "-"}</td>
-<td>${c.status || "-"}</td>
-</tr>
-`;
-
-});
-
-}
-
-
-/* DOCTORS */
-
-async function loadDoctors(){
-
-const { count, error } =
-await supabaseClient
-.from("profiles")
-.select("*",{count:"exact",head:true})
-.eq("role","doctor");
-
-if(error){
-
-console.log(error);
-return;
-
-}
-
-document.getElementById("doctorsCount").innerText =
-count || 0;
-
-}
 
 
 /* LOGOUT */
 
 document
 .getElementById("logoutButton")
-.addEventListener("click", logout);
+.addEventListener("click", async function(){
 
-async function logout(){
-
-await supabaseClient.auth.signOut();
+await supabase.auth.signOut();
 
 showLogin();
 
-}
+});
 
 
 /* SHOW LOGIN */
@@ -623,8 +612,8 @@ document
 
 /* PASSWORD RECOVERY */
 
-supabaseClient.auth.onAuthStateChange(
-function(event,session){
+supabase.auth.onAuthStateChange(
+function(event){
 
 if(event === "PASSWORD_RECOVERY"){
 
@@ -645,11 +634,193 @@ document
 });
 
 
+/* DASHBOARD */
+
+async function loadDashboard(){
+
+loadCases();
+
+loadClinics();
+
+loadDoctors();
+
+}
+
+
+/* CASES */
+
+async function loadCases(){
+
+const result =
+await supabase
+.from("cases")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
+}
+
+
+const data =
+result.data || [];
+
+
+document.getElementById(
+"casesCount"
+).innerText =
+data.length;
+
+
+const table =
+document.getElementById(
+"casesTable"
+);
+
+
+table.innerHTML="";
+
+
+data.forEach(function(c){
+
+table.innerHTML += `
+
+<tr>
+
+<td>${c.order_number || "-"}</td>
+
+<td>${c.owner_name || "-"}</td>
+
+<td>${c.phone || "-"}</td>
+
+<td>${c.animal_type || "-"}</td>
+
+<td>${c.doctor_name || "-"}</td>
+
+<td>${c.service_type || "-"}</td>
+
+<td>${c.status || "-"}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* CLINICS */
+
+async function loadClinics(){
+
+const result =
+await supabase
+.from("clinics")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
+}
+
+
+const data =
+result.data || [];
+
+
+document.getElementById(
+"clinicsCount"
+).innerText =
+data.length;
+
+
+const table =
+document.getElementById(
+"clinicsTable"
+);
+
+
+table.innerHTML="";
+
+
+data.forEach(function(c){
+
+table.innerHTML += `
+
+<tr>
+
+<td>${c.clinic_name || "-"}</td>
+
+<td>${c.city || "-"}</td>
+
+<td>${c.doctor_name || "-"}</td>
+
+<td>${c.status || "-"}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* DOCTORS */
+
+async function loadDoctors(){
+
+const result =
+await supabase
+.from("profiles")
+.select("*",{
+count:"exact",
+head:true
+})
+.eq("role","doctor");
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
+}
+
+
+document.getElementById(
+"doctorsCount"
+).innerText =
+result.count || 0;
+
+}
+
+
 /* PAGE LOAD */
 
-window.addEventListener("load", async function(){
+async function start(){
 
-const hash = window.location.hash;
+const hash =
+window.location.hash;
+
 
 if(hash.includes("type=recovery")){
 
@@ -665,12 +836,14 @@ return;
 
 }
 
-const { data } =
-await supabaseClient.auth.getSession();
 
-if(data.session){
+const result =
+await supabase.auth.getSession();
 
-await checkAdmin();
+
+if(result.data.session){
+
+checkAdmin();
 
 }else{
 
@@ -678,9 +851,15 @@ showLogin();
 
 }
 
+}
+
+
+start();
+
 });
 
 </script>
 
 </body>
+
     </html>
