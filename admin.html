@@ -1,1 +1,573 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vet Care - Admin Dashboard</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .header {
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .login {
+            max-width: 450px;
+            margin: 60px auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #10b981;
+            color: white;
+            width: 100%;
+        }
+
+        .danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .logout {
+            background: #334155;
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,.05);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 30px;
+            margin-top: 8px;
+            color: #10b981;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: right;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+
+        .status {
+            padding: 5px 8px;
+            border-radius: 8px;
+            background: #e2e8f0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            .table-wrap {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="loginScreen" class="card login">
+
+    <h2>🔐 Vet Care Admin</h2>
+
+    <p>سجل الدخول بحساب الأدمن الخاص بك.</p>
+
+    <input
+        type="email"
+        id="email"
+        placeholder="البريد الإلكتروني"
+    >
+
+    <input
+        type="password"
+        id="password"
+        placeholder="كلمة المرور"
+    >
+
+    <button class="primary" onclick="login()">
+        تسجيل الدخول
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+</div>
+
+
+<div id="dashboard" class="hidden">
+
+    <div class="header">
+        <h1>👑 Vet Care Admin Dashboard</h1>
+        <p id="adminName"></p>
+
+        <button class="logout" onclick="logout()">
+            تسجيل الخروج
+        </button>
+    </div>
+
+    <div class="container">
+
+        <div class="stats">
+
+            <div class="stat">
+                👨‍⚕️ الدكاترة
+                <strong id="doctorsCount">0</strong>
+            </div>
+
+            <div class="stat">
+                🏥 العيادات
+                <strong id="clinicsCount">0</strong>
+            </div>
+
+            <div class="stat">
+                📋 الحالات
+                <strong id="casesCount">0</strong>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📋 الحالات المرسلة</h2>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>صاحب الحيوان</th>
+                            <th>الهاتف</th>
+                            <th>الطبيب</th>
+                            <th>الخدمة</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="casesTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>🏥 العيادات</h2>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>العيادة</th>
+                            <th>الطبيب</th>
+                            <th>التخصص</th>
+                            <th>الهاتف</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="clinicsTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+    'https://tuyvjozypjcvgpgkfoby.supabase.co';
+
+const SUPABASE_KEY =
+    'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+
+const _supabase =
+    supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login() {
+
+    const email =
+        document.getElementById('email').value.trim();
+
+    const password =
+        document.getElementById('password').value;
+
+    const message =
+        document.getElementById('loginMessage');
+
+    if (!email || !password) {
+
+        message.textContent =
+            '⚠️ اكتب الإيميل وكلمة المرور.';
+
+        return;
+    }
+
+    message.textContent =
+        '⏳ جاري تسجيل الدخول...';
+
+    const { data, error } =
+        await _supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+
+        message.textContent =
+            '❌ ' + error.message;
+
+        return;
+    }
+
+    await checkAdmin();
+
+}
+
+
+/* =========================
+   CHECK ADMIN
+========================= */
+
+async function checkAdmin() {
+
+    const {
+        data: { user }
+    } = await _supabase.auth.getUser();
+
+    if (!user) {
+
+        showLogin();
+
+        return;
+    }
+
+    const { data: profile, error } =
+        await _supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+    if (error || !profile) {
+
+        await _supabase.auth.signOut();
+
+        alert('❌ لم يتم العثور على بيانات حسابك.');
+
+        showLogin();
+
+        return;
+    }
+
+    if (profile.role !== 'admin') {
+
+        await _supabase.auth.signOut();
+
+        alert('🚫 هذا الحساب ليس Admin.');
+
+        showLogin();
+
+        return;
+    }
+
+    document.getElementById('loginScreen')
+        .classList.add('hidden');
+
+    document.getElementById('dashboard')
+        .classList.remove('hidden');
+
+    document.getElementById('adminName')
+        .textContent =
+        'مرحبًا ' + (profile.full_name || user.email);
+
+    loadDashboard();
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+async function loadDashboard() {
+
+    await Promise.all([
+        loadCases(),
+        loadClinics(),
+        loadDoctorsCount()
+    ]);
+
+}
+
+
+/* =========================
+   CASES
+========================= */
+
+async function loadCases() {
+
+    const { data, error } =
+        await _supabase
+            .from('cases')
+            .select('*')
+            .order('created_at', {
+                ascending: false
+            });
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+    document.getElementById('casesCount')
+        .textContent = data.length;
+
+    const table =
+        document.getElementById('casesTable');
+
+    table.innerHTML = '';
+
+    data.forEach(c => {
+
+        const row =
+            document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${c.order_number || '-'}</td>
+            <td>${c.owner_name || '-'}</td>
+            <td>${c.phone || '-'}</td>
+            <td>${c.doctor_name || '-'}</td>
+            <td>${c.service_type || '-'}</td>
+            <td>
+                <span class="status">
+                    ${c.status || '-'}
+                </span>
+            </td>
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   CLINICS
+========================= */
+
+async function loadClinics() {
+
+    const { data, error } =
+        await _supabase
+            .from('clinics')
+            .select('*')
+            .order('created_at', {
+                ascending: false
+            });
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+    }
+
+    document.getElementById('clinicsCount')
+        .textContent = data.length;
+
+    const table =
+        document.getElementById('clinicsTable');
+
+    table.innerHTML = '';
+
+    data.forEach(c => {
+
+        const row =
+            document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${c.clinic_name || '-'}</td>
+            <td>${c.doctor_name || '-'}</td>
+            <td>${c.specialty || '-'}</td>
+            <td>${c.phone || '-'}</td>
+            <td>${c.status || '-'}</td>
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   DOCTORS COUNT
+========================= */
+
+async function loadDoctorsCount() {
+
+    const { count, error } =
+        await _supabase
+            .from('profiles')
+            .select('*', {
+                count: 'exact',
+                head: true
+            })
+            .eq('role', 'doctor');
+
+    if (!error) {
+
+        document.getElementById('doctorsCount')
+            .textContent = count || 0;
+
+    }
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout() {
+
+    await _supabase.auth.signOut();
+
+    showLogin();
+
+}
+
+
+/* =========================
+   SHOW LOGIN
+========================= */
+
+function showLogin() {
+
+    document.getElementById('dashboard')
+        .classList.add('hidden');
+
+    document.getElementById('loginScreen')
+        .classList.remove('hidden');
+
+}
+
+
+/* =========================
+   AUTO CHECK
+========================= */
+
+window.onload = function() {
+
+    checkAdmin();
+
+};
+
+</script>
+
+</body>
+      </html>
