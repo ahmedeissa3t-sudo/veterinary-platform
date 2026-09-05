@@ -746,6 +746,12 @@ data.forEach(function(c){
 
 let status =
 c.status || "pending";
+    if (
+status !== "approved" &&
+status !== "rejected"
+) {
+status = "pending";
+    }
 
 let statusClass =
 "status-pending";
