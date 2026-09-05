@@ -101,6 +101,40 @@ th,td{
     border-bottom:1px solid #eee;
     text-align:right;
 }
+
+.action-btn{
+    width:auto;
+    padding:8px 12px;
+    margin:3px;
+    color:white;
+    border:0;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.approve-btn{
+    background:#198754;
+}
+
+.reject-btn{
+    background:#dc3545;
+}
+
+.status-approved{
+    color:#198754;
+    font-weight:bold;
+}
+
+.status-rejected{
+    color:#dc3545;
+    font-weight:bold;
+}
+
+.status-pending{
+    color:#d97706;
+    font-weight:bold;
+}
 </style>
 </head>
 
@@ -159,6 +193,8 @@ th,td{
 
 </div>
 
+
+<!-- STATS -->
 <div class="card stats">
 
 <div class="stat">
@@ -212,7 +248,7 @@ th,td{
 <!-- CLINICS -->
 <div class="card">
 
-<h2>🏥 العيادات</h2>
+<h2>🏥 طلبات وعيادات</h2>
 
 <div style="overflow-x:auto">
 
@@ -224,7 +260,7 @@ th,td{
 <th>المدينة</th>
 <th>الدكتور</th>
 <th>الحالة</th>
-    <th>الإجراء</th>
+<th>الإجراء</th>
 </tr>
 </thead>
 
@@ -245,6 +281,11 @@ th,td{
 
 document.addEventListener("DOMContentLoaded", function(){
 
+
+/* =========================
+   SUPABASE
+========================= */
+
 const SUPABASE_URL =
 "https://tuyvjozypjcvgpgkfoby.supabase.co";
 
@@ -258,7 +299,9 @@ SUPABASE_KEY
 );
 
 
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
 document
 .getElementById("loginButton")
@@ -276,7 +319,9 @@ document.getElementById("loginMessage");
 if(!email || !password){
 
 message.className="message error";
-message.innerText="اكتب الإيميل والباسورد الأول.";
+message.innerText=
+"اكتب الإيميل والباسورد الأول.";
+
 return;
 
 }
@@ -290,7 +335,9 @@ password:password
 if(result.error){
 
 message.className="message error";
-message.innerText="الإيميل أو الباسورد غلط.";
+message.innerText=
+"الإيميل أو الباسورد غلط.";
+
 return;
 
 }
@@ -300,7 +347,9 @@ await checkAdmin();
 });
 
 
-/* FORGOT PASSWORD */
+/* =========================
+   FORGOT PASSWORD
+========================= */
 
 document
 .getElementById("forgotButton")
@@ -315,7 +364,9 @@ document.getElementById("loginMessage");
 if(!email){
 
 message.className="message error";
-message.innerText="اكتب الإيميل الأول.";
+message.innerText=
+"اكتب الإيميل الأول.";
+
 return;
 
 }
@@ -334,6 +385,7 @@ if(result.error){
 message.className="message error";
 message.innerText=
 "حصل خطأ: "+result.error.message;
+
 return;
 
 }
@@ -345,7 +397,9 @@ message.innerText=
 });
 
 
-/* CHECK ADMIN */
+/* =========================
+   CHECK ADMIN
+========================= */
 
 async function checkAdmin(){
 
@@ -358,15 +412,10 @@ userResult.data.user;
 if(!user){
 
 showLogin();
+
 return;
 
 }
-
-
-/*
-نبحث باستخدام الإيميل + role
-بدل الاعتماد على id
-*/
 
 const profileResult =
 await supabase
@@ -428,7 +477,9 @@ loadDashboard();
 }
 
 
-/* UPDATE PASSWORD */
+/* =========================
+   UPDATE PASSWORD
+========================= */
 
 document
 .getElementById("updateButton")
@@ -448,6 +499,7 @@ if(password.length < 6){
 message.className="message error";
 message.innerText=
 "الباسورد لازم يكون 6 حروف على الأقل.";
+
 return;
 
 }
@@ -457,6 +509,7 @@ if(password !== confirm){
 message.className="message error";
 message.innerText=
 "الباسوردين مش متطابقين.";
+
 return;
 
 }
@@ -471,6 +524,7 @@ if(result.error){
 message.className="message error";
 message.innerText=
 "حصل خطأ: "+result.error.message;
+
 return;
 
 }
@@ -484,7 +538,9 @@ setTimeout(checkAdmin,1000);
 });
 
 
-/* LOGOUT */
+/* =========================
+   LOGOUT
+========================= */
 
 document
 .getElementById("logoutButton")
@@ -497,7 +553,9 @@ showLogin();
 });
 
 
-/* SHOW LOGIN */
+/* =========================
+   SHOW LOGIN
+========================= */
 
 function showLogin(){
 
@@ -516,7 +574,9 @@ document
 }
 
 
-/* PASSWORD RECOVERY */
+/* =========================
+   PASSWORD RECOVERY
+========================= */
 
 supabase.auth.onAuthStateChange(
 function(event){
@@ -540,18 +600,24 @@ document
 });
 
 
-/* DASHBOARD */
+/* =========================
+   DASHBOARD
+========================= */
 
 async function loadDashboard(){
 
 await loadCases();
+
 await loadClinics();
+
 await loadDoctors();
 
 }
 
 
-/* CASES */
+/* =========================
+   CASES
+========================= */
 
 async function loadCases(){
 
@@ -567,6 +633,7 @@ await supabase
 if(result.error){
 
 console.log(result.error);
+
 return;
 
 }
@@ -615,7 +682,9 @@ table.innerHTML += `
 }
 
 
-/* CLINICS */
+/* =========================
+   CLINICS
+========================= */
 
 async function loadClinics(){
 
@@ -631,6 +700,7 @@ await supabase
 if(result.error){
 
 console.log(result.error);
+
 return;
 
 }
@@ -650,19 +720,117 @@ document.getElementById(
 
 table.innerHTML="";
 
+
+if(data.length === 0){
+
+table.innerHTML = `
+
+<tr>
+
+<td colspan="5" style="text-align:center;padding:20px;">
+
+لا توجد عيادات حاليًا
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+
 data.forEach(function(c){
+
+let status =
+c.status || "pending";
+
+let statusClass =
+"status-pending";
+
+let statusText =
+"قيد المراجعة";
+
+if(status === "approved"){
+
+statusClass =
+"status-approved";
+
+statusText =
+"مقبولة ✅";
+
+}
+
+if(status === "rejected"){
+
+statusClass =
+"status-rejected";
+
+statusText =
+"مرفوضة ❌";
+
+}
+
+
+let actions = "";
+
+
+if(status === "pending"){
+
+actions = `
+
+<button
+class="action-btn approve-btn"
+onclick="updateClinicStatus('${c.id}','approved')">
+
+✅ قبول
+
+</button>
+
+<button
+class="action-btn reject-btn"
+onclick="updateClinicStatus('${c.id}','rejected')">
+
+❌ رفض
+
+</button>
+
+`;
+
+}else{
+
+actions = `
+<span>تم اتخاذ القرار</span>
+`;
+
+}
+
 
 table.innerHTML += `
 
 <tr>
 
-<td>${c.clinic_name || "-"}</td>
+<td>
+${c.clinic_name || "-"}
+</td>
 
-<td>${c.city || "-"}</td>
+<td>
+${c.city || "-"}
+</td>
 
-<td>${c.doctor_name || "-"}</td>
+<td>
+${c.doctor_name || c.full_name || "-"}
+</td>
 
-<td>${c.status || "-"}</td>
+<td class="${statusClass}">
+${statusText}
+</td>
+
+<td>
+${actions}
+</td>
 
 </tr>
 
@@ -673,7 +841,72 @@ table.innerHTML += `
 }
 
 
-/* DOCTORS */
+/* =========================
+   UPDATE CLINIC STATUS
+========================= */
+
+window.updateClinicStatus =
+async function(id,newStatus){
+
+const action =
+newStatus === "approved"
+? "قبول"
+: "رفض";
+
+const confirmed =
+confirm(
+"هل أنت متأكد من " +
+action +
+" طلب العيادة؟"
+);
+
+if(!confirmed){
+
+return;
+
+}
+
+
+const result =
+await supabase
+.from("clinics")
+.update({
+status:newStatus
+})
+.eq("id",id);
+
+
+if(result.error){
+
+console.log(result.error);
+
+alert(
+"حصل خطأ أثناء تحديث الحالة:\n" +
+result.error.message
+);
+
+return;
+
+}
+
+
+alert(
+newStatus === "approved"
+?
+"تم قبول العيادة بنجاح ✅"
+:
+"تم رفض العيادة ❌"
+);
+
+
+await loadClinics();
+
+};
+
+
+/* =========================
+   DOCTORS
+========================= */
 
 async function loadDoctors(){
 
@@ -689,6 +922,7 @@ head:true
 if(result.error){
 
 console.log(result.error);
+
 return;
 
 }
@@ -701,7 +935,9 @@ result.count || 0;
 }
 
 
-/* PAGE LOAD */
+/* =========================
+   PAGE LOAD
+========================= */
 
 async function start(){
 
@@ -727,4 +963,4 @@ start();
 </script>
 
 </body>
-</html>
+    </html>
