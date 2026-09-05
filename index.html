@@ -1,329 +1,1241 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع Vet Care البيطري 🐾</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --primary: #10b981;
-            --primary-hover: #059669;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --tag-bg: #e2e8f0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .dark {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --border: #334155;
-            --tag-bg: #334155;
-        }
+<title>Vet Care 🐾</title>
 
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: all 0.2s ease; }
-        body { background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 
-        .container { max-width: 500px; margin: 0 auto; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .theme-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 20px; color: var(--text); cursor: pointer; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+<style>
 
-        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 15px 0; }
-        .item-card { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 12px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .item-card.active { border-color: var(--primary); background: rgba(16, 185, 129, 0.1); color: var(--primary); }
+:root {
+    --bg:#f8fafc;
+    --card-bg:#ffffff;
+    --text:#0f172a;
+    --primary:#10b981;
+    --border:#e2e8f0;
+    --danger:#ef4444;
+    --tag-bg:#e2e8f0;
+}
 
-        .symptoms-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 15px 0; }
-        .tag { background: var(--tag-bg); padding: 6px 10px; border-radius: 15px; font-size: 12px; cursor: pointer; }
-        .tag:hover { background: var(--primary); color: white; }
+.dark {
+    --bg:#0f172a;
+    --card-bg:#1e293b;
+    --text:#f8fafc;
+    --border:#334155;
+    --tag-bg:#334155;
+}
 
-        .row { display: flex; gap: 10px; }
-        .row div { flex: 1; }
+* {
+    box-sizing:border-box;
+    font-family:'Tajawal',sans-serif;
+}
 
-        label { font-size: 13px; font-weight: bold; display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); outline: none; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+body {
+    margin:0;
+    padding:15px;
+    background:var(--bg);
+    color:var(--text);
+}
 
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
-        .btn-main { background: var(--primary); color: white; }
-        .btn-main:hover { background: var(--primary-hover); }
-        .btn-emergency { background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-sizing: border-box; }
+.container {
+    max-width:500px;
+    margin:auto;
+}
 
-        .status-box { display: none; margin-top: 15px; padding: 12px; border-radius: 8px; background: rgba(16, 185, 129, 0.15); color: var(--primary); font-weight: bold; text-align: center; }
-        .history-item { border-bottom: 1px solid var(--border); padding: 8px 0; font-size: 12px; }
-    </style>
+.header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.theme-btn {
+    background:var(--card-bg);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:8px 12px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.card {
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.cards-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin:10px 0 15px;
+}
+
+.item-card {
+    background:var(--bg);
+    border:2px solid var(--border);
+    border-radius:12px;
+    padding:12px 5px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.item-card.active {
+    border-color:var(--primary);
+    background:rgba(16,185,129,.1);
+    color:var(--primary);
+}
+
+label {
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+input,
+select,
+textarea {
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--bg);
+    color:var(--text);
+}
+
+.row {
+    display:flex;
+    gap:10px;
+}
+
+.row div {
+    flex:1;
+}
+
+.symptoms-tags {
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin:8px 0 15px;
+}
+
+.tag {
+    background:var(--tag-bg);
+    padding:6px 10px;
+    border-radius:15px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.btn {
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.btn-main {
+    background:var(--primary);
+    color:white;
+}
+
+.btn-emergency {
+    background:var(--danger);
+    color:white;
+    display:flex;
+    justify-content:center;
+    text-decoration:none;
+}
+
+.status-box {
+    display:none;
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    background:rgba(16,185,129,.15);
+    color:var(--primary);
+    text-align:center;
+}
+
+.history-item {
+    border-bottom:1px solid var(--border);
+    padding:8px 0;
+    font-size:12px;
+}
+
+</style>
+
 </head>
+
 <body>
 
 <div class="container">
-    <div class="header">
-        <h2>🌐 منصة Vet Care</h2>
-        <div style="display:flex; gap:8px;">
-            <a href="services.html" class="theme-btn" style="text-decoration:none;">🔍 الخدمات</a>
-            <button class="theme-btn" onclick="toggleTheme()">🌙 الوضع الليلي</button>
-        </div>
-    </div>
 
-    <div class="card">
-        <h3>📋 تقديم حالة / استشارة جديدة</h3>
+<div class="header">
 
-        <label>1. اختر الطبيب / العيادة المعالجة:</label>
-        <div class="cards-grid" id="doctorsGrid">
-            <div style="grid-column: 1 / -1; text-align:center; font-size:13px; color:#94a3b8; padding:10px;">⏳ جاري تحميل العيادات...</div>
-        </div>
-        <div id="clinicDetails" style="display:none; background:var(--bg); border:1px dashed var(--border); border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:12px;"></div>
+<h2>🌐 منصة Vet Care</h2>
 
-        <label>2. نوع الحيوان:</label>
-        <div class="cards-grid">
-            <div class="item-card animal-card" onclick="selectAnimal('🐱 قطة', this)">🐱 قطة</div>
-            <div class="item-card animal-card" onclick="selectAnimal('🐶 كلب', this)">🐶 كلب</div>
-            <div class="item-card animal-card" onclick="selectAnimal('🦜 طائر', this)">🦜 طائر</div>
-            <div class="item-card animal-card" onclick="selectAnimal('🐰 أرنب', this)">🐰 أرنب</div>
-            <div class="item-card animal-card" onclick="selectAnimal('🐢 زواحف', this)">🐢 زواحف</div>
-            <div class="item-card animal-card" onclick="selectAnimal('🐾 آخر', this)">🐾 آخر</div>
-        </div>
+<div style="display:flex;gap:8px;">
 
-        <div class="row">
-            <div>
-                <label>اسم صاحب الحيوان:</label>
-                <input type="text" id="owner" placeholder="مثال: أحمد">
-            </div>
-            <div>
-                <label>رقم الهاتف:</label>
-                <input type="tel" id="phone" placeholder="مثال: 21000000">
-            </div>
-        </div>
+<a
+href="services.html"
+class="theme-btn"
+style="text-decoration:none;"
+>
+🔍 الخدمات
+</a>
 
-        <div class="row">
-            <div>
-                <label>اسم الحيوان:</label>
-                <input type="text" id="pet" placeholder="مثال: سيمبا">
-            </div>
-            <div>
-                <label>عمر الحيوان:</label>
-                <input type="text" id="age" placeholder="مثال: سنة وشهرين">
-            </div>
-        </div>
+<button
+class="theme-btn"
+onclick="toggleTheme()"
+>
+🌙
+</button>
 
-        <label>نوع الخدمة المطلوبة:</label>
-        <select id="service">
-            <option value="استشارة أونلاين">🩺 استشارة أونلاين</option>
-            <option value="تطعيمات">💉 جدول التطعيمات</option>
-            <option value="فحص طوارئ">🚨 طوارئ عاجلة</option>
-            <option value="عناية وتنظيف">✂️ عناية وتجميل</option>
-        </select>
-
-        <label>أعراض سريعة (إضافة بنقرة):</label>
-        <div class="symptoms-tags">
-            <span class="tag" onclick="addSymptom('خمول')">➕ خمول</span>
-            <span class="tag" onclick="addSymptom('قيء')">➕ قيء</span>
-            <span class="tag" onclick="addSymptom('سخونية')">➕ سخونية</span>
-            <span class="tag" onclick="addSymptom('إسهال')">➕ إسهال</span>
-            <span class="tag" onclick="addSymptom('جرح')">➕ جرح</span>
-        </div>
-
-        <label>تفاصيل ووصف الحالة:</label>
-        <textarea id="case" rows="3" placeholder="اشرح الحالة بالتفصيل هنا..."></textarea>
-
-        <button class="btn btn-main" onclick="submitCase()">إرسال الحالة للموقع 🚀</button>
-        <a href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care" class="btn btn-emergency" target="_blank">🚨 طوارئ واتساب مباشر</a>
-
-        <div id="status" class="status-box"></div>
-    </div>
-
-    <div class="card">
-        <h4>📋 سجل الحالات المرسلة على Vet Care:</h4>
-        <div id="historyList" style="color: grey; font-size: 13px;">لا توجد حالات مسجلة حتى الآن.</div>
-    </div>
 </div>
 
+</div>
+
+
+<div class="card">
+
+<h3>📋 تقديم حالة / استشارة جديدة</h3>
+
+
+<label>
+1. اختر الطبيب / العيادة:
+</label>
+
+
+<div
+class="cards-grid"
+id="doctorsGrid"
+>
+
+<div
+style="
+grid-column:1/-1;
+text-align:center;
+color:#94a3b8;
+padding:10px;
+"
+>
+⏳ جاري تحميل العيادات...
+</div>
+
+</div>
+
+
+<div
+id="clinicDetails"
+style="
+display:none;
+background:var(--bg);
+border:1px dashed var(--border);
+border-radius:10px;
+padding:10px;
+margin-bottom:12px;
+font-size:12px;
+line-height:1.8;
+"
+></div>
+
+
+<label>
+2. نوع الحيوان:
+</label>
+
+
+<div class="cards-grid">
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐱 قطة',this)"
+>
+🐱 قطة
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐶 كلب',this)"
+>
+🐶 كلب
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🦜 طائر',this)"
+>
+🦜 طائر
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐰 أرنب',this)"
+>
+🐰 أرنب
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐢 زواحف',this)"
+>
+🐢 زواحف
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐾 آخر',this)"
+>
+🐾 آخر
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+
+<label>
+اسم صاحب الحيوان:
+</label>
+
+<input
+type="text"
+id="owner"
+placeholder="مثال: أحمد"
+>
+
+</div>
+
+
+<div>
+
+<label>
+رقم الهاتف:
+</label>
+
+<input
+type="tel"
+id="phone"
+placeholder="01000000000"
+>
+
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+
+<label>
+اسم الحيوان:
+</label>
+
+<input
+type="text"
+id="pet"
+placeholder="مثال: سيمبا"
+>
+
+</div>
+
+
+<div>
+
+<label>
+عمر الحيوان:
+</label>
+
+<input
+type="text"
+id="age"
+placeholder="مثال: سنة"
+>
+
+</div>
+
+</div>
+
+
+<label>
+نوع الخدمة:
+</label>
+
+<select id="service">
+
+<option value="استشارة أونلاين">
+🩺 استشارة أونلاين
+</option>
+
+<option value="تطعيمات">
+💉 جدول التطعيمات
+</option>
+
+<option value="فحص طوارئ">
+🚨 طوارئ عاجلة
+</option>
+
+<option value="عناية وتنظيف">
+✂️ عناية وتجميل
+</option>
+
+</select>
+
+
+<label>
+أعراض سريعة:
+</label>
+
+
+<div class="symptoms-tags">
+
+<span
+class="tag"
+onclick="addSymptom('خمول')"
+>
+➕ خمول
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('قيء')"
+>
+➕ قيء
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('سخونية')"
+>
+➕ سخونية
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('إسهال')"
+>
+➕ إسهال
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('جرح')"
+>
+➕ جرح
+</span>
+
+</div>
+
+
+<label>
+تفاصيل الحالة:
+</label>
+
+<textarea
+id="case"
+rows="3"
+placeholder="اشرح الحالة بالتفصيل..."
+></textarea>
+
+
+<button
+class="btn btn-main"
+onclick="submitCase()"
+>
+إرسال الحالة 🚀
+</button>
+
+
+<a
+href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care"
+class="btn btn-emergency"
+target="_blank"
+>
+🚨 طوارئ واتساب مباشر
+</a>
+
+
+<div
+id="status"
+class="status-box"
+></div>
+
+</div>
+
+
+<div class="card">
+
+<h4>
+📋 سجل الحالات:
+</h4>
+
+<div
+id="historyList"
+style="color:grey;font-size:13px;"
+>
+لا توجد حالات مسجلة حتى الآن.
+</div>
+
+</div>
+
+</div>
+
+
 <script>
-    const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let chosenDoctor = '';
-    let chosenAnimal = '';
-    let approvedClinics = [];
 
-    window.onload = function() {
-        loadHistory();
-        loadClinicsForBooking();
-    };
+/* =========================
+   SUPABASE
+========================= */
 
-    function toggleTheme() {
-        document.body.classList.toggle('dark');
-    }
+const SUPABASE_URL =
+'https://tuyvjozypjcvgpgkfoby.supabase.co';
 
-    async function loadClinicsForBooking() {
-        const grid = document.getElementById('doctorsGrid');
-        const demoDoctors = ['د. أحمد سامي', 'د. سارة محمود', 'د. محمد علي'];
+const SUPABASE_KEY =
+'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
 
-        function renderDemoCards() {
-            return demoDoctors.map(name => `
-                <div class="item-card doc-card" style="opacity:0.5; cursor:not-allowed; position:relative;"
-                     onclick="alert('👋 ده اسم تجريبي بس للعرض، مش طبيب حقيقي متاح للاختيار حاليًا.')">
-                    👨‍⚕️ ${name}
-                    <div style="font-size:9px; color:#ef4444; margin-top:2px;">تجريبي</div>
-                </div>
-            `).join('');
-        }
+const _supabase =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-        try {
-            const { data, error } = await _supabase
-                .from('clinics')
-                .select('*')
-                .eq('status', 'مقبولة');
 
-            if (error) throw error;
+/* =========================
+   VARIABLES
+========================= */
 
-            grid.innerHTML = '';
+let chosenDoctor = '';
 
-            if (data && data.length > 0) {
-                approvedClinics = data;
-                data.forEach((clinic) => {
-                    const div = document.createElement('div');
-                    div.className = 'item-card doc-card';
-                    div.textContent = '👨‍⚕️ ' + (clinic.doctor_name || clinic.clinic_name);
-                    div.onclick = function() { selectDoctor(clinic, div); };
-                    grid.appendChild(div);
-                });
-            }
+let chosenAnimal = '';
 
-            grid.innerHTML += renderDemoCards();
+let approvedClinics = [];
 
-            if (!data || data.length === 0) {
-                grid.innerHTML += `<div style="grid-column:1/-1; text-align:center; font-size:12px; color:#94a3b8; padding:8px;">
-                    لسه مفيش عيادات حقيقية مسجلة. <a href="join-clinic.html" style="color:var(--primary);">سجّل عيادتك من هنا</a>
-                </div>`;
-            }
-        } catch (err) {
-            grid.innerHTML = renderDemoCards() +
-                `<div style="grid-column:1/-1; text-align:center; font-size:12px; color:red;">تعذر تحميل العيادات: ${err.message}</div>`;
-        }
-    }
 
-    function selectDoctor(clinic, el) {
-        chosenDoctor = clinic.doctor_name || clinic.clinic_name;
-        document.querySelectorAll('.doc-card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
+/* =========================
+   START
+========================= */
 
-        const detailsBox = document.getElementById('clinicDetails');
-        detailsBox.style.display = 'block';
-        detailsBox.innerHTML = `
-            <b>🏥 ${clinic.clinic_name}</b><br>
-            التخصص: ${clinic.specialty || 'غير محدد'}<br>
-            العنوان: ${clinic.address || 'غير محدد'}<br>
-            الهاتف: ${clinic.phone || 'غير محدد'}
-            ${clinic.notes ? '<br>ملاحظات: ' + clinic.notes : ''}
-        `;
-    }
+window.onload = function() {
 
-    function selectAnimal(type, el) {
-        chosenAnimal = type;
-        document.querySelectorAll('.animal-card').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-    }
+loadHistory();
 
-    function addSymptom(text) {
-        const txtArea = document.getElementById('case');
-        txtArea.value += (txtArea.value ? ' - ' : '') + text;
-    }
+loadClinicsForBooking();
 
-    async function submitCase() {
-        const owner = document.getElementById('owner').value;
-        const phone = document.getElementById('phone').value;
-        const pet = document.getElementById('pet').value;
-        const service = document.getElementById('service').value;
-        const caseDesc = document.getElementById('case').value;
-        const statusBox = document.getElementById('status');
-        const btn = document.querySelector('.btn-main');
+};
 
-        if (!chosenDoctor) return alert('⚠️ اختر الطبيب المتابع أولاً!');
-        if (!chosenAnimal) return alert('⚠️ اختر نوع الحيوان!');
-        if (!owner || !caseDesc) return alert('⚠️ اكتب اسمك ووصف الحالة!');
-        if (!phone || phone.trim().length < 8) return alert('⚠️ اكتب رقم هاتف صحيح باش الطبيب يقدر يتصل بيك!');
 
-        const orderNum = 'VC-' + Math.floor(1000 + Math.random() * 9000);
+/* =========================
+   DARK MODE
+========================= */
 
-        btn.disabled = true;
-        btn.textContent = 'جاري الإرسال...';
+function toggleTheme() {
 
-        const { error } = await _supabase.from('cases').insert([{
-            order_number: orderNum,
-            owner_name: owner,
-            phone: phone,
-            animal_type: chosenAnimal,
-            pet_name: pet || 'بدون اسم',
-            doctor_name: chosenDoctor,
-            service_type: service,
-            description: caseDesc,
-            status: 'قيد الانتظار'
-        }]);
+document.body.classList.toggle('dark');
 
-        btn.disabled = false;
-        btn.textContent = 'إرسال الحالة للموقع 🚀';
+}
 
-        if (error) {
-            alert('❌ حصل خطأ في الإرسال، حاول مرة أخرى: ' + error.message);
-            return;
-        }
 
-        const newCase = {
-            id: orderNum,
-            doctor: chosenDoctor,
-            animal: chosenAnimal,
-            owner: owner,
-            phone: phone,
-            pet: pet || 'بدون اسم',
-            service: service,
-            date: new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})
-        };
+/* =========================
+   LOAD APPROVED CLINICS
+========================= */
 
-        saveToLocal(newCase);
+async function loadClinicsForBooking() {
 
-        statusBox.style.display = 'block';
-        statusBox.innerHTML = `✅ تم إرسال الحالة فعلاً للطبيب <b>${chosenDoctor}</b><br>رقم الطلب: <b>${orderNum}</b>`;
+const grid =
+document.getElementById('doctorsGrid');
 
-        document.getElementById('owner').value = '';
-        document.getElementById('phone').value = '';
-        document.getElementById('pet').value = '';
-        document.getElementById('case').value = '';
-    }
 
-    function saveToLocal(item) {
-        let cases = JSON.parse(localStorage.getItem('my_vet_cases') || '[]');
-        cases.unshift(item);
-        localStorage.setItem('my_vet_cases', JSON.stringify(cases));
-        loadHistory();
-    }
+try {
 
-    function loadHistory() {
-        let cases = JSON.parse(localStorage.getItem('my_vet_cases') || '[]');
-        const listDiv = document.getElementById('historyList');
-        if(cases.length === 0) return;
 
-        listDiv.innerHTML = '';
-        cases.slice(0, 4).forEach(c => {
-            listDiv.innerHTML += `
-                <div class="history-item">
-                    <b>${c.id}</b> | الطبيب: ${c.doctor} <br>
-                    ${c.animal} (${c.pet}) - <span style="color:var(--primary);">${c.service}</span> 
-                    <small style="float:left;">${c.date}</small><br>
-                    📞 ${c.owner || ''} - ${c.phone || ''}
-                </div>
-            `;
-        });
-    }
+const { data, error } =
+await _supabase
+
+.from('clinics')
+
+.select('*')
+
+.eq('status','approved');
+
+
+if (error) {
+
+console.error(
+'CLINICS ERROR:',
+error
+);
+
+throw error;
+
+}
+
+
+console.log(
+'APPROVED CLINICS:',
+data
+);
+
+
+grid.innerHTML = '';
+
+
+approvedClinics =
+data || [];
+
+
+/* مفيش عيادات */
+
+if (!data || data.length === 0) {
+
+grid.innerHTML = `
+
+<div
+style="
+grid-column:1/-1;
+text-align:center;
+padding:15px;
+color:#94a3b8;
+"
+>
+
+لا توجد عيادات مقبولة حاليًا.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+/* عرض العيادات */
+
+data.forEach(function(clinic) {
+
+
+const div =
+document.createElement('div');
+
+
+div.className =
+'item-card doc-card';
+
+
+div.innerHTML = `
+
+👨‍⚕️
+
+${clinic.doctor_name
+|| clinic.clinic_name
+|| 'طبيب بيطري'}
+
+`;
+
+
+div.onclick =
+function() {
+
+selectDoctor(
+clinic,
+div
+);
+
+};
+
+
+grid.appendChild(div);
+
+
+});
+
+
+}
+
+catch(error) {
+
+
+console.error(
+'LOAD CLINICS ERROR:',
+error
+);
+
+
+grid.innerHTML = `
+
+<div
+style="
+grid-column:1/-1;
+text-align:center;
+color:red;
+padding:15px;
+"
+>
+
+❌ حصل خطأ أثناء تحميل العيادات.
+
+<br>
+
+افتح Console لمعرفة الخطأ.
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================
+   SELECT DOCTOR
+========================= */
+
+function selectDoctor(
+clinic,
+element
+) {
+
+
+chosenDoctor =
+clinic.doctor_name
+|| clinic.clinic_name
+|| 'طبيب بيطري';
+
+
+document
+.querySelectorAll('.doc-card')
+.forEach(function(card) {
+
+card.classList.remove('active');
+
+});
+
+
+element.classList.add('active');
+
+
+const box =
+document.getElementById(
+'clinicDetails'
+);
+
+
+box.style.display =
+'block';
+
+
+box.innerHTML = `
+
+<b>
+👨‍⚕️ الطبيب:
+${clinic.doctor_name || 'غير محدد'}
+</b>
+
+<br>
+
+🏥 العيادة:
+${clinic.clinic_name || 'غير محددة'}
+
+<br>
+
+🩺 التخصص:
+${clinic.specialty || 'غير محدد'}
+
+<br>
+
+📍 المدينة:
+${clinic.city || 'غير محددة'}
+
+<br>
+
+🏠 العنوان:
+${clinic.address || 'غير محدد'}
+
+<br>
+
+📞 الهاتف:
+${clinic.phone || 'غير محدد'}
+
+`;
+
+}
+
+
+/* =========================
+   ANIMAL
+========================= */
+
+function selectAnimal(
+type,
+element
+) {
+
+
+chosenAnimal = type;
+
+
+document
+.querySelectorAll('.animal-card')
+.forEach(function(card) {
+
+card.classList.remove('active');
+
+});
+
+
+element.classList.add('active');
+
+}
+
+
+/* =========================
+   SYMPTOMS
+========================= */
+
+function addSymptom(text) {
+
+
+const textarea =
+document.getElementById(
+'case'
+);
+
+
+textarea.value +=
+
+(textarea.value
+? ' - '
+: '') + text;
+
+}
+
+
+/* =========================
+   SUBMIT CASE
+========================= */
+
+async function submitCase() {
+
+
+const owner =
+document
+.getElementById('owner')
+.value
+.trim();
+
+
+const phone =
+document
+.getElementById('phone')
+.value
+.trim();
+
+
+const pet =
+document
+.getElementById('pet')
+.value
+.trim();
+
+
+const age =
+document
+.getElementById('age')
+.value
+.trim();
+
+
+const service =
+document
+.getElementById('service')
+.value;
+
+
+const description =
+document
+.getElementById('case')
+.value
+.trim();
+
+
+const statusBox =
+document.getElementById(
+'status'
+);
+
+
+const button =
+document.querySelector(
+'.btn-main'
+);
+
+
+if (!chosenDoctor) {
+
+alert(
+'⚠️ اختر الطبيب أولًا'
+);
+
+return;
+
+}
+
+
+if (!chosenAnimal) {
+
+alert(
+'⚠️ اختر نوع الحيوان أولًا'
+);
+
+return;
+
+}
+
+
+if (!owner ||
+!description) {
+
+alert(
+'⚠️ اكتب اسمك ووصف الحالة'
+);
+
+return;
+
+}
+
+
+if (!phone ||
+phone.length < 8) {
+
+alert(
+'⚠️ اكتب رقم هاتف صحيح'
+);
+
+return;
+
+}
+
+
+const orderNumber =
+'VC-' +
+Math.floor(
+1000 +
+Math.random() * 9000
+);
+
+
+button.disabled =
+true;
+
+
+button.textContent =
+'جاري الإرسال...';
+
+
+const finalDescription =
+age
+
+? 'العمر: ' +
+age +
+'\n' +
+description
+
+: description;
+
+
+const { error } =
+await _supabase
+
+.from('cases')
+
+.insert([{
+
+order_number:
+orderNumber,
+
+owner_name:
+owner,
+
+phone:
+phone,
+
+animal_type:
+chosenAnimal,
+
+pet_name:
+pet || 'بدون اسم',
+
+doctor_name:
+chosenDoctor,
+
+service_type:
+service,
+
+description:
+finalDescription,
+
+status:
+'قيد الانتظار'
+
+}]);
+
+
+button.disabled =
+false;
+
+
+button.textContent =
+'إرسال الحالة 🚀';
+
+
+if (error) {
+
+
+alert(
+'❌ خطأ:\n' +
+error.message
+);
+
+
+return;
+
+}
+
+
+saveToLocal({
+
+id:
+orderNumber,
+
+doctor:
+chosenDoctor,
+
+animal:
+chosenAnimal,
+
+owner:
+owner,
+
+phone:
+phone,
+
+pet:
+pet || 'بدون اسم',
+
+service:
+service,
+
+date:
+new Date()
+.toLocaleTimeString(
+'ar-EG',
+{
+hour:'2-digit',
+minute:'2-digit'
+}
+)
+
+});
+
+
+statusBox.style.display =
+'block';
+
+
+statusBox.innerHTML = `
+
+✅ تم إرسال الحالة للطبيب
+
+<br>
+
+<b>
+${chosenDoctor}
+</b>
+
+<br>
+
+رقم الطلب:
+
+<b>
+${orderNumber}
+</b>
+
+`;
+
+
+document.getElementById(
+'owner'
+).value = '';
+
+
+document.getElementById(
+'phone'
+).value = '';
+
+
+document.getElementById(
+'pet'
+).value = '';
+
+
+document.getElementById(
+'age'
+).value = '';
+
+
+document.getElementById(
+'case'
+).value = '';
+
+}
+
+
+/* =========================
+   LOCAL STORAGE
+========================= */
+
+function saveToLocal(item) {
+
+
+let cases =
+JSON.parse(
+
+localStorage.getItem(
+'my_vet_cases'
+)
+
+|| '[]'
+
+);
+
+
+cases.unshift(item);
+
+
+localStorage.setItem(
+
+'my_vet_cases',
+
+JSON.stringify(cases)
+
+);
+
+
+loadHistory();
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function loadHistory() {
+
+
+let cases =
+JSON.parse(
+
+localStorage.getItem(
+'my_vet_cases'
+)
+
+|| '[]'
+
+);
+
+
+const list =
+document.getElementById(
+'historyList'
+);
+
+
+if (cases.length === 0) {
+
+return;
+
+}
+
+
+list.innerHTML = '';
+
+
+cases
+.slice(0,4)
+.forEach(function(c) {
+
+
+list.innerHTML += `
+
+<div class="history-item">
+
+<b>
+${c.id}
+</b>
+
+|
+
+الطبيب:
+${c.doctor}
+
+<br>
+
+${c.animal}
+
+-
+
+${c.pet}
+
+<br>
+
+الخدمة:
+${c.service}
+
+<br>
+
+📞
+${c.phone}
+
+<small
+style="float:left;"
+>
+${c.date}
+</small>
+
+</div>
+
+`;
+
+});
+
+}
+
 </script>
 
 </body>
+
     </html>
-    
