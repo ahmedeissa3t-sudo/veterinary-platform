@@ -13,171 +13,171 @@
 
 <style>
 
-:root {
-    --bg:#f8fafc;
-    --card-bg:#ffffff;
-    --text:#0f172a;
-    --primary:#10b981;
-    --border:#e2e8f0;
-    --danger:#ef4444;
-    --tag-bg:#e2e8f0;
+:root{
+--bg:#f8fafc;
+--card-bg:#ffffff;
+--text:#0f172a;
+--primary:#10b981;
+--border:#e2e8f0;
+--danger:#ef4444;
+--tag-bg:#e2e8f0;
 }
 
-.dark {
-    --bg:#0f172a;
-    --card-bg:#1e293b;
-    --text:#f8fafc;
-    --border:#334155;
-    --tag-bg:#334155;
+.dark{
+--bg:#0f172a;
+--card-bg:#1e293b;
+--text:#f8fafc;
+--border:#334155;
+--tag-bg:#334155;
 }
 
-* {
-    box-sizing:border-box;
-    font-family:'Tajawal',sans-serif;
+*{
+box-sizing:border-box;
+font-family:'Tajawal',sans-serif;
 }
 
-body {
-    margin:0;
-    padding:15px;
-    background:var(--bg);
-    color:var(--text);
+body{
+margin:0;
+padding:15px;
+background:var(--bg);
+color:var(--text);
 }
 
-.container {
-    max-width:500px;
-    margin:auto;
+.container{
+max-width:500px;
+margin:auto;
 }
 
-.header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
 }
 
-.theme-btn {
-    background:var(--card-bg);
-    color:var(--text);
-    border:1px solid var(--border);
-    padding:8px 12px;
-    border-radius:20px;
-    cursor:pointer;
+.theme-btn{
+background:var(--card-bg);
+color:var(--text);
+border:1px solid var(--border);
+padding:8px 12px;
+border-radius:20px;
+cursor:pointer;
 }
 
-.card {
-    background:var(--card-bg);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:20px;
-    margin-bottom:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
+.card{
+background:var(--card-bg);
+border:1px solid var(--border);
+border-radius:16px;
+padding:20px;
+margin-bottom:15px;
+box-shadow:0 4px 15px rgba(0,0,0,.05);
 }
 
-.cards-grid {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin:10px 0 15px;
+.cards-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin:10px 0 15px;
 }
 
-.item-card {
-    background:var(--bg);
-    border:2px solid var(--border);
-    border-radius:12px;
-    padding:12px 5px;
-    text-align:center;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:13px;
+.item-card{
+background:var(--bg);
+border:2px solid var(--border);
+border-radius:12px;
+padding:12px 5px;
+text-align:center;
+cursor:pointer;
+font-weight:bold;
+font-size:13px;
 }
 
-.item-card.active {
-    border-color:var(--primary);
-    background:rgba(16,185,129,.1);
-    color:var(--primary);
+.item-card.active{
+border-color:var(--primary);
+background:rgba(16,185,129,.1);
+color:var(--primary);
 }
 
-label {
-    display:block;
-    font-size:13px;
-    font-weight:bold;
-    margin-top:10px;
+label{
+display:block;
+font-size:13px;
+font-weight:bold;
+margin-top:10px;
 }
 
 input,
 select,
-textarea {
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:var(--bg);
-    color:var(--text);
+textarea{
+width:100%;
+padding:10px;
+margin-top:5px;
+border:1px solid var(--border);
+border-radius:10px;
+background:var(--bg);
+color:var(--text);
 }
 
-.row {
-    display:flex;
-    gap:10px;
+.row{
+display:flex;
+gap:10px;
 }
 
-.row div {
-    flex:1;
+.row div{
+flex:1;
 }
 
-.symptoms-tags {
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    margin:8px 0 15px;
+.symptoms-tags{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin:8px 0 15px;
 }
 
-.tag {
-    background:var(--tag-bg);
-    padding:6px 10px;
-    border-radius:15px;
-    font-size:12px;
-    cursor:pointer;
+.tag{
+background:var(--tag-bg);
+padding:6px 10px;
+border-radius:15px;
+font-size:12px;
+cursor:pointer;
 }
 
-.btn {
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    font-weight:bold;
-    font-size:15px;
-    cursor:pointer;
-    margin-top:10px;
+.btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+margin-top:10px;
 }
 
-.btn-main {
-    background:var(--primary);
-    color:white;
+.btn-main{
+background:var(--primary);
+color:white;
 }
 
-.btn-emergency {
-    background:var(--danger);
-    color:white;
-    display:flex;
-    justify-content:center;
-    text-decoration:none;
+.btn-emergency{
+background:var(--danger);
+color:white;
+display:flex;
+justify-content:center;
+text-decoration:none;
 }
 
-.status-box {
-    display:none;
-    margin-top:15px;
-    padding:12px;
-    border-radius:8px;
-    background:rgba(16,185,129,.15);
-    color:var(--primary);
-    text-align:center;
+.status-box{
+display:none;
+margin-top:15px;
+padding:12px;
+border-radius:8px;
+background:rgba(16,185,129,.15);
+color:var(--primary);
+text-align:center;
 }
 
-.history-item {
-    border-bottom:1px solid var(--border);
-    padding:8px 0;
-    font-size:12px;
+.history-item{
+border-bottom:1px solid var(--border);
+padding:8px 0;
+font-size:12px;
 }
 
 </style>
@@ -260,7 +260,6 @@ line-height:1.8;
 2. نوع الحيوان:
 </label>
 
-
 <div class="cards-grid">
 
 <div
@@ -324,7 +323,6 @@ placeholder="مثال: أحمد"
 
 </div>
 
-
 <div>
 
 <label>
@@ -357,7 +355,6 @@ placeholder="مثال: سيمبا"
 >
 
 </div>
-
 
 <div>
 
@@ -404,7 +401,6 @@ placeholder="مثال: سنة"
 <label>
 أعراض سريعة:
 </label>
-
 
 <div class="symptoms-tags">
 
@@ -514,14 +510,11 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-
 let chosenDoctor = '';
 let chosenAnimal = '';
 
-let approvedClinics = [];
 
-
-window.onload = function() {
+window.onload = function(){
 
 loadHistory();
 
@@ -530,79 +523,62 @@ loadClinicsForBooking();
 };
 
 
-function toggleTheme() {
+function toggleTheme(){
 
 document.body.classList.toggle('dark');
 
 }
 
 
-/* =========================
-   LOAD APPROVED CLINICS
-========================= */
+/* تحميل العيادات المقبولة */
 
-async function loadClinicsForBooking() {
+async function loadClinicsForBooking(){
 
 const grid =
 document.getElementById('doctorsGrid');
 
-try {
+try{
 
-const { data, error } =
+const {data,error} =
 await _supabase
 .from('clinics')
 .select('*')
+.eq('status','approved');
 
-/*
-   IMPORTANT:
-   حالة العيادة في Supabase
-   هي "مقبولة" وليس "approved"
-*/
+if(error){
 
-.eq('status','مقبولة');
+console.error(error);
 
+grid.innerHTML = `
+<div style="
+grid-column:1/-1;
+text-align:center;
+color:red;
+padding:15px;
+">
+❌ خطأ في تحميل العيادات
+<br>
+${error.message}
+</div>
+`;
 
-if (error) {
-
-console.error(
-'CLINICS ERROR:',
-error
-);
-
-throw error;
+return;
 
 }
 
+grid.innerHTML='';
 
-console.log(
-'APPROVED CLINICS:',
-data
-);
+if(!data || data.length===0){
 
-
-grid.innerHTML = '';
-
-approvedClinics =
-data || [];
-
-
-if (!data || data.length === 0) {
-
-grid.innerHTML = `
-
-<div
-style="
+grid.innerHTML=`
+<div style="
 grid-column:1/-1;
 text-align:center;
-padding:15px;
 color:#94a3b8;
-"
->
-
+padding:15px;
+">
 لا توجد عيادات مقبولة حاليًا.
-
 </div>
-
 `;
 
 return;
@@ -612,7 +588,7 @@ return;
 
 /* عرض العيادات */
 
-data.forEach(function(clinic) {
+data.forEach(function(clinic){
 
 const div =
 document.createElement('div');
@@ -620,61 +596,34 @@ document.createElement('div');
 div.className =
 'item-card doc-card';
 
-
 div.innerHTML = `
-
 👨‍⚕️
-
-${clinic.doctor_name
-|| clinic.clinic_name
-|| 'طبيب بيطري'}
-
+${clinic.doctor_name || clinic.clinic_name || 'طبيب بيطري'}
 `;
 
+div.onclick=function(){
 
-div.onclick =
-function() {
-
-selectDoctor(
-clinic,
-div
-);
+selectDoctor(clinic,div);
 
 };
-
 
 grid.appendChild(div);
 
 });
 
-}
+}catch(error){
 
-catch(error) {
+console.error(error);
 
-console.error(
-'LOAD CLINICS ERROR:',
-error
-);
-
-grid.innerHTML = `
-
-<div
-style="
+grid.innerHTML=`
+<div style="
 grid-column:1/-1;
 text-align:center;
 color:red;
 padding:15px;
-"
->
-
-❌ حصل خطأ أثناء تحميل العيادات.
-
-<br>
-
-افتح Console لمعرفة الخطأ.
-
+">
+❌ حصل خطأ أثناء تحميل العيادات
 </div>
-
 `;
 
 }
@@ -682,24 +631,19 @@ padding:15px;
 }
 
 
-/* =========================
-   SELECT DOCTOR
-========================= */
+/* اختيار الطبيب */
 
-function selectDoctor(
-clinic,
-element
-) {
+function selectDoctor(clinic,element){
 
 chosenDoctor =
-clinic.doctor_name
-|| clinic.clinic_name
-|| 'طبيب بيطري';
+clinic.doctor_name ||
+clinic.clinic_name ||
+'طبيب بيطري';
 
 
 document
 .querySelectorAll('.doc-card')
-.forEach(function(card) {
+.forEach(function(card){
 
 card.classList.remove('active');
 
@@ -710,16 +654,11 @@ element.classList.add('active');
 
 
 const box =
-document.getElementById(
-'clinicDetails'
-);
+document.getElementById('clinicDetails');
 
+box.style.display='block';
 
-box.style.display =
-'block';
-
-
-box.innerHTML = `
+box.innerHTML=`
 
 <b>
 👨‍⚕️ الطبيب:
@@ -738,11 +677,6 @@ ${clinic.specialty || 'غير محدد'}
 
 <br>
 
-📍 المدينة:
-${clinic.city || 'غير محددة'}
-
-<br>
-
 🏠 العنوان:
 ${clinic.address || 'غير محدد'}
 
@@ -756,151 +690,94 @@ ${clinic.phone || 'غير محدد'}
 }
 
 
-/* =========================
-   ANIMAL
-========================= */
+/* اختيار الحيوان */
 
-function selectAnimal(
-type,
-element
-) {
+function selectAnimal(type,element){
 
-chosenAnimal = type;
-
+chosenAnimal=type;
 
 document
 .querySelectorAll('.animal-card')
-.forEach(function(card) {
+.forEach(function(card){
 
 card.classList.remove('active');
 
 });
-
 
 element.classList.add('active');
 
 }
 
 
-/* =========================
-   SYMPTOMS
-========================= */
+/* إضافة عرض */
 
-function addSymptom(text) {
+function addSymptom(text){
 
 const textarea =
-document.getElementById(
-'case'
-);
-
+document.getElementById('case');
 
 textarea.value +=
-(textarea.value
-? ' - '
-: '') + text;
+(textarea.value ? ' - ' : '') + text;
 
 }
 
 
-/* =========================
-   SUBMIT CASE
-========================= */
+/* إرسال الحالة */
 
-async function submitCase() {
+async function submitCase(){
 
 const owner =
-document
-.getElementById('owner')
-.value
-.trim();
-
+document.getElementById('owner').value.trim();
 
 const phone =
-document
-.getElementById('phone')
-.value
-.trim();
-
+document.getElementById('phone').value.trim();
 
 const pet =
-document
-.getElementById('pet')
-.value
-.trim();
-
+document.getElementById('pet').value.trim();
 
 const age =
-document
-.getElementById('age')
-.value
-.trim();
-
+document.getElementById('age').value.trim();
 
 const service =
-document
-.getElementById('service')
-.value;
-
+document.getElementById('service').value;
 
 const description =
-document
-.getElementById('case')
-.value
-.trim();
-
+document.getElementById('case').value.trim();
 
 const statusBox =
-document.getElementById(
-'status'
-);
-
+document.getElementById('status');
 
 const button =
-document.querySelector(
-'.btn-main'
-);
+document.querySelector('.btn-main');
 
 
-if (!chosenDoctor) {
+if(!chosenDoctor){
 
-alert(
-'⚠️ اختر الطبيب أولًا'
-);
+alert('⚠️ اختر الطبيب أولًا');
 
 return;
 
 }
 
+if(!chosenAnimal){
 
-if (!chosenAnimal) {
-
-alert(
-'⚠️ اختر نوع الحيوان أولًا'
-);
+alert('⚠️ اختر نوع الحيوان أولًا');
 
 return;
 
 }
 
+if(!owner || !description){
 
-if (!owner ||
-!description) {
-
-alert(
-'⚠️ اكتب اسمك ووصف الحالة'
-);
+alert('⚠️ اكتب اسمك ووصف الحالة');
 
 return;
 
 }
 
+if(!phone || phone.length < 8){
 
-if (!phone ||
-phone.length < 8) {
-
-alert(
-'⚠️ اكتب رقم هاتف صحيح'
-);
+alert('⚠️ اكتب رقم هاتف صحيح');
 
 return;
 
@@ -910,78 +787,58 @@ return;
 const orderNumber =
 'VC-' +
 Math.floor(
-1000 +
-Math.random() * 9000
+1000 + Math.random()*9000
 );
 
 
-button.disabled =
-true;
+button.disabled=true;
 
-
-button.textContent =
-'جاري الإرسال...';
+button.textContent='جاري الإرسال...';
 
 
 const finalDescription =
 age
-
-? 'العمر: ' +
-age +
-'\n' +
-description
-
-: description;
+?
+'العمر: '+age+'\n'+description
+:
+description;
 
 
-const { error } =
+const {error} =
 await _supabase
 .from('cases')
 .insert([{
 
-order_number:
-orderNumber,
+order_number:orderNumber,
 
-owner_name:
-owner,
+owner_name:owner,
 
-phone:
-phone,
+phone:phone,
 
-animal_type:
-chosenAnimal,
+animal_type:chosenAnimal,
 
-pet_name:
-pet || 'بدون اسم',
+pet_name:pet || 'بدون اسم',
 
-doctor_name:
-chosenDoctor,
+doctor_name:chosenDoctor,
 
-service_type:
-service,
+service_type:service,
 
-description:
-finalDescription,
+description:finalDescription,
 
-status:
-'قيد الانتظار'
+status:'قيد الانتظار'
 
 }]);
 
 
-button.disabled =
-false;
+button.disabled=false;
+
+button.textContent='إرسال الحالة 🚀';
 
 
-button.textContent =
-'إرسال الحالة 🚀';
-
-
-if (error) {
+if(error){
 
 alert(
-'❌ خطأ:\n' +
-error.message
+'❌ خطأ:\n'+error.message
 );
 
 return;
@@ -991,29 +848,21 @@ return;
 
 saveToLocal({
 
-id:
-orderNumber,
+id:orderNumber,
 
-doctor:
-chosenDoctor,
+doctor:chosenDoctor,
 
-animal:
-chosenAnimal,
+animal:chosenAnimal,
 
-owner:
-owner,
+owner:owner,
 
-phone:
-phone,
+phone:phone,
 
-pet:
-pet || 'بدون اسم',
+pet:pet || 'بدون اسم',
 
-service:
-service,
+service:service,
 
-date:
-new Date()
+date:new Date()
 .toLocaleTimeString(
 'ar-EG',
 {
@@ -1025,11 +874,9 @@ minute:'2-digit'
 });
 
 
-statusBox.style.display =
-'block';
+statusBox.style.display='block';
 
-
-statusBox.innerHTML = `
+statusBox.innerHTML=`
 
 ✅ تم إرسال الحالة للطبيب
 
@@ -1050,114 +897,69 @@ ${orderNumber}
 `;
 
 
-document.getElementById(
-'owner'
-).value = '';
+document.getElementById('owner').value='';
 
+document.getElementById('phone').value='';
 
-document.getElementById(
-'phone'
-).value = '';
+document.getElementById('pet').value='';
 
+document.getElementById('age').value='';
 
-document.getElementById(
-'pet'
-).value = '';
-
-
-document.getElementById(
-'age'
-).value = '';
-
-
-document.getElementById(
-'case'
-).value = '';
+document.getElementById('case').value='';
 
 }
 
 
-/* =========================
-   LOCAL STORAGE
-========================= */
+/* حفظ الحالات محليًا */
 
-function saveToLocal(item) {
+function saveToLocal(item){
 
 let cases =
 JSON.parse(
-
-localStorage.getItem(
-'my_vet_cases'
-)
-
+localStorage.getItem('my_vet_cases')
 || '[]'
-
 );
-
 
 cases.unshift(item);
 
-
 localStorage.setItem(
-
 'my_vet_cases',
-
 JSON.stringify(cases)
-
 );
-
 
 loadHistory();
 
 }
 
 
-/* =========================
-   HISTORY
-========================= */
+/* سجل الحالات */
 
-function loadHistory() {
+function loadHistory(){
 
 let cases =
 JSON.parse(
-
-localStorage.getItem(
-'my_vet_cases'
-)
-
+localStorage.getItem('my_vet_cases')
 || '[]'
-
 );
-
 
 const list =
-document.getElementById(
-'historyList'
-);
+document.getElementById('historyList');
 
-
-if (cases.length === 0) {
+if(cases.length===0){
 
 return;
 
 }
 
+list.innerHTML='';
 
-list.innerHTML = '';
-
-
-cases
-.slice(0,4)
-.forEach(function(c) {
-
+cases.slice(0,4).forEach(function(c){
 
 list.innerHTML += `
 
 <div class="history-item">
 
-<b>
-${c.id}
-</b>
+<b>${c.id}</b>
 
 |
 
@@ -1181,16 +983,10 @@ ${c.service}
 
 <br>
 
-📞
+📞 ${c.phone}
 
-${c.phone}
-
-<small
-style="float:left;"
->
-
+<small style="float:left;">
 ${c.date}
-
 </small>
 
 </div>
