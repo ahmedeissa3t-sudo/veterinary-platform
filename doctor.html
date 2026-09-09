@@ -1,593 +1,632 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الطبيب البيطري - VetCare</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>لوحة الطبيب البيطري - VetCare</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f4f6f8;
-            text-align: center;
-            margin: 0;
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 1100px;
-            margin: 0 auto 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
+<style>
+body{
+    font-family:Arial,sans-serif;
+    padding:20px;
+    background:#f4f6f8;
+    text-align:center;
+    margin:0;
+}
 
-        input,
-        button,
-        select {
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-        }
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    max-width:1000px;
+    margin:0 auto 20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
 
-        input {
-            width: 90%;
-        }
+#loginCard{
+    max-width:450px;
+    margin:70px auto;
+}
 
-        button {
-            background: #27ae60;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
+input,button,select{
+    padding:10px;
+    margin:8px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
 
-        button:hover {
-            opacity: 0.9;
-        }
+input{
+    width:90%;
+}
 
-        #dashboard {
-            display: none;
-        }
+button{
+    background:#27ae60;
+    color:white;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+}
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            max-width: 1100px;
-            margin: 0 auto 15px;
-        }
+button:hover{
+    opacity:.9;
+}
 
-        .tab-btn {
-            flex: 1;
-            background: #dfe6e9;
-            color: #2c3e50;
-            margin: 0;
-        }
+#loginBtn{
+    width:95%;
+}
 
-        .tab-btn.active {
-            background: #27ae60;
-            color: white;
-        }
+#dashboard{
+    display:none;
+}
 
-        .tab-content {
-            display: none;
-        }
+.tabs{
+    display:flex;
+    gap:10px;
+    max-width:1000px;
+    margin:0 auto 15px;
+}
 
-        .tab-content.active {
-            display: block;
-        }
+.tab-btn{
+    flex:1;
+    background:#dfe6e9;
+    color:#2c3e50;
+    width:auto;
+    margin:0;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            min-width: 850px;
-        }
+.tab-btn.active{
+    background:#27ae60;
+    color:white;
+}
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 9px;
-            font-size: 13px;
-            vertical-align: middle;
-        }
+.tab-content{
+    display:none;
+}
 
-        th {
-            background: #2c3e50;
-            color: white;
-        }
+.tab-content.active{
+    display:block;
+}
 
-        tr:nth-child(even) {
-            background: #f8f9fa;
-        }
+.approve-btn{
+    background:#2980b9;
+    width:auto;
+    padding:6px 10px;
+    font-size:12px;
+    margin:2px;
+}
 
-        .approve-btn {
-            background: #2980b9;
-            width: auto;
-            padding: 7px 12px;
-            font-size: 12px;
-            margin: 2px;
-        }
+.reject-btn{
+    background:#c0392b;
+    width:auto;
+    padding:6px 10px;
+    font-size:12px;
+    margin:2px;
+}
 
-        .reject-btn {
-            background: #c0392b;
-            width: auto;
-            padding: 7px 12px;
-            font-size: 12px;
-            margin: 2px;
-        }
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
 
-        .status-pending {
-            color: #f39c12;
-            font-weight: bold;
-        }
+th,td{
+    border:1px solid #ddd;
+    padding:8px;
+    font-size:13px;
+}
 
-        .status-approved {
-            color: #27ae60;
-            font-weight: bold;
-        }
+th{
+    background:#2c3e50;
+    color:white;
+}
 
-        .status-rejected {
-            color: #c0392b;
-            font-weight: bold;
-        }
+.message{
+    margin-top:10px;
+    padding:10px;
+    border-radius:6px;
+    display:none;
+}
 
-        .status-working {
-            color: #2980b9;
-            font-weight: bold;
-        }
+.error{
+    background:#fdecea;
+    color:#c0392b;
+}
 
-        .refresh-btn {
-            width: auto;
-            padding: 9px 18px;
-        }
+.success{
+    background:#eafaf1;
+    color:#27ae60;
+}
 
-        .logout-btn {
-            background: #7f8c8d;
-            width: auto;
-            padding: 8px 18px;
-            margin-bottom: 15px;
-        }
+.status{
+    font-weight:bold;
+}
 
-        .message {
-            padding: 15px;
-            font-weight: bold;
-        }
+.refresh{
+    width:auto;
+    padding:8px 15px;
+}
 
-        .error {
-            color: #c0392b;
-        }
+.logout{
+    background:#7f8c8d;
+    width:auto;
+    padding:8px 15px;
+}
 
-        .success {
-            color: #27ae60;
-        }
-    </style>
+@media(max-width:700px){
+
+    body{
+        padding:10px;
+    }
+
+    .tabs{
+        flex-direction:column;
+    }
+
+    table{
+        min-width:750px;
+    }
+
+}
+</style>
+
 </head>
 
 <body>
 
-    <!-- LOGIN -->
-    <div class="card" id="loginCard">
-        <h2>🔑 دخول الطبيب / الأدمن</h2>
 
-        <input
-            type="password"
-            id="passInput"
-            placeholder="أدخل كلمة السر"
-            onkeydown="if(event.key === 'Enter') login()"
+<!-- =========================
+     LOGIN
+========================= -->
+
+<div class="card" id="loginCard">
+
+    <h2>🔑 دخول الطبيب / الأدمن</h2>
+
+    <p>
+        أدخل كلمة المرور للدخول إلى لوحة التحكم
+    </p>
+
+    <input
+        type="password"
+        id="passInput"
+        placeholder="أدخل كلمة السر"
+        autocomplete="current-password"
+    >
+
+    <button
+        id="loginBtn"
+        type="button"
+        onclick="login()"
+    >
+        دخول
+    </button>
+
+    <div
+        id="loginMessage"
+        class="message error"
+    ></div>
+
+</div>
+
+
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<div id="dashboard">
+
+    <div class="tabs">
+
+        <button
+            class="tab-btn active"
+            id="tabCasesBtn"
+            type="button"
+            onclick="switchTab('cases')"
         >
+            🩺 الحالات الواردة
+        </button>
 
-        <button onclick="login()">دخول</button>
+        <button
+            class="tab-btn"
+            id="tabClinicsBtn"
+            type="button"
+            onclick="switchTab('clinics')"
+        >
+            🏥 طلبات انضمام العيادات
+        </button>
+
     </div>
 
 
-    <!-- DASHBOARD -->
-    <div id="dashboard">
+    <!-- =====================
+         CASES
+    ====================== -->
 
-        <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+    <div
+        class="card tab-content active"
+        id="tab-cases"
+    >
 
-        <!-- TABS -->
-        <div class="tabs">
+        <h2>🩺 الحالات البيطرية الواردة</h2>
 
-            <button
-                class="tab-btn active"
-                id="tabCasesBtn"
-                onclick="switchTab('cases')">
-                🩺 الحالات الواردة
-            </button>
+        <button
+            class="refresh"
+            type="button"
+            onclick="loadCases()"
+        >
+            🔄 تحديث البيانات
+        </button>
 
-            <button
-                class="tab-btn"
-                id="tabClinicsBtn"
-                onclick="switchTab('clinics')">
-                🏥 العيادات
-            </button>
+        <div style="overflow-x:auto;">
 
-        </div>
+            <table>
 
+                <thead>
 
-        <!-- CASES -->
-        <div class="card tab-content active" id="tab-cases">
+                    <tr>
 
-            <h2>🩺 الحالات البيطرية الواردة</h2>
+                        <th>رقم الطلب</th>
 
-            <button class="refresh-btn" onclick="loadCases()">
-                🔄 تحديث الحالات
-            </button>
+                        <th>الاسم</th>
 
-            <div style="overflow-x:auto;">
+                        <th>الهاتف</th>
 
-                <table>
+                        <th>الحيوان</th>
 
-                    <thead>
-                        <tr>
-                            <th>رقم الطلب</th>
-                            <th>الاسم</th>
-                            <th>الهاتف</th>
-                            <th>الحيوان</th>
-                            <th>الطبيب</th>
-                            <th>الخدمة</th>
-                            <th>الوصف</th>
-                            <th>الحالة</th>
-                            <th>تحديث</th>
-                        </tr>
-                    </thead>
+                        <th>الطبيب</th>
 
-                    <tbody id="casesTable">
+                        <th>الخدمة</th>
 
-                        <tr>
-                            <td colspan="9">
-                                ⏳ جاري التحميل...
-                            </td>
-                        </tr>
+                        <th>الوصف</th>
 
-                    </tbody>
+                        <th>الحالة</th>
 
-                </table>
+                        <th>تحديث</th>
 
-            </div>
+                    </tr>
 
-        </div>
+                </thead>
 
+                <tbody id="casesTable">
 
-        <!-- CLINICS -->
-        <div class="card tab-content" id="tab-clinics">
+                    <tr>
+                        <td colspan="9">
+                            جاري التحميل...
+                        </td>
+                    </tr>
 
-            <h2>🏥 العيادات</h2>
+                </tbody>
 
-            <button class="refresh-btn" onclick="loadClinics()">
-                🔄 تحديث العيادات
-            </button>
-
-            <div style="overflow-x:auto;">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>اسم العيادة</th>
-                            <th>الطبيب المسؤول</th>
-                            <th>التخصص</th>
-                            <th>العنوان</th>
-                            <th>الهاتف</th>
-                            <th>الحالة</th>
-                            <th>إجراء</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="clinicsTable">
-
-                        <tr>
-                            <td colspan="7">
-                                ⏳ جاري التحميل...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         </div>
 
     </div>
+
+
+    <!-- =====================
+         CLINICS
+    ====================== -->
+
+    <div
+        class="card tab-content"
+        id="tab-clinics"
+    >
+
+        <h2>🏥 طلبات انضمام العيادات</h2>
+
+        <button
+            class="refresh"
+            type="button"
+            onclick="loadClinics()"
+        >
+            🔄 تحديث البيانات
+        </button>
+
+        <div style="overflow-x:auto;">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>اسم العيادة</th>
+
+                        <th>الطبيب المسؤول</th>
+
+                        <th>التخصص</th>
+
+                        <th>العنوان</th>
+
+                        <th>المدينة</th>
+
+                        <th>الهاتف</th>
+
+                        <th>الحالة</th>
+
+                        <th>إجراء</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="clinicsTable">
+
+                    <tr>
+                        <td colspan="8">
+                            جاري التحميل...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <button
+            class="logout"
+            type="button"
+            onclick="logout()"
+        >
+            تسجيل الخروج
+        </button>
+
+    </div>
+
+</div>
 
 
 <script>
 
-    /* =========================
-       SUPABASE
-    ========================= */
+/* =========================
+   SUPABASE
+========================= */
 
-    const SUPABASE_URL =
-        'https://tuyvjozypjcvgpgkfoby.supabase.co';
+const SUPABASE_URL =
+'https://tuyvjozypjcvgpgkfoby.supabase.co';
 
-    const SUPABASE_KEY =
-        'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+const SUPABASE_KEY =
+'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
 
-    const _supabase =
-        supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
+const _supabase =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+    const input =
+        document.getElementById(
+            'passInput'
+        );
+
+    const message =
+        document.getElementById(
+            'loginMessage'
+        );
+
+    const pass =
+        input.value.trim();
+
+
+    if(!pass){
+
+        message.style.display =
+            'block';
+
+        message.textContent =
+            '⚠️ اكتب كلمة السر أولًا';
+
+        return;
+
+    }
+
+
+    if(pass === 'vetcare2026#'){
+
+        sessionStorage.setItem(
+            'vetcare_logged_in',
+            'true'
         );
 
 
-    /* =========================
-       LOGIN
-    ========================= */
+        document.getElementById(
+            'loginCard'
+        ).style.display =
+            'none';
 
-    function login() {
 
-        const pass =
-            document.getElementById('passInput').value.trim();
+        document.getElementById(
+            'dashboard'
+        ).style.display =
+            'block';
 
-        if (pass === 'vetcare2026#') {
 
-            localStorage.setItem(
-                'vetcare_doctor_login',
-                'true'
-            );
+        loadCases();
 
-            document.getElementById('loginCard').style.display = 'none';
+        loadClinics();
 
-            document.getElementById('dashboard').style.display = 'block';
+    }
+    else{
 
-            loadCases();
-            loadClinics();
+        message.style.display =
+            'block';
 
-        } else {
+        message.textContent =
+            '❌ كلمة السر غير صحيحة';
 
-            alert('❌ كلمة السر غير صحيحة');
+        input.value = '';
 
-        }
+        input.focus();
 
     }
 
+}
 
-    /* =========================
-       AUTO LOGIN
-    ========================= */
 
-    window.addEventListener('DOMContentLoaded', function () {
+/* =========================
+   ENTER LOGIN
+========================= */
 
-        const loggedIn =
-            localStorage.getItem('vetcare_doctor_login');
+document
+    .getElementById('passInput')
+    .addEventListener(
+        'keydown',
+        function(event){
 
-        if (loggedIn === 'true') {
+            if(event.key === 'Enter'){
 
-            document.getElementById('loginCard').style.display = 'none';
+                event.preventDefault();
 
-            document.getElementById('dashboard').style.display = 'block';
+                login();
 
-            loadCases();
-            loadClinics();
+            }
 
         }
+    );
 
-    });
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+
+    sessionStorage.removeItem(
+        'vetcare_logged_in'
+    );
+
+    location.reload();
+
+}
 
 
-    /* =========================
-       LOGOUT
-    ========================= */
+/* =========================
+   TABS
+========================= */
 
-    function logout() {
+function switchTab(tab){
 
-        localStorage.removeItem(
-            'vetcare_doctor_login'
+    document
+        .getElementById('tab-cases')
+        .classList.toggle(
+            'active',
+            tab === 'cases'
         );
 
-        location.reload();
 
-    }
-
-
-    /* =========================
-       TABS
-    ========================= */
-
-    function switchTab(tab) {
-
-        document
-            .getElementById('tab-cases')
-            .classList.toggle(
-                'active',
-                tab === 'cases'
-            );
-
-        document
-            .getElementById('tab-clinics')
-            .classList.toggle(
-                'active',
-                tab === 'clinics'
-            );
-
-        document
-            .getElementById('tabCasesBtn')
-            .classList.toggle(
-                'active',
-                tab === 'cases'
-            );
-
-        document
-            .getElementById('tabClinicsBtn')
-            .classList.toggle(
-                'active',
-                tab === 'clinics'
-            );
-
-    }
+    document
+        .getElementById('tab-clinics')
+        .classList.toggle(
+            'active',
+            tab === 'clinics'
+        );
 
 
-    /* =========================
-       SAFE TEXT
-    ========================= */
-
-    function safe(value) {
-
-        if (
-            value === null ||
-            value === undefined ||
-            value === ''
-        ) {
-            return '-';
-        }
-
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-    }
+    document
+        .getElementById('tabCasesBtn')
+        .classList.toggle(
+            'active',
+            tab === 'cases'
+        );
 
 
-    /* =========================
-       CASE STATUS COLOR
-    ========================= */
+    document
+        .getElementById('tabClinicsBtn')
+        .classList.toggle(
+            'active',
+            tab === 'clinics'
+        );
 
-    function caseStatus(status) {
-
-        const value =
-            status || 'قيد الانتظار';
-
-        let className =
-            'status-pending';
-
-        if (
-            value === 'جاري التواصل' ||
-            value === 'تم الرد'
-        ) {
-            className = 'status-working';
-        }
-
-        if (value === 'مغلقة') {
-            className = 'status-approved';
-        }
-
-        return `
-            <span class="${className}">
-                ${safe(value)}
-            </span>
-        `;
-
-    }
+}
 
 
-    /* =========================
-       CLINIC STATUS
-    ========================= */
+/* =========================
+   LOAD CASES
+========================= */
 
-    function clinicStatus(status) {
+async function loadCases(){
 
-        const value =
-            status || 'قيد المراجعة';
-
-        if (value === 'مقبولة') {
-
-            return `
-                <span class="status-approved">
-                    ✅ مقبولة
-                </span>
-            `;
-
-        }
-
-        if (value === 'مرفوضة') {
-
-            return `
-                <span class="status-rejected">
-                    ❌ مرفوضة
-                </span>
-            `;
-
-        }
-
-        return `
-            <span class="status-pending">
-                ⏳ قيد المراجعة
-            </span>
-        `;
-
-    }
+    const tbody =
+        document.getElementById(
+            'casesTable'
+        );
 
 
-    /* =========================
-       LOAD CASES
-    ========================= */
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="9">
+                ⏳ جاري جلب الحالات...
+            </td>
+        </tr>
+    `;
 
-    async function loadCases() {
 
-        const tbody =
-            document.getElementById('casesTable');
+    try{
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9">
-                    ⏳ جاري جلب الحالات...
-                </td>
-            </tr>
-        `;
-
-        try {
-
-            const {
-                data,
-                error
-            } = await _supabase
+        const {
+            data,
+            error
+        } =
+            await _supabase
                 .from('cases')
-                .select('*');
-
-            if (error) {
-                throw error;
-            }
-
-            if (!data || data.length === 0) {
-
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9">
-                            لا توجد حالات مسجلة حتى الآن
-                        </td>
-                    </tr>
-                `;
-
-                return;
-            }
+                .select('*')
+                .order(
+                    'id',
+                    {
+                        ascending:false
+                    }
+                );
 
 
-            /* الأحدث أولاً */
-            data.sort(function(a, b) {
+        if(error){
 
-                const dateA =
-                    new Date(
-                        a.created_at || 0
-                    ).getTime();
+            throw error;
 
-                const dateB =
-                    new Date(
-                        b.created_at || 0
-                    ).getTime();
-
-                return dateB - dateA;
-
-            });
+        }
 
 
-            tbody.innerHTML = '';
+        if(
+            !data ||
+            data.length === 0
+        ){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9">
+                        لا توجد حالات مسجلة حتى الآن
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
 
 
-            data.forEach(function(c) {
+        tbody.innerHTML = '';
 
-                const id =
-                    c.id;
+
+        data.forEach(
+            function(c){
 
                 tbody.innerHTML += `
 
@@ -595,51 +634,87 @@
 
                         <td>
                             <b>
-                                ${safe(c.order_number)}
+                                ${safe(
+                                    c.order_number
+                                )}
                             </b>
                         </td>
 
                         <td>
-                            ${safe(c.owner_name)}
+                            ${safe(
+                                c.owner_name
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.phone)}
+                            ${safe(
+                                c.phone
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.animal_type)}
+                            ${safe(
+                                c.animal_type
+                            )}
 
                             ${
                                 c.pet_name
-                                ? ' (' + safe(c.pet_name) + ')'
-                                : ''
+                                ?
+                                '(' +
+                                safe(c.pet_name) +
+                                ')'
+                                :
+                                ''
                             }
                         </td>
 
                         <td>
-                            ${safe(c.doctor_name)}
+                            ${safe(
+                                c.doctor_name
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.service_type)}
+                            ${safe(
+                                c.service_type
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.description)}
+                            ${safe(
+                                c.description
+                            )}
                         </td>
 
                         <td>
-                            ${caseStatus(c.status)}
+
+                            <span class="status">
+
+                                ${safe(
+                                    c.status ||
+                                    'قيد الانتظار'
+                                )}
+
+                            </span>
+
                         </td>
 
                         <td>
 
                             <select
-                                onchange="updateCaseStatus('${String(id).replace(/'/g, "\\'")}', this.value)"
+                                onchange="
+                                    updateCaseStatus(
+                                        ${c.id},
+                                        this.value
+                                    )
+                                "
                             >
 
-                                <option value="" selected disabled>
+                                <option
+                                    value=""
+                                    disabled
+                                    selected
+                                >
                                     تغيير...
                                 </option>
 
@@ -667,192 +742,106 @@
 
                 `;
 
-            });
-
-        }
-
-        catch (err) {
-
-            console.error(err);
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="9" class="error">
-                        ❌ خطأ في تحميل الحالات:
-                        ${safe(err.message)}
-                    </td>
-                </tr>
-            `;
-
-        }
-
-    }
-
-
-    /* =========================
-       UPDATE CASE
-    ========================= */
-
-    async function updateCaseStatus(
-        id,
-        newStatus
-    ) {
-
-        if (!newStatus) {
-            return;
-        }
-
-        try {
-
-            const {
-                error
-            } = await _supabase
-                .from('cases')
-                .update({
-                    status: newStatus
-                })
-                .eq('id', id);
-
-            if (error) {
-                throw error;
             }
-
-            await loadCases();
-
-        }
-
-        catch (err) {
-
-            alert(
-                '❌ خطأ في تحديث الحالة: ' +
-                err.message
-            );
-
-        }
+        );
 
     }
+    catch(error){
 
+        console.error(
+            error
+        );
 
-    /* =========================
-       LOAD CLINICS
-    ========================= */
-
-    async function loadClinics() {
-
-        const tbody =
-            document.getElementById('clinicsTable');
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="7">
-                    ⏳ جاري جلب العيادات...
+                <td
+                    colspan="9"
+                    style="color:red"
+                >
+                    ❌ خطأ:
+                    ${safe(error.message)}
                 </td>
             </tr>
         `;
 
-        try {
+    }
 
-            const {
-                data,
-                error
-            } = await _supabase
+}
+
+
+/* =========================
+   LOAD CLINICS
+========================= */
+
+async function loadClinics(){
+
+    const tbody =
+        document.getElementById(
+            'clinicsTable'
+        );
+
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8">
+                ⏳ جاري جلب العيادات...
+            </td>
+        </tr>
+    `;
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await _supabase
                 .from('clinics')
-                .select('*');
-
-            if (error) {
-                throw error;
-            }
-
-            if (!data || data.length === 0) {
-
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7">
-                            لا توجد عيادات مسجلة حتى الآن
-                        </td>
-                    </tr>
-                `;
-
-                return;
-            }
+                .select('*')
+                .order(
+                    'id',
+                    {
+                        ascending:false
+                    }
+                );
 
 
-            data.sort(function(a, b) {
+        if(error){
 
-                const dateA =
-                    new Date(
-                        a.created_at || 0
-                    ).getTime();
+            throw error;
 
-                const dateB =
-                    new Date(
-                        b.created_at || 0
-                    ).getTime();
-
-                return dateB - dateA;
-
-            });
+        }
 
 
-            tbody.innerHTML = '';
+        if(
+            !data ||
+            data.length === 0
+        ){
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8">
+                        لا توجد طلبات انضمام حتى الآن
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
 
 
-            data.forEach(function(c) {
+        tbody.innerHTML = '';
 
-                const id =
-                    c.id;
+
+        data.forEach(
+            function(c){
 
                 const status =
-                    c.status || 'قيد المراجعة';
-
-
-                let action = '';
-
-
-                if (status === 'مقبولة') {
-
-                    action = `
-                        <span class="success">
-                            ✅ تم قبول العيادة
-                        </span>
-                    `;
-
-                }
-
-                else if (status === 'مرفوضة') {
-
-                    action = `
-                        <button
-                            class="approve-btn"
-                            onclick="updateClinicStatus('${String(id).replace(/'/g, "\\'")}', 'مقبولة')"
-                        >
-                            إعادة قبول
-                        </button>
-                    `;
-
-                }
-
-                else {
-
-                    action = `
-
-                        <button
-                            class="approve-btn"
-                            onclick="updateClinicStatus('${String(id).replace(/'/g, "\\'")}', 'مقبولة')"
-                        >
-                            ✅ قبول
-                        </button>
-
-                        <button
-                            class="reject-btn"
-                            onclick="updateClinicStatus('${String(id).replace(/'/g, "\\'")}', 'مرفوضة')"
-                        >
-                            ❌ رفض
-                        </button>
-
-                    `;
-
-                }
+                    c.status ||
+                    'قيد المراجعة';
 
 
                 tbody.innerHTML += `
@@ -861,62 +850,262 @@
 
                         <td>
                             <b>
-                                ${safe(c.clinic_name)}
+                                ${safe(
+                                    c.clinic_name
+                                )}
                             </b>
                         </td>
 
                         <td>
-                            ${safe(c.doctor_name)}
+                            ${safe(
+                                c.doctor_name
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.specialty)}
+                            ${safe(
+                                c.specialty
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.address)}
+                            ${safe(
+                                c.address
+                            )}
                         </td>
 
                         <td>
-                            ${safe(c.phone)}
+                            ${safe(
+                                c.city
+                            )}
                         </td>
 
                         <td>
-                            ${clinicStatus(status)}
+                            ${safe(
+                                c.phone
+                            )}
                         </td>
 
                         <td>
-                            ${action}
+
+                            <span class="status">
+
+                                ${safe(
+                                    status
+                                )}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="approve-btn"
+                                type="button"
+                                onclick="
+                                    updateClinicStatus(
+                                        ${c.id},
+                                        'مقبولة'
+                                    )
+                                "
+                            >
+                                قبول
+                            </button>
+
+
+                            <button
+                                class="reject-btn"
+                                type="button"
+                                onclick="
+                                    updateClinicStatus(
+                                        ${c.id},
+                                        'مرفوضة'
+                                    )
+                                "
+                            >
+                                رفض
+                            </button>
+
                         </td>
 
                     </tr>
 
                 `;
 
-            });
+            }
+        );
 
-        }
+    }
+    catch(error){
 
-        catch (err) {
+        console.error(
+            error
+        );
 
-            console.error(err);
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="error">
-                        ❌ خطأ في تحميل العيادات:
-                        ${safe(err.message)}
-                    </td>
-                </tr>
-            `;
+        tbody.innerHTML = `
+            <tr>
+                <td
+                    colspan="8"
+                    style="color:red"
+                >
+                    ❌ خطأ:
+                    ${safe(error.message)}
+                </td>
+            </tr>
+        `;
 
-        }
+    }
+
+}
+
+
+/* =========================
+   UPDATE CASE
+========================= */
+
+async function updateCaseStatus(
+    id,
+    newStatus
+){
+
+    const {
+        error
+    } =
+        await _supabase
+            .from('cases')
+            .update({
+                status:newStatus
+            })
+            .eq(
+                'id',
+                id
+            );
+
+
+    if(error){
+
+        alert(
+            '❌ خطأ في تحديث الحالة:\n' +
+            error.message
+        );
+
+        return;
 
     }
 
 
-    /* =========================
-       UPDATE CLINIC
-    ========================= */
+    loadCases();
 
-    async function updateClin
+}
+
+
+/* =========================
+   UPDATE CLINIC
+========================= */
+
+async function updateClinicStatus(
+    id,
+    newStatus
+){
+
+    const {
+        error
+    } =
+        await _supabase
+            .from('clinics')
+            .update({
+                status:newStatus
+            })
+            .eq(
+                'id',
+                id
+            );
+
+
+    if(error){
+
+        alert(
+            '❌ خطأ في تحديث العيادة:\n' +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    loadClinics();
+
+}
+
+
+/* =========================
+   SAFE HTML
+========================= */
+
+function safe(value){
+
+    if(
+        value === null ||
+        value === undefined ||
+        value === ''
+    ){
+
+        return '-';
+
+    }
+
+
+    return String(value)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+
+}
+
+
+/* =========================
+   AUTO LOGIN
+========================= */
+
+window.addEventListener(
+    'DOMContentLoaded',
+    function(){
+
+        const loggedIn =
+            sessionStorage.getItem(
+                'vetcare_logged_in'
+            );
+
+
+        if(loggedIn === 'true'){
+
+            document.getElementById(
+                'loginCard'
+            ).style.display =
+                'none';
+
+
+            document.getElementById(
+                'dashboard'
+            ).style.display =
+                'block';
+
+
+            loadCases();
+
+            loadClinics();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
