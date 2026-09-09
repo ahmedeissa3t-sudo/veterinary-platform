@@ -218,11 +218,9 @@ onclick="toggleTheme()"
 
 <h3>📋 تقديم حالة / استشارة جديدة</h3>
 
-
 <label>
 1. اختر الطبيب / العيادة:
 </label>
-
 
 <div
 class="cards-grid"
@@ -504,11 +502,6 @@ style="color:grey;font-size:13px;"
 
 <script>
 
-
-/* =========================
-   SUPABASE
-========================= */
-
 const SUPABASE_URL =
 'https://tuyvjozypjcvgpgkfoby.supabase.co';
 
@@ -522,20 +515,11 @@ SUPABASE_KEY
 );
 
 
-/* =========================
-   VARIABLES
-========================= */
-
 let chosenDoctor = '';
-
 let chosenAnimal = '';
 
 let approvedClinics = [];
 
-
-/* =========================
-   START
-========================= */
 
 window.onload = function() {
 
@@ -545,10 +529,6 @@ loadClinicsForBooking();
 
 };
 
-
-/* =========================
-   DARK MODE
-========================= */
 
 function toggleTheme() {
 
@@ -566,18 +546,20 @@ async function loadClinicsForBooking() {
 const grid =
 document.getElementById('doctorsGrid');
 
-
 try {
-
 
 const { data, error } =
 await _supabase
-
 .from('clinics')
-
 .select('*')
 
-.eq('status','approved');
+/*
+   IMPORTANT:
+   حالة العيادة في Supabase
+   هي "مقبولة" وليس "approved"
+*/
+
+.eq('status','مقبولة');
 
 
 if (error) {
@@ -600,12 +582,9 @@ data
 
 grid.innerHTML = '';
 
-
 approvedClinics =
 data || [];
 
-
-/* مفيش عيادات */
 
 if (!data || data.length === 0) {
 
@@ -635,10 +614,8 @@ return;
 
 data.forEach(function(clinic) {
 
-
 const div =
 document.createElement('div');
-
 
 div.className =
 'item-card doc-card';
@@ -668,20 +645,16 @@ div
 
 grid.appendChild(div);
 
-
 });
-
 
 }
 
 catch(error) {
 
-
 console.error(
 'LOAD CLINICS ERROR:',
 error
 );
-
 
 grid.innerHTML = `
 
@@ -717,7 +690,6 @@ function selectDoctor(
 clinic,
 element
 ) {
-
 
 chosenDoctor =
 clinic.doctor_name
@@ -793,7 +765,6 @@ type,
 element
 ) {
 
-
 chosenAnimal = type;
 
 
@@ -817,7 +788,6 @@ element.classList.add('active');
 
 function addSymptom(text) {
 
-
 const textarea =
 document.getElementById(
 'case'
@@ -825,7 +795,6 @@ document.getElementById(
 
 
 textarea.value +=
-
 (textarea.value
 ? ' - '
 : '') + text;
@@ -838,7 +807,6 @@ textarea.value +=
 ========================= */
 
 async function submitCase() {
-
 
 const owner =
 document
@@ -968,9 +936,7 @@ description
 
 const { error } =
 await _supabase
-
 .from('cases')
-
 .insert([{
 
 order_number:
@@ -1013,12 +979,10 @@ button.textContent =
 
 if (error) {
 
-
 alert(
 '❌ خطأ:\n' +
 error.message
 );
-
 
 return;
 
@@ -1119,7 +1083,6 @@ document.getElementById(
 
 function saveToLocal(item) {
 
-
 let cases =
 JSON.parse(
 
@@ -1154,7 +1117,6 @@ loadHistory();
 ========================= */
 
 function loadHistory() {
-
 
 let cases =
 JSON.parse(
@@ -1200,6 +1162,7 @@ ${c.id}
 |
 
 الطبيب:
+
 ${c.doctor}
 
 <br>
@@ -1213,17 +1176,21 @@ ${c.pet}
 <br>
 
 الخدمة:
+
 ${c.service}
 
 <br>
 
 📞
+
 ${c.phone}
 
 <small
 style="float:left;"
 >
+
 ${c.date}
+
 </small>
 
 </div>
@@ -1237,9 +1204,4 @@ ${c.date}
 </script>
 
 </body>
-
-</html>
-
-
-
-    
+    </html>
