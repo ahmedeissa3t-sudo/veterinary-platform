@@ -8,178 +8,47 @@
 <title>Vet Care 🐾</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
 --bg:#f8fafc;
---card-bg:#ffffff;
+--card:#fff;
 --text:#0f172a;
 --primary:#10b981;
 --border:#e2e8f0;
 --danger:#ef4444;
---tag-bg:#e2e8f0;
+--tag:#e2e8f0;
 }
-
 .dark{
 --bg:#0f172a;
---card-bg:#1e293b;
+--card:#1e293b;
 --text:#f8fafc;
 --border:#334155;
---tag-bg:#334155;
+--tag:#334155;
 }
-
-*{
-box-sizing:border-box;
-font-family:'Tajawal',sans-serif;
-}
-
-body{
-margin:0;
-padding:15px;
-background:var(--bg);
-color:var(--text);
-}
-
-.container{
-max-width:500px;
-margin:auto;
-}
-
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-
-.theme-btn{
-background:var(--card-bg);
-color:var(--text);
-border:1px solid var(--border);
-padding:8px 12px;
-border-radius:20px;
-cursor:pointer;
-}
-
-.card{
-background:var(--card-bg);
-border:1px solid var(--border);
-border-radius:16px;
-padding:20px;
-margin-bottom:15px;
-box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
-
-.cards-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-margin:10px 0 15px;
-}
-
-.item-card{
-background:var(--bg);
-border:2px solid var(--border);
-border-radius:12px;
-padding:12px 5px;
-text-align:center;
-cursor:pointer;
-font-weight:bold;
-font-size:13px;
-}
-
-.item-card.active{
-border-color:var(--primary);
-background:rgba(16,185,129,.1);
-color:var(--primary);
-}
-
-label{
-display:block;
-font-size:13px;
-font-weight:bold;
-margin-top:10px;
-}
-
-input,
-select,
-textarea{
-width:100%;
-padding:10px;
-margin-top:5px;
-border:1px solid var(--border);
-border-radius:10px;
-background:var(--bg);
-color:var(--text);
-}
-
-.row{
-display:flex;
-gap:10px;
-}
-
-.row div{
-flex:1;
-}
-
-.symptoms-tags{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-margin:8px 0 15px;
-}
-
-.tag{
-background:var(--tag-bg);
-padding:6px 10px;
-border-radius:15px;
-font-size:12px;
-cursor:pointer;
-}
-
-.btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-font-weight:bold;
-font-size:15px;
-cursor:pointer;
-margin-top:10px;
-}
-
-.btn-main{
-background:var(--primary);
-color:white;
-}
-
-.btn-emergency{
-background:var(--danger);
-color:white;
-display:flex;
-justify-content:center;
-text-decoration:none;
-}
-
-.status-box{
-display:none;
-margin-top:15px;
-padding:12px;
-border-radius:8px;
-background:rgba(16,185,129,.15);
-color:var(--primary);
-text-align:center;
-}
-
-.history-item{
-border-bottom:1px solid var(--border);
-padding:8px 0;
-font-size:12px;
-}
+*{box-sizing:border-box;font-family:Tajawal,sans-serif}
+body{margin:0;padding:15px;background:var(--bg);color:var(--text)}
+.container{max-width:500px;margin:auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.theme-btn{background:var(--card);color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:20px;cursor:pointer;text-decoration:none}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,.05)}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 15px}
+.item-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:12px 5px;text-align:center;cursor:pointer;font-weight:bold;font-size:13px}
+.item-card.active{border-color:var(--primary);background:rgba(16,185,129,.1);color:var(--primary)}
+label{display:block;font-size:13px;font-weight:bold;margin-top:10px}
+input,select,textarea{width:100%;padding:10px;margin-top:5px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text)}
+.row{display:flex;gap:10px}.row div{flex:1}
+.symptoms-tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 15px}
+.tag{background:var(--tag);padding:6px 10px;border-radius:15px;font-size:12px;cursor:pointer}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;margin-top:10px}
+.btn-main{background:var(--primary);color:white}
+.btn-emergency{background:var(--danger);color:white;display:flex;justify-content:center;text-decoration:none}
+.status-box{display:none;margin-top:15px;padding:12px;border-radius:10px;background:rgba(16,185,129,.15);color:var(--primary);text-align:center}
+.track-result{margin-top:15px;padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--bg);line-height:2}
+.badge{display:inline-block;padding:4px 10px;border-radius:15px;background:var(--primary);color:white;font-size:12px}
+.history-item{border-bottom:1px solid var(--border);padding:8px 0;font-size:12px}
 </style>
-
 </head>
 
 <body>
@@ -190,116 +59,63 @@ font-size:12px;
 
 <h2>🌐 منصة Vet Care</h2>
 
-<div style="display:flex;gap:8px;">
+<div style="display:flex;gap:8px">
 
-<a
-href="services.html"
-class="theme-btn"
-style="text-decoration:none;"
->
-🔍 الخدمات
-</a>
+<a href="services.html" class="theme-btn">🔍 الخدمات</a>
 
-<button
-class="theme-btn"
-onclick="toggleTheme()"
->
-🌙
-</button>
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
 
 </div>
 
 </div>
 
+
+<!-- تقديم طلب -->
 
 <div class="card">
 
 <h3>📋 تقديم حالة / طلب خدمة</h3>
 
-<label>
-1. اختر الطبيب / العيادة:
-</label>
+<label>1. اختر الطبيب / العيادة:</label>
 
-<div
-class="cards-grid"
-id="doctorsGrid"
->
+<div class="cards-grid" id="doctorsGrid">
 
-<div
-style="
-grid-column:1/-1;
-text-align:center;
-color:#94a3b8;
-padding:10px;
-"
->
+<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:10px">
 ⏳ جاري تحميل العيادات...
 </div>
 
 </div>
 
 
-<div
-id="clinicDetails"
-style="
-display:none;
-background:var(--bg);
-border:1px dashed var(--border);
-border-radius:10px;
-padding:10px;
-margin-bottom:12px;
-font-size:12px;
-line-height:1.8;
-"
-></div>
+<div id="clinicDetails"
+style="display:none;background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px;line-height:1.8">
+</div>
 
 
-<label>
-2. نوع الحيوان:
-</label>
+<label>2. نوع الحيوان:</label>
 
 <div class="cards-grid">
 
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🐱 قطة',this)"
->
-🐱 قطة
+<div class="item-card animal-card" onclick="selectAnimal('🐱 قطة',this)">🐱 قطة</div>
+<div class="item-card animal-card" onclick="selectAnimal('🐶 كلب',this)">🐶 كلب</div>
+<div class="item-card animal-card" onclick="selectAnimal('🦜 طائر',this)">🦜 طائر</div>
+<div class="item-card animal-card" onclick="selectAnimal('🐰 أرنب',this)">🐰 أرنب</div>
+<div class="item-card animal-card" onclick="selectAnimal('🐢 زواحف',this)">🐢 زواحف</div>
+<div class="item-card animal-card" onclick="selectAnimal('🐾 آخر',this)">🐾 آخر</div>
+
 </div>
 
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🐶 كلب',this)"
->
-🐶 كلب
+
+<div class="row">
+
+<div>
+<label>اسم صاحب الحيوان:</label>
+<input type="text" id="owner" placeholder="مثال: أحمد">
 </div>
 
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🦜 طائر',this)"
->
-🦜 طائر
-</div>
-
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🐰 أرنب',this)"
->
-🐰 أرنب
-</div>
-
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🐢 زواحف',this)"
->
-🐢 زواحف
-</div>
-
-<div
-class="item-card animal-card"
-onclick="selectAnimal('🐾 آخر',this)"
->
-🐾 آخر
+<div>
+<label>رقم الهاتف:</label>
+<input type="tel" id="phone" placeholder="01000000000">
 </div>
 
 </div>
@@ -308,155 +124,53 @@ onclick="selectAnimal('🐾 آخر',this)"
 <div class="row">
 
 <div>
-
-<label>
-اسم صاحب الحيوان:
-</label>
-
-<input
-type="text"
-id="owner"
-placeholder="مثال: أحمد"
->
-
+<label>اسم الحيوان:</label>
+<input type="text" id="pet" placeholder="مثال: سيمبا">
 </div>
-
 
 <div>
-
-<label>
-رقم الهاتف:
-</label>
-
-<input
-type="tel"
-id="phone"
-placeholder="01000000000"
->
-
+<label>عمر الحيوان:</label>
+<input type="text" id="age" placeholder="مثال: سنة">
 </div>
 
 </div>
 
 
-<div class="row">
-
-<div>
-
-<label>
-اسم الحيوان:
-</label>
-
-<input
-type="text"
-id="pet"
-placeholder="مثال: سيمبا"
->
-
-</div>
-
-
-<div>
-
-<label>
-عمر الحيوان:
-</label>
-
-<input
-type="text"
-id="age"
-placeholder="مثال: سنة"
->
-
-</div>
-
-</div>
-
-
-<label>
-نوع الخدمة:
-</label>
+<label>نوع الخدمة:</label>
 
 <select id="service">
 
-<option value="استشارة أونلاين">
-🩺 استشارة أونلاين
-</option>
-
-<option value="تطعيمات">
-💉 جدول التطعيمات
-</option>
-
-<option value="فحص طوارئ">
-🚨 طوارئ عاجلة
-</option>
-
-<option value="عناية وتنظيف">
-✂️ عناية وتجميل
-</option>
+<option value="استشارة أونلاين">🩺 استشارة أونلاين</option>
+<option value="تطعيمات">💉 جدول التطعيمات</option>
+<option value="فحص طوارئ">🚨 طوارئ عاجلة</option>
+<option value="عناية وتنظيف">✂️ عناية وتجميل</option>
 
 </select>
 
 
-<label>
-أعراض سريعة (اختياري):
-</label>
+<label>أعراض سريعة (اختياري):</label>
 
 <div class="symptoms-tags">
 
-<span
-class="tag"
-onclick="addSymptom('خمول')"
->
-➕ خمول
-</span>
-
-<span
-class="tag"
-onclick="addSymptom('قيء')"
->
-➕ قيء
-</span>
-
-<span
-class="tag"
-onclick="addSymptom('سخونية')"
->
-➕ سخونية
-</span>
-
-<span
-class="tag"
-onclick="addSymptom('إسهال')"
->
-➕ إسهال
-</span>
-
-<span
-class="tag"
-onclick="addSymptom('جرح')"
->
-➕ جرح
-</span>
+<span class="tag" onclick="addSymptom('خمول')">➕ خمول</span>
+<span class="tag" onclick="addSymptom('قيء')">➕ قيء</span>
+<span class="tag" onclick="addSymptom('سخونية')">➕ سخونية</span>
+<span class="tag" onclick="addSymptom('إسهال')">➕ إسهال</span>
+<span class="tag" onclick="addSymptom('جرح')">➕ جرح</span>
 
 </div>
 
 
-<label>
-ملاحظات / تفاصيل إضافية (اختياري):
-</label>
+<label>ملاحظات / تفاصيل إضافية (اختياري):</label>
 
 <textarea
 id="case"
 rows="3"
-placeholder="مثال: أريد تطعيم الحيوان فقط، ولا توجد أعراض"
-></textarea>
+placeholder="مثال: أريد تطعيم الحيوان فقط، ولا توجد أعراض">
+</textarea>
 
 
-<button
-class="btn btn-main"
-onclick="submitCase()"
->
+<button class="btn btn-main" onclick="submitCase()">
 إرسال الطلب 🚀
 </button>
 
@@ -464,30 +178,59 @@ onclick="submitCase()"
 <a
 href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care"
 class="btn btn-emergency"
-target="_blank"
->
+target="_blank">
 🚨 طوارئ واتساب مباشر
 </a>
 
 
-<div
-id="status"
-class="status-box"
-></div>
+<div id="status" class="status-box"></div>
 
 </div>
 
 
+<!-- متابعة الطلب -->
+
 <div class="card">
 
-<h4>
-📋 سجل الطلبات:
-</h4>
+<h3>🔎 متابعة طلبك</h3>
 
-<div
-id="historyList"
-style="color:grey;font-size:13px;"
->
+<p style="font-size:13px;color:#64748b">
+اكتب رقم الطلب ورقم الهاتف لمعرفة آخر حالة للطلب.
+</p>
+
+<label>رقم الطلب:</label>
+
+<input
+type="text"
+id="trackOrder"
+placeholder="مثال: VC-1234">
+
+
+<label>رقم الهاتف:</label>
+
+<input
+type="tel"
+id="trackPhone"
+placeholder="01000000000">
+
+
+<button class="btn btn-main" onclick="trackCase()">
+🔎 متابعة الطلب
+</button>
+
+
+<div id="trackResult"></div>
+
+</div>
+
+
+<!-- سجل الطلبات -->
+
+<div class="card">
+
+<h4>📋 سجل الطلبات:</h4>
+
+<div id="historyList" style="color:grey;font-size:13px">
 لا توجد طلبات مسجلة حتى الآن.
 </div>
 
@@ -517,11 +260,12 @@ let chosenAnimal = '';
 window.onload = function(){
 
 loadHistory();
-
 loadClinicsForBooking();
 
 };
 
+
+/* الوضع الليلي */
 
 function toggleTheme(){
 
@@ -537,8 +281,6 @@ async function loadClinicsForBooking(){
 const grid =
 document.getElementById('doctorsGrid');
 
-try{
-
 const {data,error} =
 await _supabase
 .from('clinics')
@@ -547,15 +289,8 @@ await _supabase
 
 if(error){
 
-console.error(error);
-
 grid.innerHTML = `
-<div style="
-grid-column:1/-1;
-text-align:center;
-color:red;
-padding:15px;
-">
+<div style="grid-column:1/-1;text-align:center;color:red">
 ❌ خطأ في تحميل العيادات
 <br>
 ${error.message}
@@ -572,12 +307,7 @@ grid.innerHTML='';
 if(!data || data.length===0){
 
 grid.innerHTML=`
-<div style="
-grid-column:1/-1;
-text-align:center;
-color:#94a3b8;
-padding:15px;
-">
+<div style="grid-column:1/-1;text-align:center;color:#94a3b8">
 لا توجد عيادات مقبولة حاليًا.
 </div>
 `;
@@ -592,10 +322,9 @@ data.forEach(function(clinic){
 const div =
 document.createElement('div');
 
-div.className =
-'item-card doc-card';
+div.className='item-card doc-card';
 
-div.innerHTML = `
+div.innerHTML=`
 👨‍⚕️
 ${clinic.doctor_name || clinic.clinic_name || 'طبيب بيطري'}
 `;
@@ -609,23 +338,6 @@ selectDoctor(clinic,div);
 grid.appendChild(div);
 
 });
-
-}catch(error){
-
-console.error(error);
-
-grid.innerHTML=`
-<div style="
-grid-column:1/-1;
-text-align:center;
-color:red;
-padding:15px;
-">
-❌ حصل خطأ أثناء تحميل العيادات
-</div>
-`;
-
-}
 
 }
 
@@ -648,7 +360,6 @@ card.classList.remove('active');
 
 });
 
-
 element.classList.add('active');
 
 
@@ -659,10 +370,8 @@ box.style.display='block';
 
 box.innerHTML=`
 
-<b>
-👨‍⚕️ الطبيب:
+<b>👨‍⚕️ الطبيب:</b>
 ${clinic.doctor_name || 'غير محدد'}
-</b>
 
 <br>
 
@@ -673,6 +382,11 @@ ${clinic.clinic_name || 'غير محددة'}
 
 🩺 التخصص:
 ${clinic.specialty || 'غير محدد'}
+
+<br>
+
+📍 المدينة:
+${clinic.city || 'غير محددة'}
 
 <br>
 
@@ -689,7 +403,7 @@ ${clinic.phone || 'غير محدد'}
 }
 
 
-/* اختيار الحيوان */
+/* الحيوان */
 
 function selectAnimal(type,element){
 
@@ -708,7 +422,7 @@ element.classList.add('active');
 }
 
 
-/* إضافة عرض */
+/* الأعراض */
 
 function addSymptom(text){
 
@@ -753,52 +467,34 @@ document.querySelector('.btn-main');
 if(!chosenDoctor){
 
 alert('⚠️ اختر الطبيب أولًا');
-
 return;
 
 }
-
 
 if(!chosenAnimal){
 
 alert('⚠️ اختر نوع الحيوان أولًا');
-
 return;
 
 }
-
 
 if(!owner){
 
 alert('⚠️ اكتب اسم صاحب الحيوان');
-
 return;
 
 }
-
 
 if(!phone || phone.length < 8){
 
 alert('⚠️ اكتب رقم هاتف صحيح');
-
 return;
 
 }
 
 
-/*
-لو العميل لم يكتب أعراض أو تفاصيل،
-لن نمنعه من إرسال الطلب.
-*/
-
-let finalDescription = description;
-
-if(!finalDescription){
-
-finalDescription =
-'لا توجد أعراض - طلب خدمة فقط';
-
-}
+let finalDescription =
+description || 'لا توجد أعراض - طلب خدمة فقط';
 
 
 if(age){
@@ -820,7 +516,6 @@ Math.floor(
 
 
 button.disabled=true;
-
 button.textContent='جاري الإرسال...';
 
 
@@ -830,35 +525,26 @@ await _supabase
 .insert([{
 
 order_number:orderNumber,
-
 owner_name:owner,
-
 phone:phone,
-
 animal_type:chosenAnimal,
-
 pet_name:pet || 'بدون اسم',
-
 doctor_name:chosenDoctor,
-
 service_type:service,
-
 description:finalDescription,
-
 status:'قيد الانتظار'
 
 }]);
 
 
 button.disabled=false;
-
 button.textContent='إرسال الطلب 🚀';
 
 
 if(error){
 
 alert(
-'❌ خطأ:\n'+
+'❌ خطأ:\n' +
 error.message
 );
 
@@ -870,27 +556,12 @@ return;
 saveToLocal({
 
 id:orderNumber,
-
 doctor:chosenDoctor,
-
 animal:chosenAnimal,
-
 owner:owner,
-
 phone:phone,
-
 pet:pet || 'بدون اسم',
-
-service:service,
-
-date:new Date()
-.toLocaleTimeString(
-'ar-EG',
-{
-hour:'2-digit',
-minute:'2-digit'
-}
-)
+service:service
 
 });
 
@@ -899,39 +570,164 @@ statusBox.style.display='block';
 
 statusBox.innerHTML=`
 
-✅ تم إرسال الطلب للطبيب
+✅ تم إرسال الطلب بنجاح
 
 <br>
 
-<b>
-${chosenDoctor}
-</b>
+👨‍⚕️ الطبيب:
+<b>${chosenDoctor}</b>
 
 <br>
 
-رقم الطلب:
+🔢 رقم الطلب:
+<b>${orderNumber}</b>
 
-<b>
-${orderNumber}
-</b>
+<br>
+
+احتفظ برقم الطلب لمتابعته.
 
 `;
 
 
+/* نحط البيانات تلقائيًا في خانة المتابعة */
+
+document.getElementById('trackOrder').value =
+orderNumber;
+
+document.getElementById('trackPhone').value =
+phone;
+
+
 document.getElementById('owner').value='';
-
 document.getElementById('phone').value='';
-
 document.getElementById('pet').value='';
-
 document.getElementById('age').value='';
-
 document.getElementById('case').value='';
 
 }
 
 
-/* حفظ محلي */
+/* متابعة الطلب */
+
+async function trackCase(){
+
+const order =
+document
+.getElementById('trackOrder')
+.value
+.trim();
+
+const phone =
+document
+.getElementById('trackPhone')
+.value
+.trim();
+
+const result =
+document
+.getElementById('trackResult');
+
+
+if(!order || !phone){
+
+alert('⚠️ اكتب رقم الطلب ورقم الهاتف');
+
+return;
+
+}
+
+
+result.innerHTML=
+'⏳ جاري البحث...';
+
+
+const {data,error} =
+await _supabase
+.from('cases')
+.select('*')
+.eq('order_number',order)
+.eq('phone',phone)
+.maybeSingle();
+
+
+if(error){
+
+result.innerHTML=`
+<div style="color:red">
+❌ حصل خطأ أثناء البحث
+<br>
+${error.message}
+</div>
+`;
+
+return;
+
+}
+
+
+if(!data){
+
+result.innerHTML=`
+<div class="track-result">
+
+❌ لم يتم العثور على طلب بهذه البيانات.
+
+<br>
+
+تأكد من رقم الطلب ورقم الهاتف.
+
+</div>
+`;
+
+return;
+
+}
+
+
+result.innerHTML=`
+
+<div class="track-result">
+
+<b>🔢 رقم الطلب:</b>
+${data.order_number}
+
+<br>
+
+<b>👨‍⚕️ الطبيب:</b>
+${data.doctor_name || 'غير محدد'}
+
+<br>
+
+<b>🐾 الحيوان:</b>
+${data.animal_type || 'غير محدد'}
+
+<br>
+
+<b>🏥 الخدمة:</b>
+${data.service_type || 'غير محددة'}
+
+<br>
+
+<b>📌 حالة الطلب:</b>
+
+<span class="badge">
+${data.status || 'قيد الانتظار'}
+</span>
+
+<br>
+
+<b>📝 التفاصيل:</b>
+<br>
+${data.description || 'لا توجد تفاصيل'}
+
+</div>
+
+`;
+
+}
+
+
+/* التخزين المحلي */
 
 function saveToLocal(item){
 
@@ -953,7 +749,7 @@ loadHistory();
 }
 
 
-/* سجل الطلبات */
+/* السجل */
 
 function loadHistory(){
 
@@ -985,30 +781,20 @@ list.innerHTML += `
 |
 
 الطبيب:
-
 ${c.doctor}
 
 <br>
 
-${c.animal}
-
--
-
-${c.pet}
+${c.animal} - ${c.pet}
 
 <br>
 
 الخدمة:
-
 ${c.service}
 
 <br>
 
 📞 ${c.phone}
-
-<small style="float:left;">
-${c.date}
-</small>
 
 </div>
 
