@@ -12,7 +12,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 :root{
 --bg:#f8fafc;
 --card-bg:#ffffff;
@@ -179,7 +178,6 @@ border-bottom:1px solid var(--border);
 padding:8px 0;
 font-size:12px;
 }
-
 </style>
 
 </head>
@@ -216,7 +214,7 @@ onclick="toggleTheme()"
 
 <div class="card">
 
-<h3>📋 تقديم حالة / استشارة جديدة</h3>
+<h3>📋 تقديم حالة / طلب خدمة</h3>
 
 <label>
 1. اختر الطبيب / العيادة:
@@ -323,6 +321,7 @@ placeholder="مثال: أحمد"
 
 </div>
 
+
 <div>
 
 <label>
@@ -355,6 +354,7 @@ placeholder="مثال: سيمبا"
 >
 
 </div>
+
 
 <div>
 
@@ -399,7 +399,7 @@ placeholder="مثال: سنة"
 
 
 <label>
-أعراض سريعة:
+أعراض سريعة (اختياري):
 </label>
 
 <div class="symptoms-tags">
@@ -443,13 +443,13 @@ onclick="addSymptom('جرح')"
 
 
 <label>
-تفاصيل الحالة:
+ملاحظات / تفاصيل إضافية (اختياري):
 </label>
 
 <textarea
 id="case"
 rows="3"
-placeholder="اشرح الحالة بالتفصيل..."
+placeholder="مثال: أريد تطعيم الحيوان فقط، ولا توجد أعراض"
 ></textarea>
 
 
@@ -457,7 +457,7 @@ placeholder="اشرح الحالة بالتفصيل..."
 class="btn btn-main"
 onclick="submitCase()"
 >
-إرسال الحالة 🚀
+إرسال الطلب 🚀
 </button>
 
 
@@ -481,14 +481,14 @@ class="status-box"
 <div class="card">
 
 <h4>
-📋 سجل الحالات:
+📋 سجل الطلبات:
 </h4>
 
 <div
 id="historyList"
 style="color:grey;font-size:13px;"
 >
-لا توجد حالات مسجلة حتى الآن.
+لا توجد طلبات مسجلة حتى الآن.
 </div>
 
 </div>
@@ -568,6 +568,7 @@ return;
 
 grid.innerHTML='';
 
+
 if(!data || data.length===0){
 
 grid.innerHTML=`
@@ -585,8 +586,6 @@ return;
 
 }
 
-
-/* عرض العيادات */
 
 data.forEach(function(clinic){
 
@@ -722,7 +721,7 @@ textarea.value +=
 }
 
 
-/* إرسال الحالة */
+/* إرسال الطلب */
 
 async function submitCase(){
 
@@ -759,6 +758,7 @@ return;
 
 }
 
+
 if(!chosenAnimal){
 
 alert('⚠️ اختر نوع الحيوان أولًا');
@@ -767,19 +767,47 @@ return;
 
 }
 
-if(!owner || !description){
 
-alert('⚠️ اكتب اسمك ووصف الحالة');
+if(!owner){
+
+alert('⚠️ اكتب اسم صاحب الحيوان');
 
 return;
 
 }
+
 
 if(!phone || phone.length < 8){
 
 alert('⚠️ اكتب رقم هاتف صحيح');
 
 return;
+
+}
+
+
+/*
+لو العميل لم يكتب أعراض أو تفاصيل،
+لن نمنعه من إرسال الطلب.
+*/
+
+let finalDescription = description;
+
+if(!finalDescription){
+
+finalDescription =
+'لا توجد أعراض - طلب خدمة فقط';
+
+}
+
+
+if(age){
+
+finalDescription =
+'العمر: ' +
+age +
+'\n' +
+finalDescription;
 
 }
 
@@ -794,14 +822,6 @@ Math.floor(
 button.disabled=true;
 
 button.textContent='جاري الإرسال...';
-
-
-const finalDescription =
-age
-?
-'العمر: '+age+'\n'+description
-:
-description;
 
 
 const {error} =
@@ -832,13 +852,14 @@ status:'قيد الانتظار'
 
 button.disabled=false;
 
-button.textContent='إرسال الحالة 🚀';
+button.textContent='إرسال الطلب 🚀';
 
 
 if(error){
 
 alert(
-'❌ خطأ:\n'+error.message
+'❌ خطأ:\n'+
+error.message
 );
 
 return;
@@ -878,7 +899,7 @@ statusBox.style.display='block';
 
 statusBox.innerHTML=`
 
-✅ تم إرسال الحالة للطبيب
+✅ تم إرسال الطلب للطبيب
 
 <br>
 
@@ -910,7 +931,7 @@ document.getElementById('case').value='';
 }
 
 
-/* حفظ الحالات محليًا */
+/* حفظ محلي */
 
 function saveToLocal(item){
 
@@ -932,7 +953,7 @@ loadHistory();
 }
 
 
-/* سجل الحالات */
+/* سجل الطلبات */
 
 function loadHistory(){
 
