@@ -1,93 +1,1719 @@
-function saveToLocal(item){
-let arr=[];
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vet Care 🐾</title>
 
-try{
-arr=JSON.parse(localStorage.getItem('my_vet_cases')||'[]');
-if(!Array.isArray(arr)) arr=[];
-}catch(e){
-arr=[];
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+--bg:#f8fafc;
+--card:#fff;
+--text:#0f172a;
+--muted:#64748b;
+--primary:#10b981;
+--border:#e2e8f0;
+--tag:#e2e8f0
 }
 
-arr.unshift({
-id:item.id,
-doctor:item.doctor||'غير محدد',
-animal:item.animal||'غير محدد',
-owner:item.owner||'غير محدد',
-phone:item.phone||'',
-pet:item.pet||'بدون اسم',
-service:item.service||'غير محددة',
-date:item.date||'',
-time:item.time||''
+.dark{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f8fafc;
+--muted:#94a3b8;
+--border:#334155;
+--tag:#334155
+}
+
+*{
+box-sizing:border-box;
+font-family:Tajawal,sans-serif
+}
+
+body{
+margin:0;
+padding:15px;
+background:var(--bg);
+color:var(--text)
+}
+
+.container{
+max-width:500px;
+margin:auto
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
+}
+
+.header h2{
+margin:0;
+font-size:21px
+}
+
+.theme-btn{
+background:var(--card);
+color:var(--text);
+border:1px solid var(--border);
+padding:8px 12px;
+border-radius:20px;
+cursor:pointer;
+text-decoration:none
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:20px;
+margin-bottom:15px;
+box-shadow:0 4px 15px #0000000d
+}
+
+.card h3,
+.card h4{
+margin-top:0
+}
+
+.cards-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin:10px 0 15px
+}
+
+.item-card,
+.booking-doctor{
+background:var(--bg);
+border:2px solid var(--border);
+border-radius:12px;
+padding:12px 5px;
+text-align:center;
+cursor:pointer;
+font-weight:bold;
+font-size:13px
+}
+
+.item-card.active,
+.booking-doctor.active{
+border-color:var(--primary);
+background:#10b98118;
+color:var(--primary)
+}
+
+label{
+display:block;
+font-size:13px;
+font-weight:bold;
+margin-top:10px
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:11px;
+margin-top:5px;
+border:1px solid var(--border);
+border-radius:10px;
+background:var(--bg);
+color:var(--text);
+outline:none
+}
+
+.row{
+display:flex;
+gap:10px
+}
+
+.row div{
+flex:1
+}
+
+.symptoms-tags{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin:8px 0 15px
+}
+
+.tag{
+background:var(--tag);
+padding:6px 10px;
+border-radius:15px;
+font-size:12px;
+cursor:pointer
+}
+
+.btn{
+width:100%;
+padding:12px;
+border:0;
+border-radius:10px;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+margin-top:10px
+}
+
+.btn-main{
+background:var(--primary);
+color:white
+}
+
+.btn-secondary{
+background:var(--bg);
+color:var(--text);
+border:1px solid var(--border)
+}
+
+.btn-emergency{
+background:#ef4444;
+color:#fff;
+display:flex;
+justify-content:center;
+text-decoration:none
+}
+
+.status-box,
+.appointment-box{
+display:none;
+margin-top:15px;
+padding:12px;
+border-radius:10px;
+background:#10b98118;
+color:var(--primary);
+line-height:1.9
+}
+
+.track-result{
+margin-top:15px;
+padding:15px;
+border:1px solid var(--border);
+border-radius:12px;
+background:var(--bg);
+line-height:2
+}
+
+.badge{
+display:inline-block;
+padding:4px 10px;
+border-radius:15px;
+background:var(--primary);
+color:#fff;
+font-size:12px
+}
+
+.booking-form{
+display:none;
+margin-top:15px;
+padding-top:15px;
+border-top:1px solid var(--border)
+}
+
+.booking-doctors{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+margin-top:10px
+}
+
+.selected-booking{
+display:none;
+margin-top:12px;
+padding:12px;
+border-radius:10px;
+background:#10b98118;
+border:1px dashed var(--primary);
+line-height:1.9
+}
+
+.booking-head{
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.booking-note,
+.small-muted{
+color:var(--muted);
+font-size:13px
+}
+
+.history-item{
+border-bottom:1px solid var(--border);
+padding:10px 0;
+font-size:12px;
+line-height:1.8
+}
+
+@media(max-width:400px){
+.cards-grid{
+grid-template-columns:repeat(2,1fr)
+}
+
+.row{
+flex-direction:column;
+gap:0
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h2>🌐 منصة Vet Care</h2>
+
+<div style="display:flex;gap:8px">
+
+<a href="services.html" class="theme-btn">
+🔍 الخدمات
+</a>
+
+<button
+type="button"
+class="theme-btn"
+onclick="toggleTheme()">
+🌙
+</button>
+
+</div>
+
+</div>
+
+
+<!-- تقديم الحالة -->
+
+<div class="card">
+
+<h3>📋 تقديم حالة / طلب خدمة</h3>
+
+<label>1. اختر الطبيب / العيادة:</label>
+
+<div class="cards-grid" id="doctorsGrid">
+
+<div style="grid-column:1/-1;text-align:center;color:var(--muted)">
+⏳ جاري تحميل العيادات...
+</div>
+
+</div>
+
+
+<div
+id="clinicDetails"
+style="display:none;background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:10px;margin-bottom:12px;font-size:12px;line-height:1.8">
+</div>
+
+
+<label>2. نوع الحيوان:</label>
+
+<div class="cards-grid">
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐱 قطة',this)">
+🐱 قطة
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐶 كلب',this)">
+🐶 كلب
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🦜 طائر',this)">
+🦜 طائر
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐰 أرنب',this)">
+🐰 أرنب
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐢 زواحف',this)">
+🐢 زواحف
+</div>
+
+<div
+class="item-card animal-card"
+onclick="selectAnimal('🐾 آخر',this)">
+🐾 آخر
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+<label>اسم صاحب الحيوان:</label>
+<input
+id="owner"
+type="text"
+placeholder="مثال: أحمد">
+</div>
+
+<div>
+<label>رقم الهاتف:</label>
+<input
+id="phone"
+type="tel"
+placeholder="01000000000">
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+<label>اسم الحيوان:</label>
+<input
+id="pet"
+type="text"
+placeholder="مثال: سيمبا">
+</div>
+
+<div>
+<label>عمر الحيوان:</label>
+<input
+id="age"
+type="text"
+placeholder="مثال: سنة">
+</div>
+
+</div>
+
+
+<label>نوع الخدمة:</label>
+
+<select id="service">
+
+<option value="استشارة أونلاين">
+🩺 استشارة أونلاين
+</option>
+
+<option value="تطعيمات">
+💉 جدول التطعيمات
+</option>
+
+<option value="فحص طوارئ">
+🚨 طوارئ عاجلة
+</option>
+
+<option value="عناية وتنظيف">
+✂️ عناية وتجميل
+</option>
+
+</select>
+
+
+<label>أعراض سريعة (اختياري):</label>
+
+<div class="symptoms-tags">
+
+<span
+class="tag"
+onclick="addSymptom('خمول')">
+➕ خمول
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('قيء')">
+➕ قيء
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('سخونية')">
+➕ سخونية
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('إسهال')">
+➕ إسهال
+</span>
+
+<span
+class="tag"
+onclick="addSymptom('جرح')">
+➕ جرح
+</span>
+
+</div>
+
+
+<label>ملاحظات / تفاصيل إضافية:</label>
+
+<textarea
+id="case"
+rows="3"
+placeholder="مثال: أريد تطعيم الحيوان فقط، ولا توجد أعراض">
+</textarea>
+
+
+<button
+id="submitCaseBtn"
+type="button"
+class="btn btn-main"
+onclick="submitCase()">
+إرسال الطلب 🚀
+</button>
+
+
+<a
+href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care"
+class="btn btn-emergency"
+target="_blank">
+🚨 طوارئ واتساب مباشر
+</a>
+
+
+<div
+id="status"
+class="status-box">
+</div>
+
+</div>
+
+
+<!-- متابعة الطلب -->
+
+<div class="card">
+
+<h3>🔎 متابعة طلبك</h3>
+
+<p style="font-size:13px;color:var(--muted)">
+اكتب رقم الطلب ورقم الهاتف لمعرفة آخر حالة للطلب.
+</p>
+
+
+<label>رقم الطلب:</label>
+
+<input
+id="trackOrder"
+type="text"
+placeholder="مثال: VC-1234">
+
+
+<label>رقم الهاتف:</label>
+
+<input
+id="trackPhone"
+type="tel"
+placeholder="01000000000">
+
+
+<button
+id="trackBtn"
+type="button"
+class="btn btn-main"
+onclick="trackCase()">
+🔎 متابعة الطلب
+</button>
+
+
+<div id="trackResult"></div>
+
+</div>
+
+
+<!-- موعدك -->
+
+<div class="card">
+
+<div class="booking-head">
+<h3>📅 موعدك</h3>
+</div>
+
+
+<p class="booking-note">
+احجز موعدك مع الطبيب باختيار الطبيب ثم اليوم والساعة المناسبة.
+</p>
+
+
+<div
+id="currentAppointment"
+class="appointment-box">
+</div>
+
+
+<button
+id="openBookingBtn"
+type="button"
+class="btn btn-main"
+onclick="toggleBookingForm()">
+📅 احجز موعدًا الآن
+</button>
+
+
+<div
+id="bookingForm"
+class="booking-form">
+
+
+<label>1. اختر الطبيب:</label>
+
+
+<div
+id="appointmentDoctorsGrid"
+class="booking-doctors">
+
+<div
+style="grid-column:1/-1;text-align:center;color:var(--muted)">
+⏳ جاري تحميل الأطباء...
+</div>
+
+</div>
+
+
+<div
+id="selectedBookingDoctor"
+class="selected-booking">
+</div>
+
+
+<label>2. اختر اليوم:</label>
+
+<input
+type="date"
+id="appointmentDate">
+
+
+<label>3. اختر الساعة:</label>
+
+<select id="appointmentTime">
+
+<option value="">
+اختر الساعة
+</option>
+
+<option value="09:00">
+09:00 صباحًا
+</option>
+
+<option value="10:00">
+10:00 صباحًا
+</option>
+
+<option value="11:00">
+11:00 صباحًا
+</option>
+
+<option value="12:00">
+12:00 ظهرًا
+</option>
+
+<option value="13:00">
+01:00 ظهرًا
+</option>
+
+<option value="14:00">
+02:00 ظهرًا
+</option>
+
+<option value="15:00">
+03:00 عصرًا
+</option>
+
+<option value="16:00">
+04:00 عصرًا
+</option>
+
+<option value="17:00">
+05:00 مساءً
+</option>
+
+<option value="18:00">
+06:00 مساءً
+</option>
+
+<option value="19:00">
+07:00 مساءً
+</option>
+
+<option value="20:00">
+08:00 مساءً
+</option>
+
+</select>
+
+
+<div class="row">
+
+<div>
+<label>اسم صاحب الحيوان:</label>
+
+<input
+id="bookingOwner"
+type="text"
+placeholder="مثال: أحمد">
+</div>
+
+
+<div>
+<label>رقم الهاتف:</label>
+
+<input
+id="bookingPhone"
+type="tel"
+placeholder="01000000000">
+</div>
+
+</div>
+
+
+<div class="row">
+
+<div>
+
+<label>اسم الحيوان:</label>
+
+<input
+id="bookingPet"
+type="text"
+placeholder="مثال: سيمبا">
+
+</div>
+
+
+<div>
+
+<label>نوع الحيوان:</label>
+
+<select id="bookingAnimal">
+
+<option value="">
+اختر النوع
+</option>
+
+<option value="🐱 قطة">
+🐱 قطة
+</option>
+
+<option value="🐶 كلب">
+🐶 كلب
+</option>
+
+<option value="🦜 طائر">
+🦜 طائر
+</option>
+
+<option value="🐰 أرنب">
+🐰 أرنب
+</option>
+
+<option value="🐢 زواحف">
+🐢 زواحف
+</option>
+
+<option value="🐾 آخر">
+🐾 آخر
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<button
+id="confirmBookingBtn"
+type="button"
+class="btn btn-main"
+onclick="submitBooking()">
+✅ تأكيد الحجز
+</button>
+
+
+<button
+type="button"
+class="btn btn-secondary"
+onclick="toggleBookingForm()">
+إلغاء
+</button>
+
+
+<div
+id="bookingStatus"
+class="status-box">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- السجل -->
+
+<div class="card">
+
+<h4>📋 سجل الطلبات:</h4>
+
+<div
+id="historyList"
+style="color:var(--muted);font-size:13px">
+لا توجد طلبات مسجلة حتى الآن.
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+'https://tuyvjozypjcvgpgkfoby.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+
+const _supabase =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+let chosenDoctor = '';
+let chosenAnimal = '';
+let bookingDoctor = '';
+let approvedClinics = [];
+
+
+window.addEventListener(
+'DOMContentLoaded',
+function(){
+
+loadHistory();
+
+setMinimumDate();
+
+loadApprovedClinics();
+
+loadSavedAppointment();
+
 });
 
-localStorage.setItem('my_vet_cases',JSON.stringify(arr));
-loadHistory();
+
+function toggleTheme(){
+
+document.body.classList.toggle('dark');
+
 }
 
-function loadHistory(){
-const box=document.getElementById('historyList');
-let arr=[];
 
-try{
-arr=JSON.parse(localStorage.getItem('my_vet_cases')||'[]');
-if(!Array.isArray(arr)) arr=[];
-}catch(e){
-arr=[];
-}
+async function loadApprovedClinics(){
 
-if(!arr.length){
-box.innerHTML='لا توجد طلبات مسجلة حتى الآن.';
+const cg =
+document.getElementById('doctorsGrid');
+
+const bg =
+document.getElementById('appointmentDoctorsGrid');
+
+
+const {data,error} =
+await _supabase
+.from('clinics')
+.select('*')
+.eq('status','approved');
+
+
+if(error){
+
+const message =
+`<div style="grid-column:1/-1;text-align:center;color:red">
+❌ خطأ في تحميل العيادات
+<br>
+${escapeHtml(error.message)}
+</div>`;
+
+cg.innerHTML = message;
+
+bg.innerHTML = message;
+
 return;
+
 }
 
-box.innerHTML=arr.map(x=>`
-<div class="history-item">
-<b>🔢 رقم الطلب:</b> ${escapeHtml(x.id||'')}<br>
-<b>👨‍⚕️ الطبيب:</b> ${escapeHtml(x.doctor||'غير محدد')}<br>
-<b>🐾 الحيوان:</b> ${escapeHtml(x.animal||'غير محدد')}<br>
-<b>🏥 الخدمة:</b> ${escapeHtml(x.service||'غير محددة')}
-${x.date?`<br><b>📅 الموعد:</b> ${formatDate(x.date)}`:''}
-${x.time?`<br><b>⏰ الساعة:</b> ${formatTime(x.time)}`:''}
+
+approvedClinics =
+data || [];
+
+
+if(!approvedClinics.length){
+
+cg.innerHTML =
+'<div style="grid-column:1/-1;text-align:center;color:var(--muted)">لا توجد عيادات مقبولة حاليًا.</div>';
+
+bg.innerHTML =
+'<div style="grid-column:1/-1;text-align:center;color:var(--muted)">لا توجد عيادات مقبولة حاليًا.</div>';
+
+return;
+
+}
+
+
+renderCaseDoctors();
+
+renderBookingDoctors();
+
+}
+
+
+function renderCaseDoctors(){
+
+const grid =
+document.getElementById('doctorsGrid');
+
+grid.innerHTML = '';
+
+
+approvedClinics.forEach(function(clinic){
+
+const d =
+document.createElement('div');
+
+d.className =
+'item-card doc-card';
+
+d.innerHTML =
+`👨‍⚕️ ${escapeHtml(
+clinic.doctor_name ||
+clinic.clinic_name ||
+'طبيب بيطري'
+)}`;
+
+d.onclick =
+function(){
+selectDoctor(clinic,d);
+};
+
+grid.appendChild(d);
+
+});
+
+}
+
+
+function renderBookingDoctors(){
+
+const grid =
+document.getElementById(
+'appointmentDoctorsGrid'
+);
+
+grid.innerHTML = '';
+
+
+approvedClinics.forEach(function(clinic){
+
+const d =
+document.createElement('div');
+
+d.className =
+'booking-doctor';
+
+d.innerHTML =
+`
+👨‍⚕️ ${escapeHtml(
+clinic.doctor_name ||
+clinic.clinic_name ||
+'طبيب بيطري'
+)}
+
+<div class="small-muted">
+${escapeHtml(
+clinic.clinic_name ||
+'عيادة بيطرية'
+)}
 </div>
-`).join('');
+`;
+
+d.onclick =
+function(){
+selectBookingDoctor(clinic,d);
+};
+
+grid.appendChild(d);
+
+});
+
 }
 
-function formatDate(date){
-if(!date)return '';
-const parts=String(date).split('-');
-if(parts.length!==3)return date;
-return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+function selectDoctor(clinic,el){
+
+chosenDoctor =
+clinic.doctor_name ||
+clinic.clinic_name ||
+'طبيب بيطري';
+
+
+document
+.querySelectorAll('.doc-card')
+.forEach(function(x){
+x.classList.remove('active');
+});
+
+
+el.classList.add('active');
+
+
+const box =
+document.getElementById(
+'clinicDetails'
+);
+
+
+box.style.display =
+'block';
+
+
+box.innerHTML =
+`
+<b>👨‍⚕️ الطبيب:</b>
+${escapeHtml(clinic.doctor_name || 'غير محدد')}
+<br>
+
+🏥 العيادة:
+${escapeHtml(clinic.clinic_name || 'غير محددة')}
+<br>
+
+🩺 التخصص:
+${escapeHtml(clinic.specialty || 'غير محدد')}
+<br>
+
+🏠 العنوان:
+${escapeHtml(clinic.address || 'غير محدد')}
+<br>
+
+📞 الهاتف:
+${escapeHtml(clinic.phone || 'غير محدد')}
+`;
+
 }
 
-function formatTime(time){
-if(!time)return '';
-const parts=String(time).split(':');
-if(parts.length<2)return time;
 
-let h=parseInt(parts[0],10);
-const m=parts[1];
+function selectBookingDoctor(clinic,el){
 
-let period='صباحًا';
+bookingDoctor =
+clinic.doctor_name ||
+clinic.clinic_name ||
+'طبيب بيطري';
 
-if(h>=12){
-period='مساءً';
-if(h>12)h-=12;
+
+document
+.querySelectorAll('.booking-doctor')
+.forEach(function(x){
+x.classList.remove('active');
+});
+
+
+el.classList.add('active');
+
+
+const box =
+document.getElementById(
+'selectedBookingDoctor'
+);
+
+
+box.style.display =
+'block';
+
+
+box.innerHTML =
+`
+👨‍⚕️ <b>${escapeHtml(
+bookingDoctor
+)}</b>
+
+<br>
+
+🏥 ${escapeHtml(
+clinic.clinic_name ||
+'عيادة بيطرية'
+)}
+`;
+
 }
 
-if(h===0)h=12;
 
-return `${String(h).padStart(2,'0')}:${m} ${period}`;
+function selectAnimal(type,el){
+
+chosenAnimal = type;
+
+
+document
+.querySelectorAll('.animal-card')
+.forEach(function(x){
+x.classList.remove('active');
+});
+
+
+el.classList.add('active');
+
 }
 
-function escapeHtml(text){
-return String(text??'')
-.replace(/&/g,'&amp;')
-.replace(/</g,'&lt;')
-.replace(/>/g,'&gt;')
-.replace(/"/g,'&quot;')
-.replace(/'/g,'&#039;');
-}
-</script>
 
-</body>
-</html>
+function addSymptom(text){
+
+const t =
+document.getElementById('case');
+
+
+t.value +=
+(t.value ? ' - ' : '') +
+text;
+
+}
+
+
+async function submitCase(){
+
+const owner =
+document.getElementById('owner')
+.value.trim();
+
+const phone =
+document.getElementById('phone')
+.value.trim();
+
+const pet =
+document.getElementById('pet')
+.value.trim();
+
+const age =
+document.getElementById('age')
+.value.trim();
+
+const service =
+document.getElementById('service')
+.value;
+
+const description =
+document.getElementById('case')
+.value.trim();
+
+const status =
+document.getElementById('status');
+
+const button =
+document.getElementById(
+'submitCaseBtn'
+);
+
+
+if(!chosenDoctor)
+return alert(
+'⚠️ اختر الطبيب أولًا'
+);
+
+
+if(!chosenAnimal)
+return alert(
+'⚠️ اختر نوع الحيوان أولًا'
+);
+
+
+if(!owner)
+return alert(
+'⚠️ اكتب اسم صاحب الحيوان'
+);
+
+
+if(!phone || phone.length < 8)
+return alert(
+'⚠️ اكتب رقم هاتف صحيح'
+);
+
+
+let desc =
+description ||
+'لا توجد أعراض - طلب خدمة فقط';
+
+
+if(age)
+desc =
+'العمر: ' +
+age +
+'\n' +
+desc;
+
+
+const order =
+'VC-' +
+Math.floor(
+1000 +
+Math.random()*9000
+);
+
+
+button.disabled = true;
+
+button.textContent =
+'جاري الإرسال...';
+
+
+const {error} =
+await _supabase
+.from('cases')
+.insert([{
+
+order_number:order,
+
+owner_name:owner,
+
+phone:phone,
+
+animal_type:chosenAnimal,
+
+pet_name:
+pet || 'بدون اسم',
+
+doctor_name:
+chosenDoctor,
+
+service_type:
+service,
+
+description:
+desc,
+
+status:
+'قيد الانتظار'
+
+}]);
+
+
+button.disabled = false;
+
+button.textContent =
+'إرسال الطلب 🚀';
+
+
+if(error){
+
+alert(
+'❌ خطأ:\n' +
+error.message
+);
+
+return;
+
+}
+
+
+saveToLocal({
+
+id:order,
+
+doctor:chosenDoctor,
+
+animal:chosenAnimal,
+
+owner:owner,
+
+phone:phone,
+
+pet:
+pet || 'بدون اسم',
+
+service:service
+
+});
+
+
+status.style.display =
+'block';
+
+
+status.innerHTML =
+`
+✅ تم إرسال الطلب بنجاح
+<br>
+👨‍⚕️ الطبيب:
+<b>${escapeHtml(chosenDoctor)}</b>
+
+<br>
+
+🔢 رقم الطلب:
+<b>${order}</b>
+`;
+
+
+document.getElementById(
+'trackOrder'
+).value = order;
+
+
+document.getElementById(
+'trackPhone'
+).value = phone;
+
+
+document.getElementById('owner').value = '';
+
+document.getElementById('phone').value = '';
+
+document.getElementById('pet').value = '';
+
+document.getElementById('age').value = '';
+
+document.getElementById('case').value = '';
+
+}
+
+
+async function trackCase(){
+
+const order =
+document.getElementById(
+'trackOrder'
+).value.trim();
+
+const phone =
+document.getElementById(
+'trackPhone'
+).value.trim();
+
+const result =
+document.getElementById(
+'trackResult'
+);
+
+
+if(!order || !phone)
+return alert(
+'⚠️ اكتب رقم الطلب ورقم الهاتف'
+);
+
+
+result.innerHTML =
+'⏳ جاري البحث...';
+
+
+const {data,error} =
+await _supabase
+.from('cases')
+.select('*')
+.eq('order_number',order)
+.eq('phone',phone)
+.maybeSingle();
+
+
+if(error){
+
+result.innerHTML =
+`
+<div style="color:red">
+❌ ${escapeHtml(error.message)}
+</div>
+`;
+
+return;
+
+}
+
+
+if(!data){
+
+result.innerHTML =
+`
+<div class="track-result">
+❌ لم يتم العثور على طلب بهذه البيانات.
+</div>
+`;
+
+return;
+
+}
+
+
+let appointment = '';
+
+
+if(
+data.appointment_date &&
+data.appointment_time
+){
+
+appointment =
+`
+<br>
+<b>📅 الموعد:</b>
+${formatDate(data.appointment_date)}
+
+<br>
+
+<b>⏰ الساعة:</b>
+${formatTime(data.appointment_time)}
+`;
+
+}
+
+
+result.innerHTML =
+`
+<div class="track-result">
+
+<b>🔢 رقم الطلب:</b>
+${escapeHtml(data.order_number)}
+
+<br>
+
+<b>👨‍⚕️ الطبيب:</b>
+${escapeHtml(
+data.doctor_name ||
+'غير محدد'
+)}
+
+<br>
+
+<b>🐾 الحيوان:</b>
+${escapeHtml(
+data.animal_type ||
+'غير محدد'
+)}
+
+<br>
+
+<b>🏥 الخدمة:</b>
+${escapeHtml(
+data.service_type ||
+'غير محددة'
+)}
+
+${appointment}
+
+<br>
+
+<b>📌 الحالة:</b>
+
+<span class="badge">
+${escapeHtml(
+data.status ||
+'قيد الانتظار'
+)}
+</span>
+
+<br>
+
+<b>📝 التفاصيل:</b>
+
+<br>
+
+${escapeHtml(
+data.description ||
+'لا توجد تفاصيل'
+)}
+
+</div>
+`;
+
+}
+
+
+function toggleBookingForm(){
+
+const form =
+document.getElementById(
+'bookingForm'
+);
+
+const button =
+document.getElementById(
+'openBookingBtn'
+);
+
+
+if(form.style.display === 'block'){
+
+form.style.display =
+'none';
+
+button.textContent =
+'📅 احجز موعدًا الآن';
+
+}else{
+
+form.style.display =
+'block';
+
+button.textContent =
+'🔽 إغلاق الحجز';
+
+setMinimumDate();
+
+}
+
+}
+
+
+function setMinimumDate(){
+
+const input =
+document.getElementById(
+'appointmentDate'
+);
+
+const d =
+new Date();
+
+
+input.min =
+d.getFullYear() +
+'-' +
+String(
+d.getMonth()+1
+).padStart(2,'0') +
+'-' +
+String(
+d.getDate()
+).padStart(2,'0');
+
+}
+
+
+async function submitBooking(){
+
+const date =
+document.getElementById(
+'appointmentDate'
+).value;
+
+const time =
+document.getElementById(
+'appointmentTime'
+).value;
+
+const owner =
+document.getElementById(
+'bookingOwner'
+).value.trim();
+
+const phone =
+document.getElementById(
+'bookingPhone'
+).value.trim();
+
+const pet =
+document.getElementById(
+'bookingPet'
+).value.trim();
+
+const animal =
+document.getElementById(
+'bookingAnimal'
+).value;
+
+const button =
+document.getElementById(
+'confirmBookingBtn'
+);
+
+const status =
+document.getElementById(
+'bookingStatus'
+);
+
+
+if(!bookingDoctor)
+return alert(
+'⚠️ اختر الطبيب أولًا'
+);
+
+
+if(!date)
+return alert(
+'⚠️ اختر يوم الموعد'
+);
+
+
+if(!time)
+return alert(
+'⚠️ اختر ساعة الموعد'
+);
+
+
+if(!owner)
+return alert(
+'⚠️ اكتب اسم صاحب الحيوان'
+);
+
+
+if(!phone || phone.length < 8)
+return alert(
+'⚠️ اكتب رقم هاتف صحيح'
+);
+
+
+if(!animal)
+return alert(
+'⚠️ اختر نوع الحيوان'
+);
+
+
+button.disabled = true;
+
+button.textContent =
+'جاري تأكيد الحجز...';
+
+
+const {
+data:existing,
+error:checkError
+} =
+await _supabase
+.from('cases')
+.select(
+'id,order_number,status'
+)
+.eq(
+'doctor_name',
+bookingDoctor
+)
+.eq(
+'appointment_date',
+date
+)
+.eq(
+'appointment_time',
+time
+);
+
+
+if(checkError){
+
+button.disabled = false;
+
+button.textContent =
+'✅ تأكيد الحجز';
+
+return alert(
+'❌ خطأ أثناء التحقق:\n' +
+checkError.message
+);
+
+}
+
+
+const active =
+(existing || []).find(
+function(x){
+
+const s =
+String(
+x.status || ''
+).trim();
+
+return ![
+'مرفوض',
+'ملغي',
+'مرفوضة',
+'ملغى'
+].includes(s);
+
+});
+
+
+if(active){
+
+button.disabled = false;
+
+button.textContent =
+'✅ تأكيد الحجز';
+
+return alert(
+'⚠️ هذا الموعد محجوز بالفعل مع الطبيب. اختر ساعة أخرى.'
+);
+
+}
+
+
+const number =
+'BK-' +
+Math.floor(
+1000 +
+Math.random()*9000
+);
+
+
+const {error} =
+await _supabase
+.from('cases')
+.insert([{
+
+order_number:number,
+
+owner_name:owner,
+
+phone:phone,
+
+animal_type:animal,
+
+pet_name:
+pet || 'بدون اسم',
+
+doctor_name:
+bookingDoctor,
+
+service_type:
+'حجز موعد',
+
+description:
+`حجز موعد أونلاين
+التاريخ: ${date}
+الساعة: ${time}`,
+
+appointment_date:
+date,
+
+appointment_time:
+time,
+
+status:
+'قيد الانتظار'
+
+}]);
+
+
+button.disabled = false;
+
+button.textContent =
+'✅ تأكيد الحجز';
+
+
+if(error){
+
+alert(
+'❌ لم يتم الحجز:\n' +
+error.message
+);
+
+return;
+
+}
+
+
+const booking
