@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vet Care 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#f5f7f9;
+  --card:#fff;
+  --text:#17202a;
+  --muted:#6b7280;
+  --primary:#10b981;
+  --primary-dark:#059669;
+  --border:#e5e7eb;
+  --danger:#ef4444;
+  --soft:#ecfdf5;
+}
+*{
+  box-sizing:border-box;
+  font-family:"Tajawal",sans-serif;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  padding:15px;
+}
+.container{
+  max-width:650px;
+  margin:auto;
+}
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:18px;
+}
+.header h2{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+}
+.header-actions{
+  display:flex;
+  gap:7px;
+}
+.small-btn{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:20px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:700;
+  text-decoration:none;
+  font-size:12px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,.04);
+}
+.card h3{
+  margin:0 0 7px;
+  font-size:19px;
+}
+.card h4{
+  margin:0 0 10px;
+  font-size:17px;
+}
+.muted{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+}
+label{
+  display:block;
+  margin-top:13px;
+  font-size:13px;
+  font-weight:800;
+}
+input,select,textarea{
+  width:100%;
+  margin-top:6px;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--bg);
+  color:var(--text);
+  font-size:14px;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+}
+textarea{
+  resize:vertical;
+}
+.row{
+  display:flex;
+  gap:10px;
+}
+.row>div{
+  flex:1;
+}
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin:10px 0 15px;
+}
+.item-card{
+  border:2px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  border-radius:13px;
+  padding:12px 7px;
+  text-align:center;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+  transition:.15s;
+}
+.item-card:hover{
+  transform:translateY(-1px);
+}
+.item-card.active{
+  border-color:var(--primary);
+  background:rgba(16,185,129,.1);
+  color:var(--primary-dark);
+}
+.clinic-card{
+  text-align:right;
+}
+.clinic-doctor{
+  font-weight:800;
+  font-size:14px;
+}
+.clinic-name{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:15px;
+  color:var(--muted);
+  font-size:13px;
+}
+.clinic-details{
+  display:none;
+  background:var(--bg);
+  border:1px dashed var(--border);
+  border-radius:13px;
+  padding:13px;
+  margin-bottom:15px;
+  font-size:13px;
+  line-height:2;
+}
+.clinic-title{
+  font-size:16px;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.symptoms{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:8px 0 13px;
+}
+.symptom{
+  background:var(--border);
+  border-radius:20px;
+  padding:7px 11px;
+  font-size:12px;
+  cursor:pointer;
+}
+.btn{
+  width:100%;
+  border:none;
+  border-radius:11px;
+  padding:13px;
+  margin-top:10px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+.btn-main{
+  background:var(--primary);
+  color:#fff;
+}
+.btn-main:hover{
+  background:var(--primary-dark);
+}
+.btn-emergency{
+  background:var(--danger);
+  color:#fff;
+  text-decoration:none;
+  display:block;
+  text-align:center;
+}
+.status-box,.error-box{
+  display:none;
+  margin-top:13px;
+  padding:13px;
+  border-radius:12px;
+  font-size:13px;
+  line-height:2;
+}
+.status-box{
+  background:var(--soft);
+  color:var(--primary-dark);
+}
+.error-box{
+  background:#fef2f2;
+  color:#b91c1c;
+}
+.booking-card{
+  display:none;
+  border:2px solid rgba(16,185,129,.25);
+}
+.booking-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.booking-icon{
+  width:43px;
+  height:43px;
+  border-radius:12px;
+  background:rgba(16,185,129,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+.booking-info{
+  background:var(--bg);
+  border-radius:12px;
+  padding:12px;
+  margin:13px 0;
+  font-size:13px;
+  line-height:2;
+}
+.booking-note{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.8;
+  margin-top:7px;
+}
+.booking-success{
+  display:none;
+  margin-top:13px;
+  padding:13px;
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--primary-dark);
+  font-size:13px;
+  line-height:2;
+  text-align:center;
+}
+.track-result{
+  margin-top:13px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--bg);
+  font-size:13px;
+  line-height:2;
+}
+.badge{
+  display:inline-block;
+  background:var(--primary);
+  color:#fff;
+  padding:3px 9px;
+  border-radius:20px;
+  font-size:11px;
+}
+.history-item{
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+  line-height:1.9;
+}
+.history-item:last-child{
+  border-bottom:none;
+}
+.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#334155;
+  --soft:#064e3b;
+}
+@media(max-width:500px){
+  .row{
+    flex-direction:column;
+    gap:0;
+  }
+  .cards-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .header h2{
+    font-size:18px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h2>🌐 Vet Care 🐾</h2>
+    <div class="header-actions">
+      <a href="services.html" class="small-btn">🔍 الخدمات</a>
+      <button class="small-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+
+  <!-- ================= CASE ================= -->
+  <div class="card">
+    <h3>📋 تقديم حالة / طلب خدمة</h3>
+    <p class="muted">اختر الطبيب أو العيادة، ثم أدخل بيانات الحيوان والطلب.</p>
+
+    <label>1️⃣ اختر الطبيب / العيادة:</label>
+    <div id="doctorsGrid" class="cards-grid">
+      <div class="empty">⏳ جاري تحميل العيادات...</div>
+    </div>
+    <div id="clinicDetails" class="clinic-details"></div>
+
+    <label>2️⃣ نوع الحيوان:</label>
+    <div class="cards-grid">
+      <div class="item-card animal-card" onclick="selectAnimal('🐱 قطة',this)">🐱 قطة</div>
+      <div class="item-card animal-card" onclick="selectAnimal('🐶 كلب',this)">🐶 كلب</div>
+      <div class="item-card animal-card" onclick="selectAnimal('🦜 طائر',this)">🦜 طائر</div>
+      <div class="item-card animal-card" onclick="selectAnimal('🐰 أرنب',this)">🐰 أرنب</div>
+      <div class="item-card animal-card" onclick="selectAnimal('🐢 زواحف',this)">🐢 زواحف</div>
+      <div class="item-card animal-card" onclick="selectAnimal('🐾 آخر',this)">🐾 آخر</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>👤 اسم صاحب الحيوان:</label>
+        <input id="owner" type="text" placeholder="مثال: أحمد">
+      </div>
+      <div>
+        <label>📞 رقم الهاتف:</label>
+        <input id="phone" type="tel" placeholder="01000000000">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>🐾 اسم الحيوان:</label>
+        <input id="pet" type="text" placeholder="مثال: سيمبا">
+      </div>
+      <div>
+        <label>🎂 عمر الحيوان:</label>
+        <input id="age" type="text" placeholder="مثال: سنة">
+      </div>
+    </div>
+
+    <label>🩺 نوع الخدمة:</label>
+    <select id="service">
+      <option value="استشارة أونلاين">🩺 استشارة أونلاين</option>
+      <option value="تطعيمات">💉 تطعيمات</option>
+      <option value="فحص طوارئ">🚨 فحص طوارئ</option>
+      <option value="عناية وتنظيف">✂️ عناية وتنظيف</option>
+    </select>
+
+    <label>🩹 أعراض سريعة - اختياري:</label>
+    <div class="symptoms">
+      <span class="symptom" onclick="addSymptom('خمول')">➕ خمول</span>
+      <span class="symptom" onclick="addSymptom('قيء')">➕ قيء</span>
+      <span class="symptom" onclick="addSymptom('سخونية')">➕ سخونية</span>
+      <span class="symptom" onclick="addSymptom('إسهال')">➕ إسهال</span>
+      <span class="symptom" onclick="addSymptom('جرح')">➕ جرح</span>
+    </div>
+
+    <label>📝 ملاحظات / تفاصيل إضافية - اختياري:</label>
+    <textarea id="case" rows="4" placeholder="اكتب تفاصيل الحالة هنا..."></textarea>
+
+    <button id="sendButton" class="btn btn-main" onclick="submitCase()">إرسال الطلب الآن 🚀</button>
+
+    <a href="https://wa.me/201097222319?text=حالة%20طوارئ%20عاجلة%20عن%20طريق%20Vet%20Care" target="_blank" class="btn btn-emergency">🚨 حالة طارئة - واتساب</a>
+
+    <div id="status" class="status-box"></div>
+    <div id="sendError" class="error-box"></div>
+  </div>
+
+  <!-- ================= BOOKING ================= -->
+  <div id="bookingCard" class="card booking-card">
+    <div class="booking-header">
+      <div class="booking-icon">📅</div>
+      <div>
+        <h3>حجز موعد</h3>
+        <div class="muted">تم إرسال طلبك. اختر الآن اليوم والساعة.</div>
+      </div>
+    </div>
+
+    <div class="booking-info">
+      <b>👨‍⚕️ الطبيب:</b> <span id="bookingDoctor"></span><br>
+      <b>🏥 العيادة:</b> <span id="bookingClinic"></span><br>
+      <b>🔢 رقم الطلب:</b> <span id="bookingOrder"></span>
+    </div>
+
+    <label>📞 رقم الهاتف:</label>
+    <input id="bookingPhone" type="tel" placeholder="رقم الهاتف">
+
+    <label>📅 اليوم:</label>
+    <input id="bookingDate" type="date">
+
+    <label>⏰ الساعة:</label>
+    <input id="bookingTime" type="time">
+
+    <div class="booking-note">يمكنك اختيار أي يوم من اليوم وما بعده.</div>
+
+    <button id="bookingButton" class="btn btn-main" onclick="bookAppointment()">✅ تأكيد الحجز</button>
+
+    <div id="bookingSuccess" class="booking-success"></div>
+  </div>
+
+  <!-- ================= TRACK ================= -->
+  <div class="card">
+    <h3>🔎 متابعة طلبك</h3>
+    <p class="muted">اكتب رقم الطلب ورقم الهاتف لمعرفة حالة الطلب والحجز.</p>
+
+    <label>🔢 رقم الطلب:</label>
+    <input id="trackOrder" type="text" placeholder="مثال: VC-12345678">
+
+    <label>📞 رقم الهاتف:</label>
+    <input id="trackPhone" type="tel" placeholder="01000000000">
+
+    <button class="btn btn-main" onclick="trackCase()">🔎 متابعة الطلب</button>
+
+    <div id="trackResult"></div>
+  </div>
+
+  <!-- ================= HISTORY ================= -->
+  <div class="card">
+    <h4>📋 سجل الطلبات</h4>
+    <div id="historyList">لا توجد طلبات مسجلة حتى الآن.</div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================
+   SUPABASE
+========================================= */
+const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* =========================================
+   VARIABLES
+========================================= */
+let chosenDoctor = '';
+let chosenClinic = '';
+let chosenAnimal = '';
+let selectedClinic = null;
+let currentOrderNumber = '';
+
+/* =========================================
+   START
+========================================= */
+window.addEventListener('DOMContentLoaded', () => {
+  applySavedTheme();
+  loadHistory();
+  setMinimumDate();
+  loadClinics();
+});
+
+/* =========================================
+   THEME
+========================================= */
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  try{
+    localStorage.setItem('vc_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }catch(e){
+    console.error(e);
+  }
+}
+
+function applySavedTheme(){
+  try{
+    const saved = localStorage.getItem('vc_theme');
+    if(saved === 'dark'){
+      document.body.classList.add('dark');
+    }
+  }catch(e){
+    console.error(e);
+  }
+}
+
+/* =========================================
+   SAFE (HTML ESCAPE)
+========================================= */
+function safe(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+/* =========================================
+   APPROVED STATUS CHECK
+========================================= */
+function isApproved(status){
+  const value = String(status ?? '').trim().toLowerCase();
+  return [
+    'approved',
+    'accepted',
+    'مقبولة',
+    'مقبول',
+    'مقبوله',
+    'قبول'
+  ].includes(value);
+}
+
+/* =========================================
+   LOAD CLINICS
+========================================= */
+async function loadClinics(){
+  const grid = document.getElementById('doctorsGrid');
+  grid.innerHTML = '<div class="empty">⏳ جاري تحميل العيادات...</div>';
+
+  try{
+    const { data, error } = await _supabase
+      .from('clinics')
+      .select('*')
+      .order('created_at', { ascending:false });
+
+    if(error) throw error;
+
+    const clinics = (data || []).filter(clinic => isApproved(clinic.status));
+
+    if(!clinics.length){
+      grid.innerHTML = `
+        <div class="empty">
+          ❌ لا توجد عيادات مقبولة حاليًا.
+          <br>
+          سيظهر الطبيب هنا بعد قبول العيادة من الإدارة.
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = '';
+
+    clinics.forEach(clinic => {
+      const card = document.createElement('div');
+      card.className = 'item-card clinic-card doc-card';
+      card.innerHTML = `
+        <div class="clinic-doctor">👨‍⚕️ ${safe(clinic.doctor_name || 'طبيب بيطري')}</div>
+        <div class="clinic-name">🏥 ${safe(clinic.clinic_name || 'عيادة بيطرية')}</div>
+      `;
+      card.onclick = () => selectDoctor(clinic, card);
+      grid.appendChild(card);
+    });
+
+  }catch(error){
+    console.error(error);
+    grid.innerHTML = `
+      <div class="empty">
+        ❌ حدث خطأ أثناء تحميل العيادات.
+        <br><br>
+        ${safe(error.message)}
+        <br><br>
+        تأكد أن جدول clinics يسمح بالقراءة العامة (RLS).
+      </div>
+    `;
+  }
+}
+
+/* =========================================
+   SELECT DOCTOR
+========================================= */
+function selectDoctor(clinic, card){
+  selectedClinic = clinic;
+  chosenDoctor = clinic.doctor_name || 'طبيب بيطري';
+  chosenClinic = clinic.clinic_name || 'عيادة بيطرية';
+
+  document.querySelectorAll('.doc-card').forEach(item => item.classList.remove('active'));
+  card.classList.add('active');
+
+  clearError();
+
+  const details = document.getElementById('clinicDetails');
+  details.style.display = 'block';
+  details.innerHTML = `
+    <div class="clinic-title">👨‍⚕️ ${safe(chosenDoctor)}</div>
+    <div>🏥 <b>العيادة:</b> ${safe(chosenClinic)}</div>
+    <div>📍 <b>العنوان:</b> ${safe(clinic.address || 'غير محدد')}</div>
+    ${clinic.phone ? `<div>📞 <b>الهاتف:</b> ${safe(clinic.phone)}</div>` : ''}
+    ${clinic.specialty ? `<div>🩺 <b>التخصص:</b> ${safe(clinic.specialty)}</div>` : ''}
+  `;
+}
+
+/* =========================================
+   ANIMAL
+========================================= */
+function selectAnimal(animal, element){
+  chosenAnimal = animal;
+  document.querySelectorAll('.animal-card').forEach(item => item.classList.remove('active'));
+  element.classList.add('active');
+}
+
+/* =========================================
+   SYMPTOMS
+========================================= */
+function addSymptom(text){
+  const box = document.getElementById('case');
+  const current = box.value.trim();
+  if(current.includes(text)) return;
+  box.value = current ? (current + '، ' + text) : text;
+  box.focus();
+}
+
+/* =========================================
+   BOOKING DATE MIN
+========================================= */
+function setMinimumDate(){
+  const dateInput = document.getElementById('bookingDate');
+  if(!dateInput) return;
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  dateInput.min = `${yyyy}-${mm}-${dd}`;
+}
+
+/* =========================================
+   ORDER NUMBER
+========================================= */
+function generateOrderNumber(){
+  const random = Math.floor(10000000 + Math.random() * 90000000);
+  return 'VC-' + random;
+}
+
+/* =========================================
+   ERROR / STATUS HELPERS
+========================================= */
+function showError(message){
+  const box = document.getElementById('sendError');
+  box.textContent = message;
+  box.style.display = 'block';
+}
+
+function clearError(){
+  const box = document.getElementById('sendError');
+  box.style.display = 'none';
+  box.textContent = '';
+}
+
+/* =========================================
+   SUBMIT CASE
+========================================= */
+async function submitCase(){
+  clearError();
+  const statusBox = document.getElementById('status');
+  statusBox.style.display = 'none';
+  statusBox.innerHTML = '';
+
+  if(!selectedClinic){
+    showError('⚠️ من فضلك اختر الطبيب / العيادة أولاً.');
+    return;
+  }
+  if(!chosenAnimal){
+    showError('⚠️ من فضلك اختر نوع الحيوان.');
+    return;
+  }
+
+  const owner = document.getElementById('owner').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const pet = document.getElementById('pet').value.trim();
+  const age = document.getElementById('age').value.trim();
+  const service = document.getElementById('service').value;
+  const notes = document.getElementById('case').value.trim();
+
+  if(!owner){ showError('⚠️ من فضلك اكتب اسم صاحب الحيوان.'); return; }
+  if(!phone){ showError('⚠️ من فضلك اكتب رقم الهاتف.'); return; }
+  if(!pet){ showError('⚠️ من فضلك اكتب اسم الحيوان.'); return; }
+  if(!age){ showError('⚠️ من فضلك اكتب عمر الحيوان.'); return; }
+
+  const sendButton = document.getElementById('sendButton');
+  sendButton.disabled = true;
+  sendButton.textContent = '⏳ جارٍ الإرسال...';
+
+  const orderNumber = generateOrderNumber();
+
+  try{
+    const { error } = await _supabase
+      .from('cases')
+      .insert([{
+        order_number: orderNumber,
+        doctor_name: chosenDoctor,
+        clinic_name: chosenClinic,
+        owner_name: owner,
+        phone: phone,
+        animal_type: chosenAnimal,
+        pet_name: pet,
+        pet_age: age,
+        service_type: service,
+        notes: notes || null,
+        status: 'قيد الانتظار'
+      }]);
+
+    if(error) throw error;
+
+    currentOrderNumber = orderNumber;
+
+    statusBox.style.display = 'block';
+    statusBox.innerHTML = `
+      ✅ تم إرسال طلبك بنجاح!<br>
+      🔢 رقم الطلب: <b>${safe(orderNumber)}</b><br>
+      يمكنك حجز موعد الآن من القسم التالي 👇
+    `;
+
+    saveToHistory({
+      type: 'case',
+      order_number: orderNumber,
+      doctor: chosenDoctor,
+      clinic: chosenClinic,
+      date: new Date().toLocaleString('ar-EG')
+    });
+
+    showBookingSection(phone);
+
+  }catch(error){
+    console.error(error);
+    showError('❌ حدث خطأ أثناء إرسال الطلب: ' + error.message);
+  }finally{
+    sendButton.disabled = false;
+    sendButton.textContent = 'إرسال الطلب الآن 🚀';
+  }
+}
+
+/* =========================================
+   SHOW BOOKING SECTION
+========================================= */
+function showBookingSection(phone){
+  const bookingCard = document.getElementById('bookingCard');
+  bookingCard.style.display = 'block';
+
+  document.getElementById('bookingDoctor').textContent = chosenDoctor;
+  document.getElementById('bookingClinic').textContent = chosenClinic;
+  document.getElementById('bookingOrder').textContent = currentOrderNumber;
+  document.getElementById('bookingPhone').value = phone || '';
+
+  document.getElementById('bookingSuccess').style.display = 'none';
+  document.getElementById('bookingSuccess').innerHTML = '';
+
+  bookingCard.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* =========================================
+   BOOK APPOINTMENT
+========================================= */
+async function bookAppointment(){
+  const successBox = document.getElementById('bookingSuccess');
+  successBox.style.display = 'none';
+  successBox.innerHTML = '';
+
+  if(!currentOrderNumber){
+    alert('⚠️ من فضلك أرسل الحالة أولاً قبل الحجز.');
+    return;
+  }
+
+  const phone = document.getElementById('bookingPhone').value.trim();
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+
+  if(!phone){ alert('⚠️ من فضلك اكتب رقم الهاتف.'); return; }
+  if(!date){ alert('⚠️ من فضلك اختر تاريخ الحجز.'); return; }
+  if(!time){ alert('⚠️ من فضلك اختر ساعة الحجز.'); return; }
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const chosenDate = new Date(date + 'T00:00:00');
+
+  if(chosenDate < today){
+    alert('⚠️ لا يمكن اختيار تاريخ سابق. من فضلك اختر تاريخ اليوم أو بعده.');
+    return;
+  }
+
+  const bookingButton = document.getElementById('bookingButton');
+  bookingButton.disabled = true;
+  bookingButton.textContent = '⏳ جارٍ الحجز...';
+
+  try{
+    const { error } = await _supabase
+      .from('appointments')
+      .insert([{
+        order_number: currentOrderNumber,
+        doctor_name: chosenDoctor,
+        clinic_name: chosenClinic,
+        phone: phone,
+        appointment_date: date,
+        appointment_time: time,
+        status: 'حجز مبدئي'
+      }]);
+
+    if(error) throw error;
+
+    successBox.style.display = 'block';
+    successBox.innerHTML = `
+      ✅ تم تأكيد الحجز بنجاح!<br>
+      🔢 رقم الطلب: <b>${safe(currentOrderNumber)}</b><br>
+      📅 التاريخ: <b>${safe(date)}</b><br>
+      ⏰ الساعة: <b>${safe(time)}</b><br>
+      📌 الحالة: <b>حجز مبدئي</b>
+    `;
+
+    saveToHistory({
+      type: 'appointment',
+      order_number: currentOrderNumber,
+      doctor: chosenDoctor,
+      clinic: chosenClinic,
+      date: date,
+      time: time
+    });
+
+  }catch(error){
+    console.error(error);
+    alert('❌ حدث خطأ أثناء الحجز: ' + error.message);
+  }finally{
+    bookingButton.disabled = false;
+    bookingButton.textContent = '✅ تأكيد الحجز';
+  }
+}
+
+/* =========================================
+   TRACK CASE
+========================================= */
+async function trackCase(){
+  const resultBox = document.getElementById('trackResult');
+  resultBox.innerHTML = '';
+
+  const orderNumber = document.getElementById('trackOrder').value.trim();
+  const phone = document.getElementById('trackPhone').value.trim();
+
+  if(!orderNumber || !phone){
+    resultBox.innerHTML = `<div class="track-result">⚠️ من فضلك اكتب رقم الطلب ورقم الهاتف.</div>`;
+    return;
+  }
+
+  resultBox.innerHTML = `<div class="track-result">⏳ جاري البحث...</div>`;
+
+  try{
+    const { data: caseData, error: caseError } = await _supabase
+      .from('cases')
+      .select('*')
+      .eq('order_number', orderNumber)
+      .eq('phone', phone)
+      .maybeSingle();
+
+    if(caseError) throw caseError;
+
+    if(!caseData){
+      resultBox.innerHTML = `<div class="track-result">❌ لم يتم العثور على طلب بهذه البيانات. تأكد من رقم الطلب ورقم الهاتف.</div>`;
+      return;
+    }
+
+    let html = `
+      <div class="track-result">
+        🔢 <b>رقم الطلب:</b> ${safe(caseData.order_number)}<br>
+        👨‍⚕️ <b>الطبيب:</b> ${safe(caseData.doctor_name)}<br>
+        🏥 <b>العيادة:</b> ${safe(caseData.clinic_name)}<br>
+        📌 <b>حالة الطلب:</b> <span class="badge">${safe(caseData.status || 'قيد الانتظار')}</span>
+    `;
+
+    try{
+      const { data: apptData } = await _supabase
+        .from('appointments')
+        .select('*')
+        .eq('order_number', orderNumber)
+        .limit(1)
+        .maybeSingle();
+
+      if(apptData){
+        html += `
+          <br><br>
+          📅 <b>تاريخ الحجز:</b> ${safe(apptData.appointment_date)}<br>
+          ⏰ <b>الساعة:</b> ${safe(apptData.appointment_time)}<br>
+          📌 <b>حالة الحجز:</b> <span class="badge">${safe(apptData.status || 'حجز مبدئي')}</span>
+        `;
+      }
+    }catch(apptError){
+      console.error(apptError);
+    }
+
+    html += `</div>`;
+    resultBox.innerHTML = html;
+
+  }catch(error){
+    console.error(error);
+    resultBox.innerHTML = `<div class="track-result">❌ حدث خطأ أثناء البحث: ${safe(error.message)}</div>`;
+  }
+}
+
+/* =========================================
+   LOCAL HISTORY (localStorage)
+========================================= */
+function saveToHistory(entry){
+  try{
+    const list = JSON.parse(localStorage.getItem('vc_history') || '[]');
+    list.unshift(entry);
+    const trimmed = list.slice(0, 10);
+    localStorage.setItem('vc_history', JSON.stringify(trimmed));
+    loadHistory();
+  }catch(e){
+    console.error(e);
+  }
+}
+
+function loadHistory(){
+  const box = document.getElementById('historyList');
+  let list = [];
+
+  try{
+    list = JSON.parse(localStorage.getItem('vc_history') || '[]');
+  }catch(e){
+    list = [];
+  }
+
+  if(!list.length){
+    box.innerHTML = 'لا توجد طلبات مسجلة حتى الآن.';
+    return;
+  }
+
+  box.innerHTML = list.map(item => {
+    if(item.type === 'appointment'){
+      return `
+        <div class="history-item">
+          📅 حجز موعد - رقم الطلب: <b>${safe(item.order_number)}</b><br>
+          👨‍⚕️ ${safe(item.doctor)} - 🏥 ${safe(item.clinic)}<br>
+          📅 ${safe(item.date)} ⏰ ${safe(item.time)}
+        </div>
+      `;
+    }
+    return `
+      <div class="history-item">
+        📋 طلب حالة - رقم الطلب: <b>${safe(item.order_number)}</b><br>
+        👨‍⚕️ ${safe(item.doctor)} - 🏥 ${safe(item.clinic)}<br>
+        🕓 ${safe(item.date)}
+      </div>
+    `;
+  }).join('');
+}
+</script>
+</body>
+</html>
