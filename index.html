@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,21 +7,18 @@
 <title>Vet Care 🐾</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 :root{
 --bg:#f5f7f9;
---card:#ffffff;
+--card:#fff;
 --text:#17202a;
 --muted:#6b7280;
 --primary:#10b981;
 --primary-dark:#059669;
 --border:#e5e7eb;
 --danger:#ef4444;
---warning:#f59e0b;
 --soft:#ecfdf5;
 }
 
@@ -106,9 +102,7 @@ font-size:13px;
 font-weight:800;
 }
 
-input,
-select,
-textarea{
+input,select,textarea{
 width:100%;
 margin-top:6px;
 padding:12px;
@@ -120,9 +114,7 @@ font-size:14px;
 outline:none;
 }
 
-input:focus,
-select:focus,
-textarea:focus{
+input:focus,select:focus,textarea:focus{
 border-color:var(--primary);
 }
 
@@ -242,7 +234,7 @@ cursor:not-allowed;
 
 .btn-main{
 background:var(--primary);
-color:white;
+color:#fff;
 }
 
 .btn-main:hover{
@@ -251,14 +243,13 @@ background:var(--primary-dark);
 
 .btn-emergency{
 background:var(--danger);
-color:white;
+color:#fff;
 text-decoration:none;
 display:block;
 text-align:center;
 }
 
-.status-box,
-.error-box{
+.status-box,.error-box{
 display:none;
 margin-top:13px;
 padding:13px;
@@ -340,7 +331,7 @@ line-height:2;
 .badge{
 display:inline-block;
 background:var(--primary);
-color:white;
+color:#fff;
 padding:3px 9px;
 border-radius:20px;
 font-size:11px;
@@ -367,7 +358,6 @@ border-bottom:none;
 }
 
 @media(max-width:500px){
-
 .row{
 flex-direction:column;
 gap:0;
@@ -380,117 +370,78 @@ grid-template-columns:repeat(2,1fr);
 .header h2{
 font-size:18px;
 }
-
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="container">
 
-
-<!-- HEADER -->
-
 <div class="header">
-
-<h2>
-🌐 Vet Care 🐾
-</h2>
+<h2>🌐 Vet Care 🐾</h2>
 
 <div class="header-actions">
+<a href="services.html" class="small-btn">🔍 الخدمات</a>
 
-<a
-href="services.html"
-class="small-btn">
-🔍 الخدمات
-</a>
-
-<button
-class="small-btn"
-onclick="toggleTheme()">
+<button class="small-btn" onclick="toggleTheme()">
 🌙
 </button>
-
+</div>
 </div>
 
-</div>
 
-
-<!-- CASE FORM -->
+<!-- ================= CASE ================= -->
 
 <div class="card">
 
-<h3>
-📋 تقديم حالة / طلب خدمة
-</h3>
+<h3>📋 تقديم حالة / طلب خدمة</h3>
 
 <p class="muted">
 اختر الطبيب أو العيادة، ثم أدخل بيانات الحيوان والطلب.
 </p>
 
+<label>1️⃣ اختر الطبيب / العيادة:</label>
 
-<label>
-1️⃣ اختر الطبيب / العيادة:
-</label>
-
-<div
-id="doctorsGrid"
-class="cards-grid">
-
+<div id="doctorsGrid" class="cards-grid">
 <div class="empty">
 ⏳ جاري تحميل العيادات...
 </div>
-
 </div>
 
-
-<div
-id="clinicDetails"
-class="clinic-details">
-</div>
+<div id="clinicDetails" class="clinic-details"></div>
 
 
-<label>
-2️⃣ نوع الحيوان:
-</label>
+<label>2️⃣ نوع الحيوان:</label>
 
 <div class="cards-grid">
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🐱 قطة',this)">
 🐱 قطة
 </div>
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🐶 كلب',this)">
 🐶 كلب
 </div>
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🦜 طائر',this)">
 🦜 طائر
 </div>
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🐰 أرنب',this)">
 🐰 أرنب
 </div>
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🐢 زواحف',this)">
 🐢 زواحف
 </div>
 
-<div
-class="item-card animal-card"
+<div class="item-card animal-card"
 onclick="selectAnimal('🐾 آخر',this)">
 🐾 آخر
 </div>
@@ -501,30 +452,13 @@ onclick="selectAnimal('🐾 آخر',this)">
 <div class="row">
 
 <div>
-
-<label>
-👤 اسم صاحب الحيوان:
-</label>
-
-<input
-id="owner"
-type="text"
-placeholder="مثال: أحمد">
-
+<label>👤 اسم صاحب الحيوان:</label>
+<input id="owner" type="text" placeholder="مثال: أحمد">
 </div>
 
-
 <div>
-
-<label>
-📞 رقم الهاتف:
-</label>
-
-<input
-id="phone"
-type="tel"
-placeholder="01000000000">
-
+<label>📞 رقم الهاتف:</label>
+<input id="phone" type="tel" placeholder="01000000000">
 </div>
 
 </div>
@@ -533,38 +467,19 @@ placeholder="01000000000">
 <div class="row">
 
 <div>
-
-<label>
-🐾 اسم الحيوان:
-</label>
-
-<input
-id="pet"
-type="text"
-placeholder="مثال: سيمبا">
-
+<label>🐾 اسم الحيوان:</label>
+<input id="pet" type="text" placeholder="مثال: سيمبا">
 </div>
-
 
 <div>
-
-<label>
-🎂 عمر الحيوان:
-</label>
-
-<input
-id="age"
-type="text"
-placeholder="مثال: سنة">
-
+<label>🎂 عمر الحيوان:</label>
+<input id="age" type="text" placeholder="مثال: سنة">
 </div>
 
 </div>
 
 
-<label>
-🩺 نوع الخدمة:
-</label>
+<label>🩺 نوع الخدمة:</label>
 
 <select id="service">
 
@@ -587,58 +502,40 @@ placeholder="مثال: سنة">
 </select>
 
 
-<label>
-🩹 أعراض سريعة - اختياري:
-</label>
+<label>🩹 أعراض سريعة - اختياري:</label>
 
 <div class="symptoms">
 
-<span
-class="symptom"
-onclick="addSymptom('خمول')">
+<span class="symptom" onclick="addSymptom('خمول')">
 ➕ خمول
 </span>
 
-<span
-class="symptom"
-onclick="addSymptom('قيء')">
+<span class="symptom" onclick="addSymptom('قيء')">
 ➕ قيء
 </span>
 
-<span
-class="symptom"
-onclick="addSymptom('سخونية')">
+<span class="symptom" onclick="addSymptom('سخونية')">
 ➕ سخونية
 </span>
 
-<span
-class="symptom"
-onclick="addSymptom('إسهال')">
+<span class="symptom" onclick="addSymptom('إسهال')">
 ➕ إسهال
 </span>
 
-<span
-class="symptom"
-onclick="addSymptom('جرح')">
+<span class="symptom" onclick="addSymptom('جرح')">
 ➕ جرح
 </span>
 
 </div>
 
 
-<label>
-📝 ملاحظات / تفاصيل إضافية:
-</label>
+<label>📝 ملاحظات / تفاصيل إضافية:</label>
 
-<textarea
-id="case"
-rows="4"
-placeholder="اكتب تفاصيل الحالة هنا...">
-</textarea>
+<textarea id="case" rows="4"
+placeholder="اكتب تفاصيل الحالة هنا..."></textarea>
 
 
-<button
-id="sendButton"
+<button id="sendButton"
 class="btn btn-main"
 onclick="submitCase()">
 
@@ -657,27 +554,16 @@ class="btn btn-emergency">
 </a>
 
 
-<div
-id="status"
-class="status-box">
-</div>
+<div id="status" class="status-box"></div>
 
-
-<div
-id="sendError"
-class="error-box">
-</div>
+<div id="sendError" class="error-box"></div>
 
 </div>
 
 
+<!-- ================= BOOKING ================= -->
 
-<!-- BOOKING -->
-
-<div
-id="bookingCard"
-class="card booking-card">
-
+<div id="bookingCard" class="card booking-card">
 
 <div class="booking-header">
 
@@ -687,12 +573,10 @@ class="card booking-card">
 
 <div>
 
-<h3>
-حجز موعد
-</h3>
+<h3>حجز موعد</h3>
 
 <div class="muted">
-اختر اليوم والساعة لإتمام الحجز.
+تم إرسال طلبك. اختر الآن اليوم والساعة.
 </div>
 
 </div>
@@ -702,62 +586,37 @@ class="card booking-card">
 
 <div class="booking-info">
 
-<b>
-👨‍⚕️ الطبيب:
-</b>
-
-<span id="bookingDoctor">
-</span>
+<b>👨‍⚕️ الطبيب:</b>
+<span id="bookingDoctor"></span>
 
 <br>
 
-
-<b>
-🏥 العيادة:
-</b>
-
-<span id="bookingClinic">
-</span>
+<b>🏥 العيادة:</b>
+<span id="bookingClinic"></span>
 
 <br>
 
-
-<b>
-🔢 رقم الطلب:
-</b>
-
-<span id="bookingOrder">
-</span>
+<b>🔢 رقم الطلب:</b>
+<span id="bookingOrder"></span>
 
 </div>
 
 
-<label>
-📞 رقم الهاتف:
-</label>
+<label>📞 رقم الهاتف:</label>
 
-<input
-id="bookingPhone"
+<input id="bookingPhone"
 type="tel"
 placeholder="رقم الهاتف">
 
 
-<label>
-📅 اليوم:
-</label>
+<label>📅 اليوم:</label>
 
-<input
-id="bookingDate"
-type="date">
+<input id="bookingDate" type="date">
 
 
-<label>
-⏰ الساعة:
-</label>
+<label>⏰ الساعة:</label>
 
-<input
-id="bookingTime"
-type="time">
+<input id="bookingTime" type="time">
 
 
 <div class="booking-note">
@@ -765,8 +624,7 @@ type="time">
 </div>
 
 
-<button
-id="bookingButton"
+<button id="bookingButton"
 class="btn btn-main"
 onclick="bookAppointment()">
 
@@ -775,51 +633,39 @@ onclick="bookAppointment()">
 </button>
 
 
-<div
-id="bookingSuccess"
+<div id="bookingSuccess"
 class="booking-success">
 </div>
 
-
 </div>
 
 
-
-<!-- TRACK -->
+<!-- ================= TRACK ================= -->
 
 <div class="card">
 
-<h3>
-🔎 متابعة طلبك
-</h3>
+<h3>🔎 متابعة طلبك</h3>
 
 <p class="muted">
-اكتب رقم الطلب ورقم الهاتف لمعرفة حالة طلبك.
+اكتب رقم الطلب ورقم الهاتف لمعرفة حالة الطلب والحجز.
 </p>
 
 
-<label>
-🔢 رقم الطلب:
-</label>
+<label>🔢 رقم الطلب:</label>
 
-<input
-id="trackOrder"
+<input id="trackOrder"
 type="text"
 placeholder="مثال: VC-12345678">
 
 
-<label>
-📞 رقم الهاتف:
-</label>
+<label>📞 رقم الهاتف:</label>
 
-<input
-id="trackPhone"
+<input id="trackPhone"
 type="tel"
 placeholder="01000000000">
 
 
-<button
-class="btn btn-main"
+<button class="btn btn-main"
 onclick="trackCase()">
 
 🔎 متابعة الطلب
@@ -827,42 +673,31 @@ onclick="trackCase()">
 </button>
 
 
-<div
-id="trackResult">
-</div>
+<div id="trackResult"></div>
 
 </div>
 
 
-
-<!-- HISTORY -->
+<!-- ================= HISTORY ================= -->
 
 <div class="card">
 
-<h4>
-📋 سجل الطلبات
-</h4>
+<h4>📋 سجل الطلبات</h4>
 
-<div
-id="historyList">
-
+<div id="historyList">
 لا توجد طلبات مسجلة حتى الآن.
-
 </div>
 
 </div>
 
-
 </div>
-
 
 
 <script>
 
-
-/* ================================
+/* =========================================
    SUPABASE
-================================ */
+========================================= */
 
 const SUPABASE_URL =
 'https://tuyvjozypjcvgpgkfoby.supabase.co';
@@ -877,160 +712,114 @@ SUPABASE_KEY
 );
 
 
-
-/* ================================
+/* =========================================
    VARIABLES
-================================ */
+========================================= */
 
 let chosenDoctor = '';
-
 let chosenClinic = '';
-
 let chosenAnimal = '';
-
 let selectedClinic = null;
-
 let currentOrderNumber = '';
 
 
-
-/* ================================
+/* =========================================
    START
-================================ */
+========================================= */
 
-window.addEventListener(
-'DOMContentLoaded',
-function(){
+window.addEventListener('DOMContentLoaded', () => {
 
 loadHistory();
-
 setMinimumDate();
-
 loadClinics();
 
-}
-);
+});
 
 
-
-/* ================================
+/* =========================================
    THEME
-================================ */
+========================================= */
 
 function toggleTheme(){
 
-document.body.classList.toggle(
-'dark'
-);
+document.body.classList.toggle('dark');
 
 }
 
 
-
-/* ================================
+/* =========================================
    SAFE
-================================ */
+========================================= */
 
 function safe(value){
 
-return String(
-value ?? ''
-)
-
+return String(value ?? '')
 .replace(/&/g,'&amp;')
-
 .replace(/</g,'&lt;')
-
 .replace(/>/g,'&gt;')
-
 .replace(/"/g,'&quot;')
-
 .replace(/'/g,'&#039;');
 
 }
 
 
-
-/* ================================
-   APPROVED CLINICS
-================================ */
+/* =========================================
+   APPROVED
+========================================= */
 
 function isApproved(status){
 
 const value =
-String(
-status ?? ''
-)
+String(status ?? '')
 .trim()
 .toLowerCase();
 
 return [
-
 'approved',
-
 'accepted',
-
 'مقبولة',
-
 'مقبول',
-
 'مقبوله',
-
 'قبول'
-
 ].includes(value);
 
 }
 
 
-
-/* ================================
+/* =========================================
    LOAD CLINICS
-================================ */
+========================================= */
 
 async function loadClinics(){
 
 const grid =
-document.getElementById(
-'doctorsGrid'
-);
+document.getElementById('doctorsGrid');
+
+grid.innerHTML =
+'<div class="empty">⏳ جاري تحميل العيادات...</div>';
 
 try{
 
-const {
-data,
-error
-} =
+const {data,error} =
 await _supabase
 .from('clinics')
-.select('*');
+.select('*')
+.order('created_at',{ascending:false});
 
-if(error){
-
-throw error;
-
-}
-
+if(error) throw error;
 
 const clinics =
-(data || []).filter(
-function(clinic){
-
-return isApproved(
-clinic.status
+(data || []).filter(clinic =>
+isApproved(clinic.status)
 );
-
-}
-);
-
 
 if(!clinics.length){
 
 grid.innerHTML = `
 <div class="empty">
-
-لا توجد عيادات مقبولة حاليًا.
-
+❌ لا توجد عيادات مقبولة حاليًا.
+<br>
+سيظهر الطبيب هنا بعد قبول العيادة من الإدارة.
 </div>
 `;
 
@@ -1038,82 +827,59 @@ return;
 
 }
 
-
 grid.innerHTML = '';
 
-
-clinics.forEach(
-function(clinic){
+clinics.forEach(clinic => {
 
 const card =
-document.createElement(
-'div'
-);
+document.createElement('div');
 
 card.className =
 'item-card clinic-card doc-card';
 
-
 card.innerHTML = `
 
 <div class="clinic-doctor">
-
-👨‍⚕️
-
-${safe(
-clinic.doctor_name ||
-'طبيب بيطري'
+👨‍⚕️ ${safe(
+clinic.doctor_name || 'طبيب بيطري'
 )}
-
 </div>
 
-
 <div class="clinic-name">
-
-🏥
-
-${safe(
-clinic.clinic_name ||
-'عيادة بيطرية'
+🏥 ${safe(
+clinic.clinic_name || 'عيادة بيطرية'
 )}
-
 </div>
 
 `;
 
+card.onclick = () => {
 
-card.onclick =
-function(){
-
-selectDoctor(
-clinic,
-card
-);
+selectDoctor(clinic,card);
 
 };
 
-
-grid.appendChild(
-card
-);
+grid.appendChild(card);
 
 });
 
-
-
 }catch(error){
+
+console.error(error);
 
 grid.innerHTML = `
 
 <div class="empty">
 
-❌ خطأ في تحميل العيادات
+❌ حدث خطأ أثناء تحميل العيادات.
 
-<br>
+<br><br>
 
-${safe(
-error.message
-)}
+${safe(error.message)}
+
+<br><br>
+
+تأكد أن جدول clinics يسمح بالقراءة العامة.
 
 </div>
 
@@ -1124,24 +890,17 @@ error.message
 }
 
 
-
-/* ================================
+/* =========================================
    SELECT DOCTOR
-================================ */
+========================================= */
 
-function selectDoctor(
-clinic,
-card
-){
+function selectDoctor(clinic,card){
 
-selectedClinic =
-clinic;
-
+selectedClinic = clinic;
 
 chosenDoctor =
 clinic.doctor_name ||
 'طبيب بيطري';
-
 
 chosenClinic =
 clinic.clinic_name ||
@@ -1149,125 +908,59 @@ clinic.clinic_name ||
 
 
 document
-.querySelectorAll(
-'.doc-card'
-)
-.forEach(
-function(item){
-
-item.classList.remove(
-'active'
+.querySelectorAll('.doc-card')
+.forEach(item =>
+item.classList.remove('active')
 );
 
-});
-
-
-card.classList.add(
-'active'
-);
+card.classList.add('active');
 
 
 const details =
-document.getElementById(
-'clinicDetails'
-);
+document.getElementById('clinicDetails');
 
-
-details.style.display =
-'block';
-
+details.style.display = 'block';
 
 details.innerHTML = `
 
 <div class="clinic-title">
 
-👨‍⚕️
-
-${safe(
-chosenDoctor
-)}
+👨‍⚕️ ${safe(chosenDoctor)}
 
 </div>
-
 
 <div>
-
-🏥
-
-<b>
-العيادة:
-</b>
-
-${safe(
-chosenClinic
-)}
-
+🏥 <b>العيادة:</b>
+${safe(chosenClinic)}
 </div>
-
 
 <div>
-
-📍
-
-<b>
-العنوان:
-</b>
-
-${safe(
-clinic.address ||
-'غير محدد'
-)}
-
+📍 <b>العنوان:</b>
+${safe(clinic.address || 'غير محدد')}
 </div>
-
 
 ${
 clinic.phone
 ?
 `
-
 <div>
-
-📞
-
-<b>
-الهاتف:
-</b>
-
-${safe(
-clinic.phone
-)}
-
+📞 <b>الهاتف:</b>
+${safe(clinic.phone)}
 </div>
-
 `
-:
-''
+:''
 }
 
-
 ${
 clinic.specialty
 ?
 `
-
 <div>
-
-🩺
-
-<b>
-التخصص:
-</b>
-
-${safe(
-clinic.specialty
-)}
-
+🩺 <b>التخصص:</b>
+${safe(clinic.specialty)}
 </div>
-
 `
-:
-''
+:''
 }
 
 `;
@@ -1275,141 +968,83 @@ clinic.specialty
 }
 
 
+/* =========================================
+   ANIMAL
+========================================= */
 
-/* ================================
-   SELECT ANIMAL
-================================ */
+function selectAnimal(animal,element){
 
-function selectAnimal(
-animal,
-element
-){
-
-chosenAnimal =
-animal;
-
+chosenAnimal = animal;
 
 document
-.querySelectorAll(
-'.animal-card'
-)
-.forEach(
-function(item){
-
-item.classList.remove(
-'active'
+.querySelectorAll('.animal-card')
+.forEach(item =>
+item.classList.remove('active')
 );
 
-});
-
-
-element.classList.add(
-'active'
-);
+element.classList.add('active');
 
 }
 
 
+/* =========================================
+   SYMPTOMS
+========================================= */
 
-/* ================================
-   ADD SYMPTOM
-================================ */
-
-function addSymptom(
-text
-){
+function addSymptom(text){
 
 const box =
-document.getElementById(
-'case'
-);
+document.getElementById('case');
 
 const current =
 box.value.trim();
 
-
-if(
-current.includes(text)
-){
-
-return;
-
-}
-
+if(current.includes(text)) return;
 
 box.value =
 current
-?
-current +
-'، ' +
-text
-:
-text;
+? current + '، ' + text
+: text;
 
 }
 
 
-
-/* ================================
+/* =========================================
    MESSAGES
-================================ */
+========================================= */
 
-function showStatus(
-message
-){
+function showStatus(message){
 
 const box =
-document.getElementById(
-'status'
-);
+document.getElementById('status');
 
-box.innerHTML =
-message;
-
-box.style.display =
-'block';
+box.innerHTML = message;
+box.style.display = 'block';
 
 }
 
-
-function showError(
-message
-){
+function showError(message){
 
 const box =
-document.getElementById(
-'sendError'
-);
+document.getElementById('sendError');
 
-box.innerHTML =
-message;
-
-box.style.display =
-'block';
+box.innerHTML = message;
+box.style.display = 'block';
 
 }
-
 
 function hideMessages(){
 
-document.getElementById(
-'status'
-).style.display =
-'none';
+document.getElementById('status').style.display='none';
 
-
-document.getElementById(
-'sendError'
-).style.display =
-'none';
+document.getElementById('sendError').style.display='none';
 
 }
 
 
-
-/* ================================
+/* =========================================
    ORDER NUMBER
-================================ */
+========================================= */
 
 function generateOrderNumber(){
 
@@ -1421,189 +1056,111 @@ Date.now()
 }
 
 
-
-/* ================================
-   SEND CASE
-================================ */
+/* =========================================
+   SUBMIT CASE
+========================================= */
 
 async function submitCase(){
 
 hideMessages();
 
-
 const button =
-document.getElementById(
-'sendButton'
-);
-
+document.getElementById('sendButton');
 
 const owner =
-document.getElementById(
-'owner'
-)
-.value
-.trim();
-
+document.getElementById('owner').value.trim();
 
 const phone =
-document.getElementById(
-'phone'
-)
-.value
-.trim();
-
+document.getElementById('phone').value.trim();
 
 const pet =
-document.getElementById(
-'pet'
-)
-.value
-.trim();
-
+document.getElementById('pet').value.trim();
 
 const age =
-document.getElementById(
-'age'
-)
-.value
-.trim();
-
+document.getElementById('age').value.trim();
 
 const service =
-document.getElementById(
-'service'
-)
-.value;
-
+document.getElementById('service').value;
 
 const description =
-document.getElementById(
-'case'
-)
-.value
-.trim();
-
+document.getElementById('case').value.trim();
 
 
 if(!chosenDoctor){
 
-showError(
-'⚠️ اختر الطبيب أو العيادة أولًا.'
-);
-
+showError('⚠️ اختر الطبيب أو العيادة أولًا.');
 return;
 
 }
-
 
 if(!chosenAnimal){
 
-showError(
-'⚠️ اختر نوع الحيوان أولًا.'
-);
-
+showError('⚠️ اختر نوع الحيوان أولًا.');
 return;
 
 }
-
 
 if(!owner){
 
-showError(
-'⚠️ اكتب اسم صاحب الحيوان.'
-);
-
+showError('⚠️ اكتب اسم صاحب الحيوان.');
 return;
 
 }
-
 
 if(!phone){
 
-showError(
-'⚠️ اكتب رقم الهاتف.'
-);
-
+showError('⚠️ اكتب رقم الهاتف.');
 return;
 
 }
-
 
 if(!pet){
 
-showError(
-'⚠️ اكتب اسم الحيوان.'
-);
-
+showError('⚠️ اكتب اسم الحيوان.');
 return;
 
 }
 
 
-
-button.disabled =
-true;
-
-button.textContent =
-'⏳ جاري إرسال الطلب...';
-
+button.disabled = true;
+button.textContent = '⏳ جاري إرسال الطلب...';
 
 
 try{
-
 
 const orderNumber =
 generateOrderNumber();
 
 
-const {
-error
-} =
+const {error} =
 await _supabase
 .from('cases')
-.insert([
+.insert([{
 
-{
+order_number:orderNumber,
 
-order_number:
-orderNumber,
+owner_name:owner,
 
-owner_name:
-owner,
+phone:phone,
 
-phone:
-phone,
+animal_type:chosenAnimal,
 
-animal_type:
-chosenAnimal,
+pet_name:pet,
 
-pet_name:
-pet,
+doctor_name:chosenDoctor,
 
-doctor_name:
-chosenDoctor,
-
-service_type:
-service,
+service_type:service,
 
 description:
 description ||
 'لا توجد أعراض أو تفاصيل إضافية',
 
-status:
-'قيد الانتظار'
+status:'قيد الانتظار'
 
-}
-
-]);
+}]);
 
 
-if(error){
-
-throw error;
-
-}
-
+if(error) throw error;
 
 
 currentOrderNumber =
@@ -1618,29 +1175,21 @@ orderNumber
 
 saveHistory({
 
-type:
-'case',
+type:'case',
 
-order:
-orderNumber,
+order:orderNumber,
 
-owner:
-owner,
+owner:owner,
 
-phone:
-phone,
+phone:phone,
 
-pet:
-pet,
+pet:pet,
 
-doctor:
-chosenDoctor,
+doctor:chosenDoctor,
 
-clinic:
-chosenClinic,
+clinic:chosenClinic,
 
-status:
-'قيد الانتظار'
+status:'قيد الانتظار'
 
 });
 
@@ -1652,45 +1201,38 @@ showStatus(`
 <br>
 
 <b>
-
 رقم الطلب:
-
-${safe(
-orderNumber
-)}
-
+${safe(orderNumber)}
 </b>
 
 <br>
 
-احتفظ برقم الطلب لمتابعته.
+الآن يمكنك حجز الموعد من الخانة التالية 👇
 
 `);
 
 
-document.getElementById(
-'trackOrder'
-).value =
+document.getElementById('trackOrder').value =
 orderNumber;
 
-
-document.getElementById(
-'trackPhone'
-).value =
+document.getElementById('trackPhone').value =
 phone;
 
+
+/* أهم خطوة:
+إظهار الحجز بعد إرسال الطلب */
 
 prepareBooking(
 orderNumber,
 phone
 );
 
-
 loadHistory();
 
 
-
 }catch(error){
+
+console.error(error);
 
 showError(`
 
@@ -1698,16 +1240,13 @@ showError(`
 
 <br>
 
-${safe(
-error.message
-)}
+${safe(error.message)}
 
 `);
 
 }finally{
 
-button.disabled =
-false;
+button.disabled = false;
 
 button.textContent =
 'إرسال الطلب الآن 🚀';
@@ -1717,109 +1256,102 @@ button.textContent =
 }
 
 
-
-/* ================================
+/* =========================================
    PREPARE BOOKING
-================================ */
+========================================= */
 
-function prepareBooking(
-orderNumber,
-phone
-){
+function prepareBooking(orderNumber,phone){
 
-document.getElementById(
-'bookingDoctor'
-).textContent =
-chosenDoctor;
+document.getElementById('bookingDoctor')
+.textContent = chosenDoctor;
 
+document.getElementById('bookingClinic')
+.textContent = chosenClinic;
 
-document.getElementById(
-'bookingClinic'
-).textContent =
-chosenClinic;
+document.getElementById('bookingOrder')
+.textContent = orderNumber;
 
+document.getElementById('bookingPhone')
+.value = phone;
 
-document.getElementById(
-'bookingOrder'
-).textContent =
-orderNumber;
+document.getElementById('bookingDate')
+.value = '';
 
+document.getElementById('bookingTime')
+.value = '';
 
-document.getElementById(
-'bookingPhone'
-).value =
-phone;
-
-
-document.getElementById(
-'bookingDate'
-).value =
-'';
-
-
-document.getElementById(
-'bookingTime'
-).value =
-'';
-
-
-document.getElementById(
-'bookingSuccess'
-).style.display =
-'none';
-
+document.getElementById('bookingSuccess')
+.style.display = 'none';
 
 const card =
-document.getElementById(
-'bookingCard'
-);
+document.getElementById('bookingCard');
 
-card.style.display =
-'block';
+card.style.display = 'block';
 
+setMinimumDate();
+
+setTimeout(() => {
 
 card.scrollIntoView({
 behavior:'smooth',
 block:'start'
 });
 
+},100);
+
 }
 
 
+/* =========================================
+   MINIMUM DATE
+========================================= */
 
-/* ================================
+function setMinimumDate(){
+
+const input =
+document.getElementById('bookingDate');
+
+if(!input) return;
+
+const now = new Date();
+
+const year =
+now.getFullYear();
+
+const month =
+String(now.getMonth()+1)
+.padStart(2,'0');
+
+const day =
+String(now.getDate())
+.padStart(2,'0');
+
+input.min =
+`${year}-${month}-${day}`;
+
+}
+
+
+/* =========================================
    BOOK APPOINTMENT
-================================ */
+========================================= */
 
 async function bookAppointment(){
 
 const button =
-document.getElementById(
-'bookingButton'
-);
-
+document.getElementById('bookingButton');
 
 const phone =
-document.getElementById(
-'bookingPhone'
-)
-.value
-.trim();
-
+document.getElementById('bookingPhone')
+.value.trim();
 
 const date =
-document.getElementById(
-'bookingDate'
-)
+document.getElementById('bookingDate')
 .value;
-
 
 const time =
-document.getElementById(
-'bookingTime'
-)
+document.getElementById('bookingTime')
 .value;
-
 
 
 if(!currentOrderNumber){
@@ -1832,7 +1364,6 @@ return;
 
 }
 
-
 if(!phone){
 
 showBookingMessage(
@@ -1843,7 +1374,6 @@ return;
 
 }
 
-
 if(!date){
 
 showBookingMessage(
@@ -1853,7 +1383,6 @@ showBookingMessage(
 return;
 
 }
-
 
 if(!time){
 
@@ -1866,16 +1395,15 @@ return;
 }
 
 
-const today =
-new Date()
-.toISOString()
-.split('T')[0];
+setMinimumDate();
 
+const minimumDate =
+document.getElementById('bookingDate').min;
 
-if(date < today){
+if(date < minimumDate){
 
 showBookingMessage(
-'⚠️ لا يمكن اختيار تاريخ سابق.'
+'⚠️ لا يمكن اختيار تاريخ سابق لليوم.'
 );
 
 return;
@@ -1883,133 +1411,172 @@ return;
 }
 
 
-
-button.disabled =
-true;
+button.disabled = true;
 
 button.textContent =
 '⏳ جاري تأكيد الحجز...';
 
 
-
 try{
 
+/*
+  نتأكد أولًا أن الطلب موجود.
+*/
 
-const {
-error
-} =
+const {data:caseData,error:caseError} =
+await _supabase
+.from('cases')
+.select('order_number,phone')
+.eq('order_number',currentOrderNumber)
+.limit(1);
+
+if(caseError) throw caseError;
+
+if(!caseData || !caseData.length){
+
+throw new Error(
+'رقم الطلب غير موجود في النظام.'
+);
+
+}
+
+
+/*
+  تسجيل الحجز.
+*/
+
+const {error} =
 await _supabase
 .from('appointments')
-.insert([
+.insert([{
 
-{
+order_number:currentOrderNumber,
 
-order_number:
-currentOrderNumber,
+doctor_name:chosenDoctor,
 
-doctor_name:
-chosenDoctor,
+clinic_name:chosenClinic,
 
-clinic_name:
-chosenClinic,
+phone:phone,
 
-phone:
-phone,
+appointment_date:date,
 
-appointment_date:
-date,
+appointment_time:time,
 
-appointment_time:
-time,
+status:'حجز مبدئي'
 
-status:
-'حجز مبدئي'
-
-}
-
-]);
+}]);
 
 
-if(error){
-
-throw error;
-
-}
-
+if(error) throw error;
 
 
 const success =
-document.getElementById(
-'bookingSuccess'
-);
-
+document.getElementById('bookingSuccess');
 
 success.innerHTML = `
 
-✅ تم تسجيل الحجز بنجاح
+✅ <b>تم تسجيل الحجز بنجاح</b>
 
 <br>
 
-<b>
-
-${safe(date)}
-
-—
-
-${safe(time)}
-
-</b>
+📅 التاريخ:
+<b>${safe(date)}</b>
 
 <br>
 
-رقم الطلب:
+⏰ الساعة:
+<b>${safe(time)}</b>
 
-<b>
+<br>
 
-${safe(
-currentOrderNumber
-)}
+🔢 رقم الطلب:
+<b>${safe(currentOrderNumber)}</b>
 
-</b>
+<br><br>
+
+احتفظ برقم الطلب لمتابعة حالتك.
 
 `;
 
-
-success.style.display =
-'block';
+success.style.display = 'block';
 
 
 saveHistory({
 
-type:
-'appointment',
+type:'appointment',
 
-order:
-currentOrderNumber,
+order:currentOrderNumber,
 
-doctor:
-chosenDoctor,
+doctor:chosenDoctor,
 
-clinic:
-chosenClinic,
+clinic:chosenClinic,
 
-date:
-date,
+date:date,
 
-time:
-time,
+time:time
+   status:'حجز مبدئي'
 
-status:
-'حجز مبدئي'
+}]);
+
+
+if(error) throw error;
+
+
+const success =
+document.getElementById('bookingSuccess');
+
+success.innerHTML = `
+
+✅ <b>تم تسجيل الحجز بنجاح</b>
+
+<br>
+
+📅 التاريخ:
+<b>${safe(date)}</b>
+
+<br>
+
+⏰ الساعة:
+<b>${safe(time)}</b>
+
+<br>
+
+🔢 رقم الطلب:
+<b>${safe(currentOrderNumber)}</b>
+
+<br><br>
+
+احتفظ برقم الطلب لمتابعة حالتك.
+
+`;
+
+success.style.display = 'block';
+
+
+saveHistory({
+
+type:'appointment',
+
+order:currentOrderNumber,
+
+doctor:chosenDoctor,
+
+clinic:chosenClinic,
+
+date:date,
+
+time:time,
+
+status:'حجز مبدئي'
 
 });
-
 
 loadHistory();
 
 
-
 }catch(error){
+
+console.error(error);
 
 showBookingMessage(`
 
@@ -2017,16 +1584,13 @@ showBookingMessage(`
 
 <br>
 
-${safe(
-error.message
-)}
+${safe(error.message)}
 
 `);
 
 }finally{
 
-button.disabled =
-false;
+button.disabled = false;
 
 button.textContent =
 '✅ تأكيد الحجز';
@@ -2036,57 +1600,38 @@ button.textContent =
 }
 
 
-
-/* ================================
+/* =========================================
    BOOKING MESSAGE
-================================ */
+========================================= */
 
-function showBookingMessage(
-message
-){
+function showBookingMessage(message){
 
 const box =
-document.getElementById(
-'bookingSuccess'
-);
+document.getElementById('bookingSuccess');
 
-box.innerHTML =
-message;
+box.innerHTML = message;
 
-box.style.display =
-'block';
+box.style.display = 'block';
 
 }
 
 
-
-/* ================================
+/* =========================================
    TRACK CASE
-================================ */
+========================================= */
 
 async function trackCase(){
 
 const order =
-document.getElementById(
-'trackOrder'
-)
-.value
-.trim();
-
+document.getElementById('trackOrder')
+.value.trim();
 
 const phone =
-document.getElementById(
-'trackPhone'
-)
-.value
-.trim();
-
+document.getElementById('trackPhone')
+.value.trim();
 
 const result =
-document.getElementById(
-'trackResult'
-);
-
+document.getElementById('trackResult');
 
 
 if(!order || !phone){
@@ -2106,7 +1651,6 @@ return;
 }
 
 
-
 result.innerHTML = `
 
 <div class="track-result">
@@ -2118,157 +1662,262 @@ result.innerHTML = `
 `;
 
 
-
 try{
 
-
-const {
-data,
-error
-} =
+const {data:caseData,error:caseError} =
 await _supabase
 .from('cases')
 .select('*')
-.eq('order_number', orderNumber)
-.maybeSingle();
+.eq('order_number',order)
+.eq('phone',phone)
+.limit(1);
 
-if (error) {
-  console.error(error);
-  alert('حدث خطأ أثناء متابعة الطلب');
-  return;
-}
 
-if (!data) {
-  alert('لم يتم العثور على طلب بهذا الرقم');
-  return;
-}
+if(caseError) throw caseError;
 
-const status = data.status || 'قيد الانتظار';
 
-document.getElementById('trackResult').innerHTML = `
-  <div class="track-card">
-    <h3>📋 حالة الطلب</h3>
+if(!caseData || !caseData.length){
 
-    <p>
-      <strong>رقم الطلب:</strong>
-      ${data.order_number || '-'}
-    </p>
+result.innerHTML = `
 
-    <p>
-      <strong>الطبيب:</strong>
-      ${data.doctor_name || 'لم يتم التحديد بعد'}
-    </p>
+<div class="track-result">
 
-    <p>
-      <strong>الخدمة:</strong>
-      ${data.service_type || '-'}
-    </p>
+❌ لم يتم العثور على طلب بهذه البيانات.
 
-    <p>
-      <strong>الحالة:</strong>
-      <span class="status-badge">${status}</span>
-    </p>
+</div>
 
-    ${
-      data.description
-        ? `<p><strong>التفاصيل:</strong> ${data.description}</p>`
-        : ''
-    }
-  </div>
 `;
 
-saveHistory(data);
-  }
+return;
 
-function saveHistory(order) {
-  try {
-    const history = JSON.parse(
-      localStorage.getItem('vetcare_history') || '[]'
-    );
-
-    const exists = history.some(
-      item => item.order_number === order.order_number
-    );
-
-    if (!exists) {
-      history.unshift(order);
-
-      localStorage.setItem(
-        'vetcare_history',
-        JSON.stringify(history.slice(0, 20))
-      );
-    }
-
-    localStorage.setItem(
-      'vetcare_last_order',
-      order.order_number || ''
-    );
-
-  } catch (e) {
-    console.error('History error:', e);
-  }
 }
 
-function loadHistory() {
-  const container = document.getElementById('historyList');
 
-  if (!container) return;
+const currentCase =
+caseData[0];
 
-  try {
-    const history = JSON.parse(
-      localStorage.getItem('vetcare_history') || '[]'
-    );
 
-    if (!history.length) {
-      container.innerHTML =
-        '<p class="empty-history">لا توجد طلبات سابقة.</p>';
-      return;
-    }
+const {data:appointments} =
+await _supabase
+.from('appointments')
+.select('*')
+.eq('order_number',order)
+.order('created_at',{ascending:false})
+.limit(1);
 
-    container.innerHTML = history.map(item => `
-      <div class="history-item">
-        <strong>رقم الطلب:</strong>
-        ${item.order_number || '-'}
-        <br>
 
-        <strong>الطبيب:</strong>
-        ${item.doctor_name || 'غير محدد'}
-        <br>
+const appointment =
+appointments && appointments.length
+? appointments[0]
+: null;
 
-        <strong>الخدمة:</strong>
-        ${item.service_type || '-'}
-        <br>
 
-        <strong>الحالة:</strong>
-        ${item.status || 'قيد الانتظار'}
-      </div>
-    `).join('');
+result.innerHTML = `
 
-  } catch (e) {
-    console.error('Load history error:', e);
-  }
+<div class="track-result">
+
+<b>📋 حالة الطلب</b>
+
+<hr>
+
+👤 صاحب الحيوان:
+${safe(currentCase.owner_name || '')}
+
+<br>
+
+🐾 الحيوان:
+${safe(currentCase.pet_name || '')}
+
+<br>
+
+👨‍⚕️ الطبيب:
+${safe(currentCase.doctor_name || '')}
+
+<br>
+
+🩺 الخدمة:
+${safe(currentCase.service_type || '')}
+
+<br>
+
+📌 حالة الطلب:
+<span class="badge">
+${safe(currentCase.status || 'قيد الانتظار')}
+</span>
+
+${
+appointment
+?
+`
+
+<hr>
+
+<b>📅 الحجز</b>
+
+<br>
+
+📅 اليوم:
+<b>${safe(appointment.appointment_date || '')}</b>
+
+<br>
+
+⏰ الساعة:
+<b>${safe(appointment.appointment_time || '')}</b>
+
+<br>
+
+📌 حالة الحجز:
+<span class="badge">
+${safe(appointment.status || 'حجز مبدئي')}
+</span>
+
+`
+:
+`
+
+<hr>
+
+📅 لا يوجد موعد محجوز لهذا الطلب حتى الآن.
+
+`
 }
 
-function setMinimumDate() {
-  const input = document.getElementById('appointmentDate');
+</div>
 
-  if (!input) return;
+`;
 
-  const today = new Date();
+}catch(error){
 
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0');
-  const day = String(today.getDate()).padStart(2, '0');
+console.error(error);
 
-  input.min = `${year}-${month}-${day}`;
+result.innerHTML = `
+
+<div class="track-result">
+
+❌ حدث خطأ أثناء البحث.
+
+<br>
+
+${safe(error.message)}
+
+</div>
+
+`;
+
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadClinics();
-  loadHistory();
-  setMinimumDate();
+}
+
+
+/* =========================================
+   HISTORY
+========================================= */
+
+function getHistory(){
+
+try{
+
+return JSON.parse(
+localStorage.getItem('vetcare_history') || '[]'
+);
+
+}catch(error){
+
+return [];
+
+}
+
+}
+
+
+function saveHistory(item){
+
+const history =
+getHistory();
+
+history.unshift({
+...item,
+savedAt:new Date().toISOString()
 });
-  </script>
+
+localStorage.setItem(
+'vetcare_history',
+JSON.stringify(history.slice(0,20))
+);
+
+}
+
+
+function loadHistory(){
+
+const list =
+document.getElementById('historyList');
+
+if(!list) return;
+
+const history =
+getHistory();
+
+if(!history.length){
+
+list.innerHTML =
+'لا توجد طلبات مسجلة حتى الآن.';
+
+return;
+
+}
+
+list.innerHTML =
+history.map(item => `
+
+<div class="history-item">
+
+${
+item.type === 'appointment'
+?
+`
+📅 <b>حجز موعد</b>
+<br>
+🔢 رقم الطلب:
+<b>${safe(item.order)}</b>
+<br>
+👨‍⚕️ الطبيب:
+${safe(item.doctor)}
+<br>
+📅 ${safe(item.date)}
+&nbsp;
+⏰ ${safe(item.time)}
+<br>
+<span class="badge">
+${safe(item.status)}
+</span>
+`
+:
+`
+📋 <b>طلب خدمة</b>
+<br>
+🔢 رقم الطلب:
+<b>${safe(item.order)}</b>
+<br>
+👨‍⚕️ الطبيب:
+${safe(item.doctor)}
+<br>
+🐾 الحيوان:
+${safe(item.pet)}
+<br>
+<span class="badge">
+${safe(item.status)}
+</span>
+`
+}
+
+</div>
+
+`).join('');
+
+}
+
+</script>
 
 </body>
 </html>
