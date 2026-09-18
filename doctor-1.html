@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الطبيب البيطري - VetCare</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  padding:20px;
+  background:#f4f6f8;
+  text-align:center;
+  margin:0;
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  max-width:1100px;
+  margin:0 auto 20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+#loginCard{
+  max-width:450px;
+  margin:70px auto;
+  text-align:right;
+}
+input,button{
+  padding:10px;
+  margin:8px 0;
+  border-radius:5px;
+  border:1px solid #ccc;
+  font-size:16px;
+  width:90%;
+  box-sizing:border-box;
+}
+button{
+  background:#27ae60;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{ opacity:.9; }
+.linkBtn{
+  background:none;
+  border:none;
+  color:#1769aa;
+  width:auto;
+  text-decoration:underline;
+  font-size:14px;
+  cursor:pointer;
+}
+#dashboard, #resetBox{ display:none; }
+.clinicBadge{
+  display:inline-block;
+  background:#ecfdf5;
+  color:#059669;
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+th,td{
+  border:1px solid #ddd;
+  padding:8px;
+  font-size:13px;
+}
+th{ background:#2c3e50; color:white; }
+.refresh{ width:auto; padding:8px 15px; }
+.logout{ background:#7f8c8d; width:auto; padding:8px 15px; }
+.message{
+  margin-top:10px;
+  padding:10px;
+  border-radius:6px;
+  display:none;
+  text-align:right;
+}
+.error{ background:#fdecea; color:#c0392b; }
+.success{ background:#e5ffe9; color:#08752a; }
+@media(max-width:700px){
+  body{ padding:10px; }
+  table{ min-width:850px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="card" id="loginCard">
+  <h2>🔑 دخول الطبيب</h2>
+  <p>ادخل بالإيميل والباسورد اللي أعطاهولك الأدمن</p>
+  <input type="email" id="email" placeholder="الإيميل">
+  <input type="password" id="passInput" placeholder="الباسورد">
+  <button id="loginBtn" type="button" onclick="login()">دخول</button>
+  <br>
+  <button class="linkBtn" type="button" onclick="forgotPassword()">نسيت الباسورد؟</button>
+  <div id="loginMessage" class="message error"></div>
+</div>
+
+<!-- RESET PASSWORD -->
+<div class="card" id="resetBox">
+  <h2>🔑 تغيير الباسورد</h2>
+  <input type="password" id="newPassword" placeholder="الباسورد الجديد">
+  <input type="password" id="confirmPassword" placeholder="تأكيد الباسورد">
+  <button type="button" onclick="updatePassword()">حفظ الباسورد الجديد</button>
+  <div id="resetMessage" class="message"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="card">
+    <div id="clinicName" class="clinicBadge"></div>
+    <h2>🩺 الحالات الواردة لعيادتك</h2>
+    <button class="refresh" type="button" onclick="loadCases()">🔄 تحديث البيانات</button>
+    <button class="logout" type="button" onclick="logout()">تسجيل الخروج</button>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>رقم الطلب</th>
+            <th>الاسم</th>
+            <th>الهاتف</th>
+            <th>الحيوان</th>
+            <th>الخدمة</th>
+            <th>الوصف</th>
+            <th>الحالة</th>
+            <th>تحديث</th>
+          </tr>
+        </thead>
+        <tbody id="casesTable">
+          <tr><td colspan="8">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   SUPABASE
+========================= */
+const SUPABASE_URL = 'https://tuyvjozypjcvgpgkfoby.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let myClinicId = null;
+
+/* =========================
+   LOGIN
+========================= */
+async function login(){
+  const email = document.getElementById('email').value.trim();
+  const pass  = document.getElementById('passInput').value;
+  const message = document.getElementById('loginMessage');
+
+  if(!email || !pass){
+    message.style.display = 'block';
+    message.className = 'message error';
+    message.textContent = '⚠️ اكتب الإيميل والباسورد';
+    return;
+  }
+
+  const result = await _supabase.auth.signInWithPassword({ email, password: pass });
+  if(result.error){
+    message.style.display = 'block';
+    message.className = 'message error';
+    message.textContent = '❌ الإيميل أو الباسورد غلط';
+    return;
+  }
+
+  await checkDoctor();
+}
+
+document.getElementById('passInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ e.preventDefault(); login(); }
+});
+
+/* =========================
+   CHECK THIS IS A DOCTOR ACCOUNT
+========================= */
+async function checkDoctor(){
+  const userResult = await _supabase.auth.getUser();
+  const user = userResult.data.user;
+  const message = document.getElementById('loginMessage');
+
+  if(!user){ showLogin(); return; }
+
+  const profileResult = await _supabase
+    .from('profiles')
+    .select('email, role, clinic_id')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if(profileResult.error || !profileResult.data || profileResult.data.role !== 'doctor'){
+    await _supabase.auth.signOut();
+    showLogin();
+    message.style.display = 'block';
+    message.className = 'message error';
+    message.textContent = '❌ الحساب ده مش مفعّل كحساب طبيب. كلم الأدمن.';
+    return;
+  }
+
+  myClinicId = profileResult.data.clinic_id;
+
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('resetBox').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  await loadClinicName();
+  await loadCases();
+}
+
+/* =========================
+   LOAD CLINIC NAME (for the badge on top)
+========================= */
+async function loadClinicName(){
+  if(!myClinicId) return;
+  const { data } = await _supabase
+    .from('clinics')
+    .select('clinic_name')
+    .eq('id', myClinicId)
+    .maybeSingle();
+  document.getElementById('clinicName').textContent =
+    '🏥 ' + (data && data.clinic_name ? data.clinic_name : 'عيادتك');
+}
+
+/* =========================
+   LOAD CASES (RLS already limits this to my clinic on the server)
+========================= */
+async function loadCases(){
+  const tbody = document.getElementById('casesTable');
+  tbody.innerHTML = '<tr><td colspan="8">⏳ جاري جلب الحالات...</td></tr>';
+  try{
+    const { data, error } = await _supabase
+      .from('cases')
+      .select('*')
+      .order('id', { ascending:false });
+
+    if(error) throw error;
+
+    if(!data || data.length === 0){
+      tbody.innerHTML = '<tr><td colspan="8">لا توجد حالات مسجلة لعيادتك حتى الآن</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    data.forEach(function(c){
+      const currentStatus = c.status || 'قيد الانتظار';
+      tbody.innerHTML += `
+        <tr>
+          <td><b>${safe(c.order_number)}</b></td>
+          <td>${safe(c.owner_name)}</td>
+          <td>${safe(c.phone)}</td>
+          <td>${safe(c.animal_type)}${c.pet_name ? ' (' + safe(c.pet_name) + ')' : ''}</td>
+          <td>${safe(c.service_type)}</td>
+          <td>${safe(c.description)}</td>
+          <td><span class="status" id="status-${c.id}">${safe(currentStatus)}</span></td>
+          <td>
+            <select onchange="updateCaseStatus(${c.id}, this.value)">
+              <option value="قيد الانتظار" ${currentStatus === 'قيد الانتظار' ? 'selected' : ''}>قيد الانتظار</option>
+              <option value="جاري التواصل" ${currentStatus === 'جاري التواصل' ? 'selected' : ''}>جاري التواصل</option>
+              <option value="تم الرد" ${currentStatus === 'تم الرد' ? 'selected' : ''}>تم الرد</option>
+              <option value="مغلقة" ${currentStatus === 'مغلقة' ? 'selected' : ''}>مغلقة</option>
+            </select>
+          </td>
+        </tr>
+      `;
+    });
+  }catch(error){
+    console.error(error);
+    tbody.innerHTML = `<tr><td colspan="8" style="color:red">❌ خطأ: ${safe(error.message)}</td></tr>`;
+  }
+}
+
+/* =========================
+   UPDATE STATUS
+========================= */
+async function updateCaseStatus(id, newStatus){
+  if(!newStatus) return;
+  try{
+    const { data, error } = await _supabase
+      .from('cases')
+      .update({ status: newStatus })
+      .eq('id', id)
+      .select();
+
+    if(error) throw error;
+    if(!data || data.length === 0){
+      alert('❌ لم يتم حفظ التغيير. تأكد إن الحالة دي تابعة لعيادتك.');
+      loadCases();
+      return;
+    }
+    document.getElementById('status-' + id).textContent = newStatus;
+  }catch(error){
+    console.error(error);
+    alert('❌ خطأ في تحديث الحالة:\n' + error.message);
+    loadCases();
+  }
+}
+
+/* =========================
+   FORGOT / RESET PASSWORD
+========================= */
+async function forgotPassword(){
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('loginMessage');
+  if(!email){
+    message.style.display = 'block';
+    message.className = 'message error';
+    message.textContent = 'اكتب الإيميل الأول';
+    return;
+  }
+  const result = await _supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://ahmedeissa3t-sudo.github.io/veterinary-platform/doctor.html'
+  });
+  message.style.display = 'block';
+  if(result.error){
+    message.className = 'message error';
+    message.textContent = 'حصل خطأ: ' + result.error.message;
+  }else{
+    message.className = 'message success';
+    message.textContent = 'تم إرسال رابط تغيير الباسورد على الإيميل ✅';
+  }
+}
+
+async function updatePassword(){
+  const pass = document.getElementById('newPassword').value;
+  const confirmPass = document.getElementById('confirmPassword').value;
+  const message = document.getElementById('resetMessage');
+  message.style.display = 'block';
+
+  if(pass.length < 6){
+    message.className = 'message error';
+    message.textContent = 'الباسورد لازم يكون 6 حروف على الأقل';
+    return;
+  }
+  if(pass !== confirmPass){
+    message.className = 'message error';
+    message.textContent = 'الباسوردين مش متطابقين';
+    return;
+  }
+  const result = await _supabase.auth.updateUser({ password: pass });
+  if(result.error){
+    message.className = 'message error';
+    message.textContent = 'حصل خطأ: ' + result.error.message;
+  }else{
+    message.className = 'message success';
+    message.textContent = 'تم تغيير الباسورد بنجاح ✅';
+    setTimeout(checkDoctor, 1000);
+  }
+}
+
+_supabase.auth.onAuthStateChange(function(event){
+  if(event === 'PASSWORD_RECOVERY'){
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('resetBox').style.display = 'block';
+  }
+});
+
+/* =========================
+   LOGOUT
+========================= */
+async function logout(){
+  await _supabase.auth.signOut();
+  location.reload();
+}
+
+function showLogin(){
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('resetBox').style.display = 'none';
+  document.getElementById('loginCard').style.display = 'block';
+}
+
+/* =========================
+   SAFE
+========================= */
+function safe(value){
+  if(value === null || value === undefined || value === ''){ return '-'; }
+  return String(value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+/* =========================
+   AUTO LOGIN IF SESSION EXISTS
+========================= */
+window.addEventListener('DOMContentLoaded', async function(){
+  const result = await _supabase.auth.getSession();
+  if(result.data.session){
+    await checkDoctor();
+  }
+});
+</script>
+</body>
+</html>
