@@ -1,467 +1,2036 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>VetCare Admin</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
+
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  color:#222;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f6f8;
+color:#222;
 }
-.container{ max-width:1100px; margin:auto; padding:20px; }
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
 .card{
-  background:white;
-  padding:20px;
-  margin-bottom:20px;
-  border-radius:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.08);
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
-input,button,select{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border-radius:8px;
-  font-size:16px;
-  box-sizing:border-box;
+
+input,
+button,
+select{
+width:100%;
+padding:13px;
+margin-top:10px;
+border-radius:8px;
+font-size:16px;
+box-sizing:border-box;
 }
-input,select{ border:1px solid #ddd; }
-button{ border:0; background:#1769aa; color:white; cursor:pointer; }
-.logout{ background:#d32f2f; }
-.hidden{ display:none; }
-.message{ margin-top:12px; padding:10px; border-radius:8px; }
-.error{ background:#ffe5e5; color:#b00000; }
-.success{ background:#e5ffe9; color:#08752a; }
-.stats{ display:flex; gap:10px; flex-wrap:wrap; }
-.stat{ flex:1; min-width:150px; text-align:center; background:#f8fafc; padding:15px; border-radius:12px; }
-table{ width:100%; border-collapse:collapse; margin-top:15px; }
-th,td{ padding:10px; border-bottom:1px solid #eee; text-align:right; }
-.action-btn{ width:auto; padding:8px 12px; margin:3px; color:white; border:0; border-radius:7px; cursor:pointer; font-size:14px; }
-.approve-btn{ background:#198754; }
-.reject-btn{ background:#dc3545; }
-.status-approved{ color:#198754; font-weight:bold; }
-.status-rejected{ color:#dc3545; font-weight:bold; }
-.status-pending{ color:#d97706; font-weight:bold; }
-.hint{ font-size:12px; color:#666; margin-top:6px; line-height:1.8; }
+
+input,
+select{
+border:1px solid #ddd;
+}
+
+button{
+border:0;
+background:#1769aa;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.92;
+}
+
+.logout{
+background:#d32f2f;
+}
+
+.hidden{
+display:none;
+}
+
+.message{
+margin-top:12px;
+padding:10px;
+border-radius:8px;
+}
+
+.error{
+background:#ffe5e5;
+color:#b00000;
+}
+
+.success{
+background:#e5ffe9;
+color:#08752a;
+}
+
+.stats{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.stat{
+flex:1;
+min-width:150px;
+text-align:center;
+background:#f8fafc;
+padding:15px;
+border-radius:12px;
+}
+
+.stat h2{
+margin:5px 0;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th,
+td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:right;
+vertical-align:middle;
+}
+
+th{
+background:#f8fafc;
+}
+
+.action-btn{
+width:auto;
+padding:8px 12px;
+margin:3px;
+color:white;
+border:0;
+border-radius:7px;
+cursor:pointer;
+font-size:14px;
+}
+
+.approve-btn{
+background:#198754;
+}
+
+.reject-btn{
+background:#dc3545;
+}
+
+.refresh-btn{
+background:#1769aa;
+width:auto;
+padding:10px 18px;
+}
+
+.status-approved{
+color:#198754;
+font-weight:bold;
+}
+
+.status-rejected{
+color:#dc3545;
+font-weight:bold;
+}
+
+.status-pending{
+color:#d97706;
+font-weight:bold;
+}
+
+.status-confirmed{
+color:#198754;
+font-weight:bold;
+}
+
+.status-initial{
+color:#d97706;
+font-weight:bold;
+}
+
+.status-cancelled{
+color:#dc3545;
+font-weight:bold;
+}
+
+.hint{
+font-size:12px;
+color:#666;
+margin-top:6px;
+line-height:1.8;
+}
+
+.empty{
+text-align:center;
+padding:20px;
+color:#777;
+}
+
+.booking-box{
+background:#f8fafc;
+padding:15px;
+border-radius:12px;
+margin-top:10px;
+}
+
+.booking-status{
+font-weight:bold;
+}
+
+@media(max-width:700px){
+
+.container{
+padding:10px;
+}
+
+.card{
+padding:15px;
+}
+
+table{
+font-size:13px;
+}
+
+th,
+td{
+padding:8px;
+white-space:nowrap;
+}
+
+.stat{
+min-width:120px;
+}
+
+}
+
 </style>
+
 </head>
+
+
 <body>
+
 <div class="container">
 
-<!-- LOGIN -->
+
+<!-- =========================
+LOGIN
+========================= -->
+
 <div id="loginBox" class="card">
-  <h2>🔐 دخول الأدمن</h2>
-  <input id="email" type="email" placeholder="الإيميل">
-  <input id="password" type="password" placeholder="الباسورد">
-  <button id="loginButton">دخول</button>
-  <button id="forgotButton">نسيت الباسورد؟</button>
-  <div id="loginMessage"></div>
+
+<h2>🔐 دخول الأدمن</h2>
+
+<input
+id="email"
+type="email"
+placeholder="الإيميل">
+
+<input
+id="password"
+type="password"
+placeholder="الباسورد">
+
+<button id="loginButton">
+دخول
+</button>
+
+<button id="forgotButton">
+نسيت الباسورد؟
+</button>
+
+<div id="loginMessage"></div>
+
 </div>
 
-<!-- RESET -->
+
+<!-- =========================
+RESET PASSWORD
+========================= -->
+
 <div id="resetBox" class="card hidden">
-  <h2>🔑 تغيير الباسورد</h2>
-  <p>اكتب الباسورد الجديد.</p>
-  <input id="newPassword" type="password" placeholder="الباسورد الجديد">
-  <input id="confirmPassword" type="password" placeholder="تأكيد الباسورد">
-  <button id="updateButton">حفظ الباسورد الجديد</button>
-  <div id="resetMessage"></div>
+
+<h2>🔑 تغيير الباسورد</h2>
+
+<p>
+اكتب الباسورد الجديد.
+</p>
+
+<input
+id="newPassword"
+type="password"
+placeholder="الباسورد الجديد">
+
+<input
+id="confirmPassword"
+type="password"
+placeholder="تأكيد الباسورد">
+
+<button id="updateButton">
+حفظ الباسورد الجديد
+</button>
+
+<div id="resetMessage"></div>
+
 </div>
 
-<!-- DASHBOARD -->
+
+<!-- =========================
+DASHBOARD
+========================= -->
+
 <div id="dashboard" class="hidden">
-  <div class="card">
-    <h1>🐾 VetCare Admin Dashboard</h1>
-    <p>أهلاً بيك يا Admin 👑</p>
-    <button id="logoutButton" class="logout">تسجيل خروج</button>
-  </div>
 
-  <!-- STATS -->
-  <div class="card stats">
-    <div class="stat"><h2 id="casesCount">0</h2><p>الحالات</p></div>
-    <div class="stat"><h2 id="clinicsCount">0</h2><p>العيادات</p></div>
-    <div class="stat"><h2 id="doctorsCount">0</h2><p>الدكاترة</p></div>
-  </div>
 
-  <!-- CASES -->
-  <div class="card">
-    <h2>📋 الحالات</h2>
-    <div style="overflow-x:auto">
-      <table>
-        <thead>
-          <tr>
-            <th>رقم الطلب</th><th>المالك</th><th>التليفون</th>
-            <th>الحيوان</th><th>الدكتور</th><th>الخدمة</th><th>الحالة</th>
-          </tr>
-        </thead>
-        <tbody id="casesTable"></tbody>
-      </table>
-    </div>
-  </div>
+<!-- HEADER -->
 
-  <!-- CLINICS -->
-  <div class="card">
-    <h2>🏥 طلبات وعيادات</h2>
-    <div style="overflow-x:auto">
-      <table>
-        <thead>
-          <tr><th>اسم العيادة</th><th>المدينة</th><th>الدكتور</th><th>الحالة</th><th>الإجراء</th></tr>
-        </thead>
-        <tbody id="clinicsTable"></tbody>
-      </table>
-    </div>
-  </div>
+<div class="card">
 
-  <!-- DOCTOR ACCOUNTS -->
-  <div class="card">
-    <h2>🧑‍⚕️ حسابات الدكاترة</h2>
-    <div style="overflow-x:auto">
-      <table>
-        <thead>
-          <tr><th>الإيميل</th><th>العيادة المربوطة</th><th>الإجراء</th></tr>
-        </thead>
-        <tbody id="doctorsTable">
-          <tr><td colspan="3">جاري التحميل...</td></tr>
-        </tbody>
-      </table>
-    </div>
+<h1>
+🐾 VetCare Admin Dashboard
+</h1>
 
-    <h3 style="margin-top:25px;">➕ ربط حساب دكتور جديد بعيادة</h3>
-    <p class="hint">
-      1) روح Supabase &gt; Authentication &gt; Users &gt; Add user، وحط إيميل وباسورد مؤقت للدكتور.<br>
-      2) انسخ الـ <b>User UID</b> بتاعه من نفس الصفحة.<br>
-      3) الصقه هنا واختار عيادته واضغط ربط. الدكتور بعد كده يقدر يدخل على doctor.html بنفس الإيميل والباسورد.
-    </p>
-    <input id="newDoctorUid" type="text" placeholder="User UID من Supabase (مثال: 1a2b3c...)">
-    <input id="newDoctorEmail" type="email" placeholder="إيميل الدكتور (لازم يطابق حساب Supabase)">
-    <select id="newDoctorClinic"><option value="">اختر العيادة...</option></select>
-    <button id="linkDoctorBtn">🔗 ربط الحساب</button>
-    <div id="linkDoctorMessage" class="message"></div>
-  </div>
+<p>
+أهلاً بيك يا Admin 👑
+</p>
+
+<button
+id="logoutButton"
+class="logout">
+تسجيل خروج
+</button>
 
 </div>
+
+
+<!-- =========================
+STATS
+========================= -->
+
+<div class="card stats">
+
+<div class="stat">
+
+<h2 id="casesCount">
+0
+</h2>
+
+<p>
+الحالات
+</p>
+
 </div>
+
+
+<div class="stat">
+
+<h2 id="clinicsCount">
+0
+</h2>
+
+<p>
+العيادات
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2 id="doctorsCount">
+0
+</h2>
+
+<p>
+الدكاترة
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2 id="appointmentsCount">
+0
+</h2>
+
+<p>
+الحجوزات
+</p>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+CASES
+========================= -->
+
+<div class="card">
+
+<h2>
+📋 الحالات
+</h2>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+رقم الطلب
+</th>
+
+<th>
+المالك
+</th>
+
+<th>
+التليفون
+</th>
+
+<th>
+الحيوان
+</th>
+
+<th>
+الدكتور
+</th>
+
+<th>
+الخدمة
+</th>
+
+<th>
+الحالة
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="casesTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+APPOINTMENTS
+========================= -->
+
+<div class="card">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+">
+
+<h2 style="margin:0;">
+📅 الحجوزات
+</h2>
+
+<button
+id="refreshAppointmentsButton"
+class="refresh-btn">
+🔄 تحديث الحجوزات
+</button>
+
+</div>
+
+
+<div class="booking-box">
+
+<div class="hint">
+
+هنا تظهر جميع الحجوزات التي قام العملاء بإنشائها من الموقع، مع حالة الحجز الحالية.
+
+</div>
+
+</div>
+
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+رقم الطلب
+</th>
+
+<th>
+الدكتور
+</th>
+
+<th>
+العيادة
+</th>
+
+<th>
+الهاتف
+</th>
+
+<th>
+التاريخ
+</th>
+
+<th>
+الساعة
+</th>
+
+<th>
+الحالة
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="appointmentsTable">
+
+<tr>
+
+<td colspan="7" class="empty">
+جاري تحميل الحجوزات...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+CLINICS
+========================= -->
+
+<div class="card">
+
+<h2>
+🏥 طلبات وعيادات
+</h2>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+اسم العيادة
+</th>
+
+<th>
+المدينة
+</th>
+
+<th>
+الدكتور
+</th>
+
+<th>
+الحالة
+</th>
+
+<th>
+الإجراء
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="clinicsTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+DOCTOR ACCOUNTS
+========================= -->
+
+<div class="card">
+
+<h2>
+🧑‍⚕️ حسابات الدكاترة
+</h2>
+
+<div style="overflow-x:auto">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+الإيميل
+</th>
+
+<th>
+العيادة المربوطة
+</th>
+
+<th>
+الإجراء
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="doctorsTable">
+
+<tr>
+
+<td colspan="3">
+جاري التحميل...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<h3 style="margin-top:25px;">
+➕ ربط حساب دكتور جديد بعيادة
+</h3>
+
+
+<p class="hint">
+
+1) روح Supabase &gt; Authentication &gt; Users &gt; Add user، وحط إيميل وباسورد مؤقت للدكتور.
+
+<br>
+
+2) انسخ الـ <b>User UID</b> بتاعه من نفس الصفحة.
+
+<br>
+
+3) الصقه هنا واختار عيادته واضغط ربط.
+
+<br>
+
+الدكتور بعد كده يقدر يدخل على doctor.html بنفس الإيميل والباسورد.
+
+</p>
+
+
+<input
+id="newDoctorUid"
+type="text"
+placeholder="User UID من Supabase">
+
+
+<input
+id="newDoctorEmail"
+type="email"
+placeholder="إيميل الدكتور (لازم يطابق حساب Supabase)">
+
+
+<select id="newDoctorClinic">
+
+<option value="">
+اختر العيادة...
+</option>
+
+</select>
+
+
+<button id="linkDoctorBtn">
+🔗 ربط الحساب
+</button>
+
+
+<div
+id="linkDoctorMessage"
+class="message">
+</div>
+
+
+</div>
+
+
+</div>
+
+</div>
+
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+
+document.addEventListener("DOMContentLoaded",function(){
+
+
 /* =========================
-   SUPABASE
+SUPABASE
 ========================= */
-const SUPABASE_URL = "https://tuyvjozypjcvgpgkfoby.supabase.co";
-const SUPABASE_KEY = "sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const SUPABASE_URL =
+"https://tuyvjozypjcvgpgkfoby.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_tJeAmG5w9tJth0rkMmwyrw_Ebel2qit";
+
+const supabase =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
 
 let allClinics = [];
 
-/* =========================
-   LOGIN
-========================= */
-document.getElementById("loginButton").addEventListener("click", async function(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const message = document.getElementById("loginMessage");
-  if(!email || !password){
-    message.className="message error";
-    message.innerText="اكتب الإيميل والباسورد الأول.";
-    return;
-  }
-  const result = await supabase.auth.signInWithPassword({ email, password });
-  if(result.error){
-    message.className="message error";
-    message.innerText="الإيميل أو الباسورد غلط.";
-    return;
-  }
-  await checkAdmin();
-});
 
 /* =========================
-   FORGOT PASSWORD
+HELPER
 ========================= */
-document.getElementById("forgotButton").addEventListener("click", async function(){
-  const email = document.getElementById("email").value.trim();
-  const message = document.getElementById("loginMessage");
-  if(!email){
-    message.className="message error";
-    message.innerText="اكتب الإيميل الأول.";
-    return;
-  }
-  const result = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
-  });
-  if(result.error){
-    message.className="message error";
-    message.innerText="حصل خطأ: "+result.error.message;
-    return;
-  }
-  message.className="message success";
-  message.innerText="تم إرسال رابط تغيير الباسورد على الإيميل ✅";
-});
 
-/* =========================
-   CHECK ADMIN
-========================= */
-async function checkAdmin(){
-  const userResult = await supabase.auth.getUser();
-  const user = userResult.data.user;
-  if(!user){ showLogin(); return; }
+function escapeHTML(value){
 
-  const profileResult = await supabase
-    .from("profiles")
-    .select("email,role")
-    .eq("email", user.email)
-    .eq("role", "admin")
-    .maybeSingle();
-
-  if(profileResult.error || !profileResult.data){
-    console.log(profileResult.error);
-    await supabase.auth.signOut();
-    showLogin();
-    alert("لم يتم العثور على حساب الأدمن.");
-    return;
-  }
-
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("resetBox").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  loadDashboard();
+if(value === null || value === undefined){
+return "-";
 }
 
-/* =========================
-   UPDATE PASSWORD
-========================= */
-document.getElementById("updateButton").addEventListener("click", async function(){
-  const password = document.getElementById("newPassword").value;
-  const confirmPass = document.getElementById("confirmPassword").value;
-  const message = document.getElementById("resetMessage");
-  if(password.length < 6){
-    message.className="message error";
-    message.innerText="الباسورد لازم يكون 6 حروف على الأقل.";
-    return;
-  }
-  if(password !== confirmPass){
-    message.className="message error";
-    message.innerText="الباسوردين مش متطابقين.";
-    return;
-  }
-  const result = await supabase.auth.updateUser({ password });
-  if(result.error){
-    message.className="message error";
-    message.innerText="حصل خطأ: "+result.error.message;
-    return;
-  }
-  message.className="message success";
-  message.innerText="تم تغيير الباسورد بنجاح ✅";
-  setTimeout(checkAdmin,1000);
-});
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
 
 /* =========================
-   LOGOUT
+LOGIN
 ========================= */
-document.getElementById("logoutButton").addEventListener("click", async function(){
-  await supabase.auth.signOut();
-  showLogin();
+
+document
+.getElementById("loginButton")
+.addEventListener("click",async function(){
+
+const email =
+document.getElementById("email")
+.value
+.trim();
+
+const password =
+document.getElementById("password")
+.value;
+
+const message =
+document.getElementById("loginMessage");
+
+
+if(!email || !password){
+
+message.className =
+"message error";
+
+message.innerText =
+"اكتب الإيميل والباسورد الأول.";
+
+return;
+
+}
+
+
+const result =
+await supabase.auth.signInWithPassword({
+email,
+password
 });
+
+
+if(result.error){
+
+message.className =
+"message error";
+
+message.innerText =
+"الإيميل أو الباسورد غلط.";
+
+return;
+
+}
+
+
+await checkAdmin();
+
+});
+
+
+/* =========================
+FORGOT PASSWORD
+========================= */
+
+document
+.getElementById("forgotButton")
+.addEventListener("click",async function(){
+
+const email =
+document.getElementById("email")
+.value
+.trim();
+
+const message =
+document.getElementById("loginMessage");
+
+
+if(!email){
+
+message.className =
+"message error";
+
+message.innerText =
+"اكتب الإيميل الأول.";
+
+return;
+
+}
+
+
+const result =
+await supabase.auth.resetPasswordForEmail(
+email,
+{
+redirectTo:
+"https://ahmedeissa3t-sudo.github.io/veterinary-platform/admin.html"
+}
+);
+
+
+if(result.error){
+
+message.className =
+"message error";
+
+message.innerText =
+"حصل خطأ: " +
+result.error.message;
+
+return;
+
+}
+
+
+message.className =
+"message success";
+
+message.innerText =
+"تم إرسال رابط تغيير الباسورد على الإيميل ✅";
+
+});
+
+
+/* =========================
+CHECK ADMIN
+========================= */
+
+async function checkAdmin(){
+
+const userResult =
+await supabase.auth.getUser();
+
+const user =
+userResult.data.user;
+
+
+if(!user){
+
+showLogin();
+
+return;
+
+}
+
+
+const profileResult =
+await supabase
+.from("profiles")
+.select("email,role")
+.eq("email",user.email)
+.eq("role","admin")
+.maybeSingle();
+
+
+if(
+profileResult.error ||
+!profileResult.data
+){
+
+console.log(profileResult.error);
+
+await supabase.auth.signOut();
+
+showLogin();
+
+alert(
+"لم يتم العثور على حساب الأدمن."
+);
+
+return;
+
+}
+
+
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList
+.add("hidden");
+
+document
+.getElementById("dashboard")
+.classList
+.remove("hidden");
+
+
+await loadDashboard();
+
+}
+
+
+/* =========================
+UPDATE PASSWORD
+========================= */
+
+document
+.getElementById("updateButton")
+.addEventListener("click",async function(){
+
+const password =
+document.getElementById("newPassword")
+.value;
+
+const confirmPass =
+document.getElementById("confirmPassword")
+.value;
+
+const message =
+document.getElementById("resetMessage");
+
+
+if(password.length < 6){
+
+message.className =
+"message error";
+
+message.innerText =
+"الباسورد لازم يكون 6 حروف على الأقل.";
+
+return;
+
+}
+
+
+if(password !== confirmPass){
+
+message.className =
+"message error";
+
+message.innerText =
+"الباسوردين مش متطابقين.";
+
+return;
+
+}
+
+
+const result =
+await supabase.auth.updateUser({
+password
+});
+
+
+if(result.error){
+
+message.className =
+"message error";
+
+message.innerText =
+"حصل خطأ: " +
+result.error.message;
+
+return;
+
+}
+
+
+message.className =
+"message success";
+
+message.innerText =
+"تم تغيير الباسورد بنجاح ✅";
+
+setTimeout(
+checkAdmin,
+1000
+);
+
+});
+
+
+/* =========================
+LOGOUT
+========================= */
+
+document
+.getElementById("logoutButton")
+.addEventListener("click",async function(){
+
+await supabase.auth.signOut();
+
+showLogin();
+
+});
+
 
 function showLogin(){
-  document.getElementById("dashboard").classList.add("hidden");
-  document.getElementById("resetBox").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
+
+document
+.getElementById("dashboard")
+.classList
+.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList
+.add("hidden");
+
+document
+.getElementById("loginBox")
+.classList
+.remove("hidden");
+
 }
 
-supabase.auth.onAuthStateChange(function(event){
-  if(event === "PASSWORD_RECOVERY"){
-    document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
-    document.getElementById("resetBox").classList.remove("hidden");
-  }
-});
 
 /* =========================
-   DASHBOARD
+AUTH STATE
 ========================= */
+
+supabase.auth.onAuthStateChange(
+function(event){
+
+if(event === "PASSWORD_RECOVERY"){
+
+document
+.getElementById("loginBox")
+.classList
+.add("hidden");
+
+document
+.getElementById("dashboard")
+.classList
+.add("hidden");
+
+document
+.getElementById("resetBox")
+.classList
+.remove("hidden");
+
+}
+
+});
+
+
+/* =========================
+DASHBOARD
+========================= */
+
 async function loadDashboard(){
-  await loadCases();
-  await loadClinics();
-  await loadDoctors();
+
+await loadCases();
+
+await loadClinics();
+
+await loadDoctors();
+
+await loadAppointments();
+
 }
 
+
 /* =========================
-   CASES
+CASES
 ========================= */
+
 async function loadCases(){
-  const result = await supabase.from("cases").select("*").order("created_at",{ascending:false});
-  if(result.error){ console.log(result.error); return; }
-  const data = result.data || [];
-  document.getElementById("casesCount").innerText = data.length;
-  const table = document.getElementById("casesTable");
-  table.innerHTML = "";
-  data.forEach(function(c){
-    table.innerHTML += `
-      <tr>
-        <td>${c.order_number || "-"}</td>
-        <td>${c.owner_name || "-"}</td>
-        <td>${c.phone || "-"}</td>
-        <td>${c.animal_type || "-"}</td>
-        <td>${c.doctor_name || "-"}</td>
-        <td>${c.service_type || "-"}</td>
-        <td>${c.status || "-"}</td>
-      </tr>
-    `;
-  });
+
+const result =
+await supabase
+.from("cases")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
 }
 
-/* =========================
-   CLINICS
-========================= */
-async function loadClinics(){
-  const result = await supabase.from("clinics").select("*").order("created_at",{ascending:false});
-  if(result.error){ console.log(result.error); return; }
-  const data = result.data || [];
-  allClinics = data;
-  document.getElementById("clinicsCount").innerText = data.length;
 
-  // fill the clinic dropdown used for linking doctors
-  const select = document.getElementById("newDoctorClinic");
-  select.innerHTML = '<option value="">اختر العيادة...</option>';
-  data.forEach(function(c){
-    select.innerHTML += `<option value="${c.id}">${c.clinic_name || ("عيادة #" + c.id)}</option>`;
-  });
+const data =
+result.data || [];
 
-  const table = document.getElementById("clinicsTable");
-  table.innerHTML = "";
-  if(data.length === 0){
-    table.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;">لا توجد عيادات حاليًا</td></tr>`;
-    return;
-  }
-  data.forEach(function(c){
-    let status = c.status || "pending";
-    if(status !== "approved" && status !== "rejected"){ status = "pending"; }
-    let statusClass = "status-pending", statusText = "قيد المراجعة";
-    if(status === "approved"){ statusClass = "status-approved"; statusText = "مقبولة ✅"; }
-    if(status === "rejected"){ statusClass = "status-rejected"; statusText = "مرفوضة ❌"; }
-    let actions = "<span>تم اتخاذ القرار</span>";
-    if(status === "pending"){
-      actions = `
-        <button class="action-btn approve-btn" onclick="updateClinicStatus('${c.id}','approved')">✅ قبول</button>
-        <button class="action-btn reject-btn" onclick="updateClinicStatus('${c.id}','rejected')">❌ رفض</button>
-      `;
-    }
-    table.innerHTML += `
-      <tr>
-        <td>${c.clinic_name || "-"}</td>
-        <td>${c.city || "-"}</td>
-        <td>${c.doctor_name || c.full_name || "-"}</td>
-        <td class="${statusClass}">${statusText}</td>
-        <td>${actions}</td>
-      </tr>
-    `;
-  });
+
+document
+.getElementById("casesCount")
+.innerText =
+data.length;
+
+
+const table =
+document.getElementById(
+"casesTable"
+);
+
+
+table.innerHTML = "";
+
+
+if(data.length === 0){
+
+table.innerHTML = `
+<tr>
+<td colspan="7" class="empty">
+لا توجد حالات حاليًا
+</td>
+</tr>
+`;
+
+return;
+
 }
 
-window.updateClinicStatus = async function(id, newStatus){
-  const action = newStatus === "approved" ? "قبول" : "رفض";
-  const confirmed = confirm("هل أنت متأكد من " + action + " طلب العيادة؟");
-  if(!confirmed) return;
-  const result = await supabase.from("clinics").update({ status: newStatus }).eq("id", id);
-  if(result.error){
-    console.log(result.error);
-    alert("حصل خطأ أثناء تحديث الحالة:\n" + result.error.message);
-    return;
-  }
-  alert(newStatus === "approved" ? "تم قبول العيادة بنجاح ✅" : "تم رفض العيادة ❌");
-  await loadClinics();
-};
 
-/* =========================
-   DOCTORS — count + list + link new
-========================= */
-async function loadDoctors(){
-  const result = await supabase.from("profiles").select("id,email,clinic_id").eq("role","doctor");
-  if(result.error){ console.log(result.error); return; }
-  const doctors = result.data || [];
-  document.getElementById("doctorsCount").innerText = doctors.length;
+data.forEach(function(c){
 
-  const table = document.getElementById("doctorsTable");
-  table.innerHTML = "";
-  if(doctors.length === 0){
-    table.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:15px;">لا يوجد دكاترة مربوطين حتى الآن</td></tr>`;
-    return;
-  }
-  doctors.forEach(function(d){
-    const clinic = allClinics.find(c => c.id === d.clinic_id);
-    table.innerHTML += `
-      <tr>
-        <td>${d.email || "-"}</td>
-        <td>${clinic ? (clinic.clinic_name || "-") : "غير مربوط بعيادة"}</td>
-        <td>
-          <button class="action-btn reject-btn" onclick="unlinkDoctor('${d.id}')">فصل الحساب</button>
-        </td>
-      </tr>
-    `;
-  });
-}
+table.innerHTML += `
 
-document.getElementById("linkDoctorBtn").addEventListener("click", async function(){
-  const uid = document.getElementById("newDoctorUid").value.trim();
-  const email = document.getElementById("newDoctorEmail").value.trim();
-  const clinicId = document.getElementById("newDoctorClinic").value;
-  const message = document.getElementById("linkDoctorMessage");
+<tr>
 
-  if(!uid || !email || !clinicId){
-    message.className = "message error";
-    message.innerText = "املأ الـ UID والإيميل واختار العيادة.";
-    return;
-  }
+<td>
+${escapeHTML(c.order_number)}
+</td>
 
-  const result = await supabase.from("profiles").upsert({
-    id: uid,
-    email: email,
-    role: "doctor",
-    clinic_id: clinicId
-  });
+<td>
+${escapeHTML(c.owner_name)}
+</td>
 
-  if(result.error){
-    message.className = "message error";
-    message.innerText = "حصل خطأ: " + result.error.message;
-    return;
-  }
+<td>
+${escapeHTML(c.phone)}
+</td>
 
-  message.className = "message success";
-  message.innerText = "تم ربط حساب الدكتور بالعيادة بنجاح ✅";
-  document.getElementById("newDoctorUid").value = "";
-  document.getElementById("newDoctorEmail").value = "";
-  document.getElementById("newDoctorClinic").value = "";
-  await loadDoctors();
+<td>
+${escapeHTML(c.animal_type)}
+</td>
+
+<td>
+${escapeHTML(c.doctor_name)}
+</td>
+
+<td>
+${escapeHTML(c.service_type)}
+</td>
+
+<td>
+${escapeHTML(c.status)}
+</td>
+
+</tr>
+
+`;
+
 });
 
-window.unlinkDoctor = async function(id){
-  const confirmed = confirm("متأكد إنك عايز تفصل حساب الدكتور ده؟ (لسه هيقدر يعمل تسجيل دخول بس مش هيشوف حالات)");
-  if(!confirmed) return;
-  const result = await supabase.from("profiles").delete().eq("id", id);
-  if(result.error){
-    alert("حصل خطأ: " + result.error.message);
-    return;
-  }
-  await loadDoctors();
-};
+}
+
 
 /* =========================
-   PAGE LOAD
+APPOINTMENTS
 ========================= */
-async function start(){
-  const result = await supabase.auth.getSession();
-  if(result.data.session){
-    await checkAdmin();
-  }else{
-    showLogin();
-  }
+
+async function loadAppointments(){
+
+const table =
+document.getElementById(
+"appointmentsTable"
+);
+
+
+table.innerHTML = `
+
+<tr>
+
+<td colspan="7" class="empty">
+⏳ جاري تحميل الحجوزات...
+</td>
+
+</tr>
+
+`;
+
+
+const result =
+await supabase
+.from("appointments")
+.select("*")
+.order(
+"appointment_date",
+{ascending:true}
+);
+
+
+if(result.error){
+
+console.error(
+"Appointments error:",
+result.error
+);
+
+
+document
+.getElementById(
+"appointmentsCount"
+)
+.innerText =
+"0";
+
+
+table.innerHTML = `
+
+<tr>
+
+<td colspan="7" class="empty">
+
+❌ حصل خطأ أثناء تحميل الحجوزات.
+
+<br>
+
+<span style="font-size:12px;">
+${escapeHTML(result.error.message)}
+</span>
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
 }
+
+
+const data =
+result.data || [];
+
+
+document
+.getElementById(
+"appointmentsCount"
+)
+.innerText =
+data.length;
+
+
+if(data.length === 0){
+
+table.innerHTML = `
+
+<tr>
+
+<td colspan="7" class="empty">
+
+📭 لا توجد حجوزات حاليًا.
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+
+table.innerHTML = "";
+
+
+data.forEach(function(a){
+
+let status =
+a.status || "حجز مبدئي";
+
+
+let statusClass =
+"status-initial";
+
+
+if(
+status === "مؤكد" ||
+status === "confirmed" ||
+status === "تم التأكيد" ||
+status === "تم تأكيد الحجز"
+){
+
+statusClass =
+"status-confirmed";
+
+}
+
+
+if(
+status === "مرفوض" ||
+status === "rejected" ||
+status === "ملغي" ||
+status === "ملغى"
+){
+
+statusClass =
+"status-cancelled";
+
+}
+
+
+table.innerHTML += `
+
+<tr>
+
+<td>
+${escapeHTML(a.order_number)}
+</td>
+
+<td>
+${escapeHTML(a.doctor_name)}
+</td>
+
+<td>
+${escapeHTML(a.clinic_name)}
+</td>
+
+<td>
+${escapeHTML(a.phone)}
+</td>
+
+<td>
+${escapeHTML(a.appointment_date)}
+</td>
+
+<td>
+${escapeHTML(a.appointment_time)}
+</td>
+
+<td class="${statusClass}">
+
+${escapeHTML(status)}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* =========================
+REFRESH APPOINTMENTS
+========================= */
+
+document
+.getElementById(
+"refreshAppointmentsButton"
+)
+.addEventListener(
+"click",
+async function(){
+
+this.disabled = true;
+
+this.innerText =
+"⏳ جاري التحديث...";
+
+
+await loadAppointments();
+
+
+this.disabled = false;
+
+this.innerText =
+"🔄 تحديث الحجوزات";
+
+}
+);
+
+
+/* =========================
+CLINICS
+========================= */
+
+async function loadClinics(){
+
+const result =
+await supabase
+.from("clinics")
+.select("*")
+.order(
+"created_at",
+{ascending:false}
+);
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
+}
+
+
+const data =
+result.data || [];
+
+
+allClinics = data;
+
+
+document
+.getElementById("clinicsCount")
+.innerText =
+data.length;
+
+
+/* CLINIC DROPDOWN */
+
+const select =
+document.getElementById(
+"newDoctorClinic"
+);
+
+
+select.innerHTML =
+'<option value="">اختر العيادة...</option>';
+
+
+data.forEach(function(c){
+
+select.innerHTML += `
+
+<option value="${escapeHTML(c.id)}">
+
+${escapeHTML(
+c.clinic_name ||
+("عيادة #" + c.id)
+)}
+
+</option>
+
+`;
+
+});
+
+
+/* CLINICS TABLE */
+
+const table =
+document.getElementById(
+"clinicsTable"
+);
+
+
+table.innerHTML = "";
+
+
+if(data.length === 0){
+
+table.innerHTML = `
+
+<tr>
+
+<td
+colspan="5"
+class="empty">
+
+لا توجد عيادات حاليًا
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+
+data.forEach(function(c){
+
+let status =
+c.status || "pending";
+
+
+if(
+status !== "approved" &&
+status !== "rejected"
+){
+
+status =
+"pending";
+
+}
+
+
+let statusClass =
+"status-pending";
+
+let statusText =
+"قيد المراجعة";
+
+
+if(status === "approved"){
+
+statusClass =
+"status-approved";
+
+statusText =
+"مقبولة ✅";
+
+}
+
+
+if(status === "rejected"){
+
+statusClass =
+"status-rejected";
+
+statusText =
+"مرفوضة ❌";
+
+}
+
+
+let actions =
+"<span>تم اتخاذ القرار</span>";
+
+
+if(status === "pending"){
+
+actions = `
+
+<button
+class="action-btn approve-btn"
+onclick="updateClinicStatus('${c.id}','approved')">
+
+✅ قبول
+
+</button>
+
+<button
+class="action-btn reject-btn"
+onclick="updateClinicStatus('${c.id}','rejected')">
+
+❌ رفض
+
+</button>
+
+`;
+
+}
+
+
+table.innerHTML += `
+
+<tr>
+
+<td>
+${escapeHTML(c.clinic_name)}
+</td>
+
+<td>
+${escapeHTML(c.city)}
+</td>
+
+<td>
+${escapeHTML(
+c.doctor_name ||
+c.full_name
+)}
+</td>
+
+<td class="${statusClass}">
+
+${statusText}
+
+</td>
+
+<td>
+
+${actions}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* =========================
+UPDATE CLINIC STATUS
+========================= */
+
+window.updateClinicStatus =
+async function(id,newStatus){
+
+const action =
+newStatus === "approved"
+? "قبول"
+: "رفض";
+
+
+const confirmed =
+confirm(
+"هل أنت متأكد من " +
+action +
+" طلب العيادة؟"
+);
+
+
+if(!confirmed){
+
+return;
+
+}
+
+
+const result =
+await supabase
+.from("clinics")
+.update({
+status:newStatus
+})
+.eq("id",id);
+
+
+if(result.error){
+
+console.log(result.error);
+
+alert(
+"حصل خطأ أثناء تحديث الحالة:\n" +
+result.error.message
+);
+
+return;
+
+}
+
+
+alert(
+newStatus === "approved"
+? "تم قبول العيادة بنجاح ✅"
+: "تم رفض العيادة ❌"
+);
+
+
+await loadClinics();
+
+};
+
+
+/* =========================
+DOCTORS
+========================= */
+
+async function loadDoctors(){
+
+const result =
+await supabase
+.from("profiles")
+.select(
+"id,email,clinic_id"
+)
+.eq(
+"role",
+"doctor"
+);
+
+
+if(result.error){
+
+console.log(result.error);
+
+return;
+
+}
+
+
+const doctors =
+result.data || [];
+
+
+document
+.getElementById("doctorsCount")
+.innerText =
+doctors.length;
+
+
+const table =
+document.getElementById(
+"doctorsTable"
+);
+
+
+table.innerHTML = "";
+
+
+if(doctors.length === 0){
+
+table.innerHTML = `
+
+<tr>
+
+<td
+colspan="3"
+class="empty">
+
+لا يوجد دكاترة مربوطين حتى الآن
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+
+doctors.forEach(function(d){
+
+const clinic =
+allClinics.find(
+c => c.id === d.clinic_id
+);
+
+
+table.innerHTML += `
+
+<tr>
+
+<td>
+${escapeHTML(d.email)}
+</td>
+
+<td>
+
+${
+clinic
+?
+escapeHTML(
+clinic.clinic_name
+)
+:
+"غير مربوط بعيادة"
+}
+
+</td>
+
+<td>
+
+<button
+class="action-btn reject-btn"
+onclick="unlinkDoctor('${d.id}')">
+
+فصل الحساب
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* =========================
+LINK DOCTOR
+========================= */
+
+document
+.getElementById(
+"linkDoctorBtn"
+)
+.addEventListener(
+"click",
+async function(){
+
+const uid =
+document
+.getElementById(
+"newDoctorUid"
+)
+.value
+.trim();
+
+
+const email =
+document
+.getElementById(
+"newDoctorEmail"
+)
+.value
+.trim();
+
+
+const clinicId =
+document
+.getElementById(
+"newDoctorClinic"
+)
+.value;
+
+
+const message =
+document
+.getElementById(
+"linkDoctorMessage"
+);
+
+
+if(
+!uid ||
+!email ||
+!clinicId
+){
+
+message.className =
+"message error";
+
+message.innerText =
+"املأ الـ UID والإيميل واختار العيادة.";
+
+return;
+
+}
+
+
+const result =
+await supabase
+.from("profiles")
+.upsert({
+
+id:uid,
+
+email:email,
+
+role:"doctor",
+
+clinic_id:clinicId
+
+});
+
+
+if(result.error){
+
+message.className =
+"message error";
+
+message.innerText =
+"حصل خطأ: " +
+result.error.message;
+
+return;
+
+}
+
+
+message.className =
+"message success";
+
+message.innerText =
+"تم ربط حساب الدكتور بالعيادة بنجاح ✅";
+
+
+document
+.getElementById(
+"newDoctorUid"
+)
+.value = "";
+
+
+document
+.getElementById(
+"newDoctorEmail"
+)
+.value = "";
+
+
+document
+.getElementById(
+"newDoctorClinic"
+)
+.value = "";
+
+
+await loadDoctors();
+
+});
+
+
+/* =========================
+UNLINK DOCTOR
+========================= */
+
+window.unlinkDoctor =
+async function(id){
+
+const confirmed =
+confirm(
+"متأكد إنك عايز تفصل حساب الدكتور ده؟ (لسه هيقدر يعمل تسجيل دخول بس مش هيشوف حالات)"
+);
+
+
+if(!confirmed){
+
+return;
+
+}
+
+
+const result =
+await supabase
+.from("profiles")
+.delete()
+.eq("id",id);
+
+
+if(result.error){
+
+alert(
+"حصل خطأ: " +
+result.error.message
+);
+
+return;
+
+}
+
+
+await loadDoctors();
+
+};
+
+
+/* =========================
+PAGE LOAD
+========================= */
+
+async function start(){
+
+const result =
+await supabase.auth.getSession();
+
+
+if(result.data.session){
+
+await checkAdmin();
+
+}else{
+
+showLogin();
+
+}
+
+}
+
+
 start();
 
 });
+
 </script>
+
 </body>
-</html>
+  </html>
